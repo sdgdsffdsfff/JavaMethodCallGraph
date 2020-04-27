@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f3b12f71-cf19-4c51-a24d-1613d72e6b4a" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1VSyPFKkpdgl4K1ZUIUX3zBJQsn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+  </component>
+  <component name="RunManager">
+    <configuration name="MethodCallGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.se.MethodCallGenerator" />
+      <module name="JavaMethodCallGraph" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.se.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.MethodCallGenerator" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f3b12f71-cf19-4c51-a24d-1613d72e6b4a" name="Default Changelist" comment="" />
+      <created>1577260764719</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1577260764719</updated>
+      <workItem from="1577260768433" duration="1606000" />
+      <workItem from="1577265248732" duration="543000" />
+      <workItem from="1577269688140" duration="622000" />
+      <workItem from="1577414261030" duration="10314000" />
+      <workItem from="1577431621205" duration="779000" />
+      <workItem from="1577432437480" duration="5891000" />
+      <workItem from="1577668187901" duration="5422000" />
+      <workItem from="1577693803215" duration="3547000" />
+      <workItem from="1577707653801" duration="3726000" />
+      <workItem from="1577946279396" duration="1852000" />
+      <workItem from="1577954391914" duration="30000" />
+      <workItem from="1583717826102" duration="160000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="860" y="202" key="#Project_Structure" timestamp="1577419800288">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="860" y="202" key="#Project_Structure/0.23.1680.1027@0.23.1680.1027" timestamp="1577419800288" />
+    <state x="1073" y="253" key="#com.intellij.ide.util.MemberChooser" timestamp="1577436168554">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="1073" y="253" key="#com.intellij.ide.util.MemberChooser/0.23.1680.1027@0.23.1680.1027" timestamp="1577436168554" />
+    <state width="469" height="466" key="DebuggerActiveHint" timestamp="1577671268633">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="469" height="466" key="DebuggerActiveHint/0.23.1680.1027@0.23.1680.1027" timestamp="1577671268633" />
+    <state width="1638" height="265" key="GridCell.Tab.0.bottom" timestamp="1577948232951">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="265" key="GridCell.Tab.0.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1577948232951" />
+    <state width="1638" height="265" key="GridCell.Tab.0.center" timestamp="1577948232950">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="265" key="GridCell.Tab.0.center/0.23.1680.1027@0.23.1680.1027" timestamp="1577948232950" />
+    <state width="1638" height="265" key="GridCell.Tab.0.left" timestamp="1577948232950">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="265" key="GridCell.Tab.0.left/0.23.1680.1027@0.23.1680.1027" timestamp="1577948232950" />
+    <state width="1638" height="265" key="GridCell.Tab.0.right" timestamp="1577948232950">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="265" key="GridCell.Tab.0.right/0.23.1680.1027@0.23.1680.1027" timestamp="1577948232950" />
+    <state x="570" y="180" key="SettingsEditor" timestamp="1577727218399">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="570" y="180" key="SettingsEditor/0.23.1680.1027@0.23.1680.1027" timestamp="1577727218399" />
+    <state width="420" height="513" key="XDebugger.FullValuePopup" timestamp="1577437781466">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="420" height="513" key="XDebugger.FullValuePopup/0.23.1680.1027@0.23.1680.1027" timestamp="1577437781466" />
+    <state x="918" y="298" width="736" height="486" key="find.popup" timestamp="1577705586323">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="918" y="298" width="736" height="486" key="find.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1577705586323" />
+    <state x="241" y="230" key="new project wizard" timestamp="1577706758815">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="241" y="230" key="new project wizard/0.23.1680.1027@0.23.1680.1027" timestamp="1577706758815" />
+    <state x="925" y="250" width="670" height="676" key="search.everywhere.popup" timestamp="1577432738511">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="925" y="250" width="670" height="676" key="search.everywhere.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1577432738511" />
+  </component>
+</project>

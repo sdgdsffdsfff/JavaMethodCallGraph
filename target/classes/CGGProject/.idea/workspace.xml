@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="CGGProject:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="df30590d-f2b3-45a0-9b38-7d87897eaa81" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1V6KC9LdJygB5VIxrjyd2W6g6LH" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/CGG" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/CGG" />
+      <recent name="$PROJECT_DIR$/src/main/java/util" />
+      <recent name="$PROJECT_DIR$/src/main/java" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.CallGraphUtilsMain">
+    <configuration name="CallGraphUtilsMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CGG.java_callgraph.javacg.execute.CallGraphUtilsMain" />
+      <module name="CGGProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CGG.java_callgraph.javacg.execute.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JCallGraph" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CGG.java_callgraph.javacg.stat.JCallGraph" />
+      <module name="CGGProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CGG.java_callgraph.javacg.stat.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MethodCallsExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CGG.MethodCallsExample" />
+      <module name="CGGProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CGG.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CGG.Test" />
+      <module name="CGGProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CGG.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CGG.Test2" />
+      <module name="CGGProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CGG.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.CallGraphUtilsMain" />
+        <item itemvalue="Application.Test" />
+        <item itemvalue="Application.JCallGraph" />
+        <item itemvalue="Application.MethodCallsExample" />
+        <item itemvalue="Application.Test2" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="df30590d-f2b3-45a0-9b38-7d87897eaa81" name="Default Changelist" comment="" />
+      <created>1576567974515</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1576567974515</updated>
+      <workItem from="1576567977909" duration="2185000" />
+      <workItem from="1576631966749" duration="14236000" />
+      <workItem from="1576657846447" duration="7000" />
+      <workItem from="1576657874664" duration="1855000" />
+      <workItem from="1576668375016" duration="3899000" />
+      <workItem from="1576736420668" duration="1137000" />
+      <workItem from="1576744985745" duration="368000" />
+      <workItem from="1577708427985" duration="68000" />
+      <workItem from="1577947407019" duration="343000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="590" y="384" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1576652319890">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="590" y="384" key="#com.intellij.ide.util.TreeClassChooserDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1576652319890" />
+    <state width="1638" height="406" key="GridCell.Tab.0.bottom" timestamp="1576737561631">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="406" key="GridCell.Tab.0.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1576737561631" />
+    <state width="1638" height="406" key="GridCell.Tab.0.center" timestamp="1576737561630">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="406" key="GridCell.Tab.0.center/0.23.1680.1027@0.23.1680.1027" timestamp="1576737561630" />
+    <state width="1638" height="406" key="GridCell.Tab.0.left" timestamp="1576737561630">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="406" key="GridCell.Tab.0.left/0.23.1680.1027@0.23.1680.1027" timestamp="1576737561630" />
+    <state width="1638" height="406" key="GridCell.Tab.0.right" timestamp="1576737561631">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="406" key="GridCell.Tab.0.right/0.23.1680.1027@0.23.1680.1027" timestamp="1576737561631" />
+    <state x="341" y="175" key="SettingsEditor" timestamp="1576652843846">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="341" y="175" key="SettingsEditor/0.23.1680.1027@0.23.1680.1027" timestamp="1576652843846" />
+    <state width="420" height="513" key="XDebugger.FullValuePopup" timestamp="1576658021472">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="420" height="513" key="XDebugger.FullValuePopup/0.23.1680.1027@0.23.1680.1027" timestamp="1576658021472" />
+    <state x="498" y="298" width="683" height="476" key="find.popup" timestamp="1576653541816">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="498" y="298" width="683" height="476" key="find.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1576653541816" />
+    <state x="368" y="215" width="878" height="624" key="new project wizard" timestamp="1576657280928">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="368" y="215" width="878" height="624" key="new project wizard/0.23.1680.1027@0.23.1680.1027" timestamp="1576657280928" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/CGG/java_callgraph/javacg/stat/JCallGraph.java</url>
+          <line>85</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/CGG/java_callgraph/javacg/stat/JCallGraph.java</url>
+          <line>68</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/apache/bcel/bcel/6.2/bcel-6.2.jar!/org/apache/bcel/classfile/ClassParser.class</url>
+          <line>77</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/CGG/java_callgraph/javacg/execute/CallGraphUtilsMain.java</url>
+          <line>23</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

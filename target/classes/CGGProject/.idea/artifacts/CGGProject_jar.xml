@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="CGGProject:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CGGProject_jar</output-path>
+    <root id="root">
+      <element id="archive" name="CGGProject.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="CGGProject" />
+        <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.5" />
+        <element id="library" level="project" name="Maven: javassist:javassist:3.12.1.GA" />
+        <element id="library" level="project" name="Maven: org.apache.bcel:bcel:6.2" />
+      </element>
+    </root>
+  </artifact>
+</component>
