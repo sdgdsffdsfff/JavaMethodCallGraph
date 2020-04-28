@@ -2,6 +2,7 @@ package com.se.process;
 
 import com.se.DAO.BuildConnection;
 import com.se.DAO.MethodInfoDAO;
+import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.entity.MethodInfo;
@@ -20,6 +21,7 @@ public class FilteMethodInvocation {
         Connection conn = buildConnection.buildConnect();
         MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
         MethodInvocationInViewDAO methodInvocationInViewDAO = new MethodInvocationInViewDAO();
+        ClassInfoDAO classInfoDAO = new ClassInfoDAO();
         List<String> projectNameList = methodInvocationDAO.getAllProjectNameFromDB(conn);
         MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
@@ -29,7 +31,10 @@ public class FilteMethodInvocation {
             for(MethodInvocation methodInvocation:methodInvocationList){
                 MethodInfo callMethodInfo = methodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
                 List<MethodInfo> calledMethodInfoList = methodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
-                if(callMethodInfo!=null && calledMethodInfoList.size()>0){
+                if(calledMethodInfoList.size()==0)continue;
+                String callClassID = classInfoDAO.getClassIDByProjectNameAndClassName(projectName,callMethodInfo.getClassName(),conn);
+                String calledClassID = classInfoDAO.getClassIDByProjectNameAndClassName(projectName,calledMethodInfoList.get(0).getClassName(),conn);
+                if(callClassID!=null&&calledClassID!=null){
                     MethodInfo calledMethodInfo = calledMethodInfoList.get(0);
                     MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
                     methodInvocationInView.setProjectName(projectName);
@@ -41,6 +46,8 @@ public class FilteMethodInvocation {
                     methodInvocationInView.setCalledClassName(calledMethodInfo.getClassName());
                     methodInvocationInView.setCalledMethodName(calledMethodInfo.getMethodName());
                     methodInvocationInView.setCalledMethodID(calledMethodInfo.getID());
+                    methodInvocationInView.setCallClassID(callClassID);
+                    methodInvocationInView.setCalledClassID(calledClassID);
                     methodInvocationInViewList.add(methodInvocationInView);
                 }
             }

@@ -1,9 +1,11 @@
 package com.se.DAO;
 
 import com.se.entity.ClassInfo;
+import com.se.entity.MethodInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ClassInfoDAO {
@@ -18,5 +20,15 @@ public class ClassInfoDAO {
             pst.setString(4,classInfo.getFileName());
             pst.executeUpdate();
         }
+    }
+
+    public String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
+        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        if(resultSet.next()){
+            return resultSet.getString("ID");
+        }
+        return null;
     }
 }
