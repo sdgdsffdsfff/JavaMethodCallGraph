@@ -10,7 +10,7 @@ import java.util.List;
 public class MethodInvocationInViewDAO {
 
     public void insertMethodInvocationInView(List<MethodInvocationInView> methodInvocationInViewList, Connection conn) throws SQLException {
-        String sql = "insert into methodinvocationinview (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType,callMethodID,calledMethodID) values(?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into methodinvocationinview (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType,callMethodID,calledMethodID,callClassID,calledClassID) values(?,?,?,?,?,?,?,?,?,?,?)";
         if(methodInvocationInViewList != null && !methodInvocationInViewList.isEmpty()) {
             PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
             for(MethodInvocationInView methodInvocationInView : methodInvocationInViewList) {
@@ -23,6 +23,8 @@ public class MethodInvocationInViewDAO {
                 pst.setString(7,methodInvocationInView.getCallMethodReturnType());
                 pst.setString(8,methodInvocationInView.getCallMethodID());
                 pst.setString(9,methodInvocationInView.getCalledMethodID());
+                pst.setString(10,methodInvocationInView.getCallClassID());
+                pst.setString(11,methodInvocationInView.getCalledClassID());
                 pst.addBatch();
             }
             pst.executeBatch();

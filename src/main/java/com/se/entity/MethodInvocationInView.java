@@ -11,6 +11,8 @@ public class MethodInvocationInView {
     private String callMethodReturnType;
     private String callMethodID;
     private String calledMethodID;
+    private String callClassID;
+    private String calledClassID;
 
 
     public String getCallMethodID() {
@@ -83,5 +85,21 @@ public class MethodInvocationInView {
 
     public void setCallMethodReturnType(String callMethodReturnType) {
         this.callMethodReturnType = callMethodReturnType;
+    }
+
+    public String getCallClassID() {
+        return callClassID;
+    }
+
+    public void setCallClassID(String callClassID) {
+        this.callClassID = callClassID;
+    }
+
+    public String getCalledClassID() {
+        return calledClassID;
+    }
+
+    public void setCalledClassID(String calledClassID) {
+        this.calledClassID = calledClassID;
     }
 }
