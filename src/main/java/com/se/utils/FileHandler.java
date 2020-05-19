@@ -63,12 +63,23 @@ public class FileHandler {
         return new File(path);
     }
 
+//    public static void getFolders(File file,LinkedList<String> files)
+//    {
+//        File[] fs = file.listFiles();
+//        for(File f:fs)
+//        {
+//            if(file.isDirectory()&&file.listFiles()!=null)
+//            {
+//                files.addLast(f.getPath());
+//            }
+//        }
+//    }
     public static void getFolders(File file,LinkedList<String> files)
     {
         File[] fs = file.listFiles();
-        for(File f:fs)
+        for(File f: fs)
         {
-            if(file.isDirectory()&&file.listFiles()!=null)
+            if(f.isDirectory()&&f.listFiles()!=null)
             {
                 files.addLast(f.getPath());
             }

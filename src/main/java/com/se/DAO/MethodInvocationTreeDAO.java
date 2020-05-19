@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class MethodInvocationTreeDAO {
     public void insertIntoMethodInvocationTree(Connection conn) throws SQLException {
-        String sql = "INSERT IGNORE INTO methodinvocationtree SELECT ID, projectName, callMethodName, calledMethodName, callClassName, calledClassName, callMethodParameters, callMethodReturnType, callMethodID, calledMethodID, 0 FROM methodinvocationtree";
+        String sql = "INSERT IGNORE INTO methodinvocationtree SELECT ID, projectName, callMethodName, calledMethodName, callClassName, calledClassName, callMethodParameters, callMethodReturnType, callMethodID, calledMethodID, 0 FROM methodinvocationinview";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.executeUpdate();
     }

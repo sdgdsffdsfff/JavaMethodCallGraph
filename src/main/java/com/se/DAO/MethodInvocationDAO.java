@@ -4,7 +4,6 @@ import com.se.entity.Method;
 import com.se.entity.MethodCall;
 import com.se.entity.MethodInvocation;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,27 +15,34 @@ import java.util.Map;
 
 public class MethodInvocationDAO {
 
-    public void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn) throws IOException, SQLException {
-        String sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType) values(?,?,?,?,?,?,?)";
-        if(methodCalls != null && !methodCalls.isEmpty()) {
-            PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
-            Collection<MethodCall> calls = methodCalls.values();
-            for(MethodCall call : calls) {
-                if(call.getCalled() != null && !call.getCalled().isEmpty()){
-                    for(Method calledMethod:call.getCalled()){
-                        pst.setString(1,projectName);
-                        pst.setString(2,call.getCaller().getName());
-                        pst.setString(3,calledMethod.getName());
-                        pst.setString(4,call.getCaller().getPackageAndClassName());
-                        pst.setString(5,calledMethod.getPackageAndClassName());
-                        pst.setString(6,call.getCaller().getParamTypeList().toString());
-                        pst.setString(7,call.getCaller().getReturnType().toString());
-                        pst.addBatch();
+    public void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
+        String sql = null;
+        try{
+            sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType) values(?,?,?,?,?,?,?)";
+            if(methodCalls != null && !methodCalls.isEmpty()) {
+                PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
+                Collection<MethodCall> calls = methodCalls.values();
+                for(MethodCall call : calls) {
+                    if(call.getCalled() != null && !call.getCalled().isEmpty()){
+                        for(Method calledMethod:call.getCalled()){
+                            pst.setString(1,projectName);
+                            pst.setString(2,call.getCaller().getName());
+                            pst.setString(3,calledMethod.getName());
+                            pst.setString(4,call.getCaller().getPackageAndClassName());
+                            pst.setString(5,calledMethod.getPackageAndClassName());
+                            pst.setString(6,call.getCaller().getParamTypeList().toString());
+                            pst.setString(7,call.getCaller().getReturnTypeStr());
+                            pst.addBatch();
+                        }
+                        pst.executeBatch();
                     }
-                    pst.executeBatch();
                 }
             }
+        } catch (SQLException e){
+            System.out.println(sql);
+            e.printStackTrace();
         }
+
     }
 
     public List<String> getAllProjectNameFromDB(Connection conn) throws SQLException {

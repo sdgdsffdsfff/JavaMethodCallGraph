@@ -7,7 +7,7 @@ public class MethodInfo {
         this.projectName = projectName;
         this.className = method.getPackageAndClassName();
         this.methodName = method.getName();
-        this.returnType = method.getReturnType().toString();
+        this.returnType = method.getReturnTypeStr();
         this.qualifiedName = method.getQualifiedName();
         this.methodParameters = method.getParamTypeList().toString();
     }

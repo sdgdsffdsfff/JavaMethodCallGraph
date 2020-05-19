@@ -14,6 +14,8 @@ public class Method {
 
     private Type returnType;
 
+    private String returnTypeStr;
+
     private List<String> paramTypeList;
 
     public String getName() {
@@ -40,12 +42,21 @@ public class Method {
         this.pkg = pkg;
     }
 
-    public Type getReturnType() {
+    private Type getReturnType() {
         return returnType;
     }
 
     public void setReturnType(Type returnType) {
         this.returnType = returnType;
+    }
+
+    public String getReturnTypeStr() {
+        if(this.getReturnType().getComment() != null){
+            this.returnTypeStr = this.getReturnType().toString().replace(this.getReturnType().getComment().toString(),"");
+        } else {
+            this.returnTypeStr = this.getReturnType().toString();
+        }
+        return returnTypeStr;
     }
 
     public List<String> getParamTypeList() {
