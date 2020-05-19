@@ -13,7 +13,6 @@ import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,14 +23,14 @@ import static java.lang.System.out;
 
 public class Process {
 
-    private static String sourceProjectPath = "/Users/coldilock/Downloads/project";
+    private static String sourceProjectPath = "";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {
         return new File(projectPath).getName();
     }
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         getMethodInvocation(conn);
@@ -39,7 +38,7 @@ public class Process {
         filterMethodInvocationTree(conn);
     }
 
-    public static void getMethodInvocation(Connection conn) throws IOException, SQLException {
+    public static void getMethodInvocation(Connection conn) throws SQLException {
         MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
         List<String> projectNameList = methodInvocationDAO.getAllProjectNameFromDB(conn);
 
