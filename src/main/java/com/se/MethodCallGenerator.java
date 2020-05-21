@@ -1,11 +1,5 @@
 package com.se;
 
-import com.se.container.MethodCallContainer;
-import com.se.visitors.MethodVisitor;
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

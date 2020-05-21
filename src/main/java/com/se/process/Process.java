@@ -9,7 +9,7 @@ import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
 import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
-import com.se.visitors.MethodVisitor2;
+import com.se.visitors.MethodVisitor;
 
 import java.io.File;
 import java.sql.Connection;
@@ -22,7 +22,7 @@ import static java.lang.System.out;
 
 public class Process {
 
-    private static String sourceProjectPath = "/Users/coldilock/Downloads/project/test-bigproject";
+    private static String sourceProjectPath = "";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {
@@ -66,7 +66,7 @@ public class Process {
     }
 
     private static void processMethodCallTree(File file,Connection conn){
-        MethodVisitor2 visitor = new MethodVisitor2(projectName,file.getName(),conn);
+        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
