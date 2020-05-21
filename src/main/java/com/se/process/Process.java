@@ -1,5 +1,7 @@
 package com.se.process;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.*;
 import com.se.container.MethodCallContainer;
 import com.se.entity.MethodInfo;
@@ -7,10 +9,7 @@ import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
 import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
-import com.se.visitors.MethodVisitor;
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
+import com.se.visitors.MethodVisitor2;
 
 import java.io.File;
 import java.sql.Connection;
@@ -23,12 +22,13 @@ import static java.lang.System.out;
 
 public class Process {
 
-    private static String sourceProjectPath = "";
+    private static String sourceProjectPath = "/Users/coldilock/Downloads/project/test-bigproject";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {
         return new File(projectPath).getName();
     }
+    public static List<String> newProjectNameList = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
@@ -51,6 +51,7 @@ public class Process {
 
             if(projectNameList!=null && projectNameList.contains(projectName))
                 continue;
+            newProjectNameList.add(projectName);
 
             System.out.println("正在处理的项目为：" + f);
             for (String filePath : FileHelper.getSubFile(f, "java")) {
@@ -65,12 +66,10 @@ public class Process {
     }
 
     private static void processMethodCallTree(File file,Connection conn){
-        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),conn);
+        MethodVisitor2 visitor = new MethodVisitor2(projectName,file.getName(),conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
-        }catch (ParseException e){
-            //e.printStackTrace();
         }catch (Exception ex){
             //ex.printStackTrace();
         }
@@ -84,6 +83,8 @@ public class Process {
         MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
         for(String projectName:projectNameList){
+            if(newProjectNameList!=null && !newProjectNameList.contains(projectName))
+                continue;
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             List<MethodInvocation> methodInvocationList = methodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){

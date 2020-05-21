@@ -44,6 +44,7 @@ public class MethodInfoDAO {
                 methodInfoList.add(methodInfo);
             }
         }catch (Exception e){
+            System.out.println(sql);
             e.printStackTrace();
         }
         return methodInfoList;

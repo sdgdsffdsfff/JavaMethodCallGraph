@@ -1,6 +1,7 @@
 package com.se.entity;
 
-import japa.parser.ast.type.Type;
+//import japa.parser.ast.type.Type;
+import com.github.javaparser.ast.type.Type;
 
 import java.util.List;
 
@@ -51,8 +52,8 @@ public class Method {
     }
 
     public String getReturnTypeStr() {
-        if(this.getReturnType().getComment() != null){
-            this.returnTypeStr = this.getReturnType().toString().replace(this.getReturnType().getComment().toString(),"");
+        if(this.getReturnType().getComment().isPresent()){
+            this.returnTypeStr = this.getReturnType().toString().replace(this.getReturnType().getComment().get().toString(), "");
         } else {
             this.returnTypeStr = this.getReturnType().toString();
         }

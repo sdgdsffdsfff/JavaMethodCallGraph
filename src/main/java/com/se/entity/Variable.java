@@ -9,6 +9,7 @@ public class Variable {
 
     private boolean staticVar;
 
+    private String genericType;
 
     public String getName() {
         return name;
@@ -44,6 +45,14 @@ public class Variable {
 
     public String getQualifiedName() {
         return this.clazz + "." + this.name;
+    }
+
+    public void setGenericType(String genericType) {
+        this.genericType = genericType;
+    }
+
+    public String getGenericType() {
+        return genericType;
     }
 
     public String getID(){

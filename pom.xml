@@ -14,10 +14,15 @@
     </properties>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>com.google.code.javaparser</groupId>-->
+<!--            <artifactId>javaparser</artifactId>-->
+<!--            <version>1.0.11</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.google.code.javaparser</groupId>
-            <artifactId>javaparser</artifactId>
-            <version>1.0.11</version>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-symbol-solver-core</artifactId>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -43,7 +48,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
+            <version>8.0.11</version>
         </dependency>
 
     </dependencies>
