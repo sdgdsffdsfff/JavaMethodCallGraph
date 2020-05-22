@@ -1,7 +1,6 @@
 package com.se.DAO;
 
 import com.se.entity.ClassInfo;
-import com.se.entity.MethodInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,8 +22,13 @@ public class ClassInfoDAO {
     }
 
     public String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
-        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
+//        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
+
+        String sql = "select ID from classinfo where projectName = ? and className = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,projectName);
+        pst.setString(2,className);
+
         ResultSet resultSet = pst.executeQuery();
         if(resultSet.next()){
             return resultSet.getString("ID");

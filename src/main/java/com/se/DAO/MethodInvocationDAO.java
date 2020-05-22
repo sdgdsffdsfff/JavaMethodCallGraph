@@ -17,10 +17,13 @@ public class MethodInvocationDAO {
 
     public void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
         String sql = null;
+        PreparedStatement pst = null;
+        MethodCall tempMethodCall = null;
+        Method tempMathod = null;
         try{
             sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType) values(?,?,?,?,?,?,?)";
             if(methodCalls != null && !methodCalls.isEmpty()) {
-                PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
+                pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
                 Collection<MethodCall> calls = methodCalls.values();
                 for(MethodCall call : calls) {
                     if(call.getCalled() != null && !call.getCalled().isEmpty()){
@@ -33,13 +36,22 @@ public class MethodInvocationDAO {
                             pst.setString(6,call.getCaller().getParamTypeList().toString());
                             pst.setString(7,call.getCaller().getReturnTypeStr());
                             pst.addBatch();
+
+                            tempMethodCall = call;
+                            tempMathod = calledMethod;
                         }
                         pst.executeBatch();
+
+
+
                     }
                 }
             }
         } catch (SQLException e){
             System.out.println(sql);
+            System.out.println(pst.toString());
+            System.out.println(tempMethodCall.getCaller().getPackageAndClassName());
+            System.out.println(tempMathod);
             e.printStackTrace();
         }
 
@@ -58,8 +70,13 @@ public class MethodInvocationDAO {
 
     public List<MethodInvocation> getMethodInvocationByProjectName(String projectName,Connection conn) throws SQLException {
         List<MethodInvocation> methodInvocationList = new ArrayList<>();
-        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
+//        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
+
+        String sql = "select * from methodinvocationinfo where projectName = ?";
+
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setString(1, projectName);
+
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()){
             MethodInvocation methodInvocation = new MethodInvocation();

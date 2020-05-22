@@ -19,7 +19,7 @@ public class MethodInvocation
     }
 
     public String getCalledClassName() {
-        return CalledClassName;
+        return CalledClassName.replaceAll("'","\'");
     }
 
     public void setCalledClassName(String calledClassName) {

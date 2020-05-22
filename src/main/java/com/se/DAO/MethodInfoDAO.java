@@ -26,11 +26,19 @@ public class MethodInfoDAO {
     }
 
     public List<MethodInfo> getMethodInfoByNameAndClass(String projectName,String className,String methodName,Connection conn){
-        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'";
+//        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'";
+
+        String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ?";
+
         List<MethodInfo> methodInfoList = new ArrayList<>();
         ResultSet resultSet = null;
         try{
             PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,projectName);
+            pst.setString(2,className);
+            pst.setString(3,methodName);
+
+
             resultSet = pst.executeQuery();
             while(resultSet.next()){
                 MethodInfo methodInfo = new MethodInfo();
@@ -51,8 +59,17 @@ public class MethodInfoDAO {
     }
 
     public MethodInfo getMethodInfoByNameClassReturnParameters(String projectName,String className,String methodName,String returnType,String methodParameters,Connection conn) throws SQLException {
-        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'and returnType = '" + returnType + "'and methodParameters = '" + methodParameters +"'";
+//        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'and returnType = '" + returnType + "'and methodParameters = '" + methodParameters +"'";
+
+        String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and returnType = ? and methodParameters = ?";
+
         PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,projectName);
+        pst.setString(2,className);
+        pst.setString(3,methodName);
+        pst.setString(4,returnType);
+        pst.setString(5,methodParameters);
+
         ResultSet resultSet = pst.executeQuery();
         while(resultSet.next()){
             MethodInfo methodInfo = new MethodInfo();
