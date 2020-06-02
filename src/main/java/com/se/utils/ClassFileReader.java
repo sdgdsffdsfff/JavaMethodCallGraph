@@ -216,11 +216,4 @@ public class ClassFileReader {
         System.out.println(javaClass.getSuperclassName());
 
     }
-
-    public static void main(String[] args)
-    {
-
-        parseJarClasses();
-        //printInfoOnClass("japa.parser.ast.ImportDeclaration");
-    }
 }

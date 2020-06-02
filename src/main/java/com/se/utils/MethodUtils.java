@@ -195,20 +195,4 @@ public class MethodUtils {
         }
     }
 
-
-
-    public static void main(String[] args) throws IOException
-    {
-        System.out.println(isJavaLang("System.out.println"));
-        //System.out.println(basicToLange("char"));
-        //System.out.println(isJavaBasicType("yes"));
-        //System.out.println(isJDKMethod("java.util.Map.put"));
-//		MethodStruct2 m_struct = MethodUtils.resolveMethodQualifiedName("com.sample.Test.printHello<String.name, int.size>");
-//		System.out.println(m_struct);
-    }
-
-
-
-
-
 }

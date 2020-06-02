@@ -33,22 +33,6 @@ public class LangUtils {
         PRIMITIVE_TYPES.add("double");
     }
 
-    public static void main(String[] args) throws IOException
-    {
-
-        // TODO Auto-generated method stub
-        //System.out.println(getLangPkgClasses());
-        //System.out.println(getClassesOfOptPkgFromJarFile("file:/C:/Program%20Files/Java/jdk1.7.0_72/jre/lib/rt.jar", "java.lang"));
-        //System.out.println(getlibJarClasses());
-
-        Set<String> srcsPath = new HashSet<String>();
-        srcsPath.add("testinputDir");
-        String[] SRC_DIRS = new String[] {
-                "testinputdir"
-        };
-        System.out.println(getClassesFromProjectSrcDirs(SRC_DIRS));
-        getLangPkgClasses();
-    }
 
     public static Set<String> getlibJarClasses() {
 

@@ -8,10 +8,11 @@ import java.sql.SQLException;
 
 public class FilterMethodInvocationTree {
     public static void main(String[] args) throws SQLException {
+        String projectName = null;
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         MethodInvocationTreeDAO methodInvocationTreeDAO = new MethodInvocationTreeDAO();
-        methodInvocationTreeDAO.insertIntoMethodInvocationTree(conn);
-        methodInvocationTreeDAO.updateIsRecursive(conn);
+        methodInvocationTreeDAO.insertIntoMethodInvocationTree(projectName,conn);
+        methodInvocationTreeDAO.updateIsRecursive(projectName,conn);
     }
 }

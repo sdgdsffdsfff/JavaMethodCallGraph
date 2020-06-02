@@ -1,12 +1,12 @@
 package com.se.process;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.BuildConnection;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.container.MethodCallContainer;
 import com.se.utils.*;
 import com.se.visitors.MethodVisitor;
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -53,9 +53,7 @@ public class FileProcess {
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
-        }catch (ParseException e){
-            //e.printStackTrace();
-        }catch (Exception ex){
+        } catch (Exception ex){
             //ex.printStackTrace();
         }
     }

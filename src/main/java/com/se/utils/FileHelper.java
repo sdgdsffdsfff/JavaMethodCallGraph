@@ -335,11 +335,7 @@ public class FileHelper
 		}
 		
 	}
-	
-	public static void main(String[] args)
-	{
-		vacuumFile("C:\\temp.txt");
-	}
+
 
 
 

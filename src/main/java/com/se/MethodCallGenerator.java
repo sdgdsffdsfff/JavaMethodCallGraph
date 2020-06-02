@@ -13,37 +13,37 @@ public class MethodCallGenerator {
         "D:\\java-source7"
     };
 
-//    public static void main(String[] args) throws Exception{
-//
-//        MethodCallGenerator generator = new MethodCallGenerator();
-//        File[] files = new File[SRC_DIRS.length];
-//
-//        int i = 0;
-//
-//        for(String srcDir : SRC_DIRS)
-//            files[i++] = new File(srcDir);
-//
-//        generator.processSrcDir(files);
-//
-//        writeMethodInvocation(MethodCallContainer.getContainer().toString());
-//    }
+    public static void main(String[] args) throws Exception{
 
-//    public void processSrcDir(File[] files) throws ParseException, IOException{
-//        for(File file : files){
-//            if(file.isDirectory()){
-//                processSrcDir(file.listFiles());
-//            } else if(file.getName().endsWith(".java")){
-//                processMethodCallTree(file);
-//            }
-//        }
-//    }
+        MethodCallGenerator generator = new MethodCallGenerator();
+        File[] files = new File[SRC_DIRS.length];
 
-//    public void processMethodCallTree(File file) throws ParseException, IOException {
-//        //System.out.println("Processing java File: " + file.getName());
+        int i = 0;
+
+        for(String srcDir : SRC_DIRS)
+            files[i++] = new File(srcDir);
+
+        //generator.processSrcDir(files);
+
+        writeMethodInvocation(MethodCallContainer.getContainer().toString());
+    }
+
+    public void processSrcDir(File[] files) throws ParseException, IOException{
+        for(File file : files){
+            if(file.isDirectory()){
+                processSrcDir(file.listFiles());
+            } else if(file.getName().endsWith(".java")){
+                processMethodCallTree(file);
+            }
+        }
+    }
+
+    public void processMethodCallTree(File file) throws ParseException, IOException {
+        //System.out.println("Processing java File: " + file.getName());
 //        MethodVisitor visitor = new MethodVisitor();
 //        CompilationUnit cu = JavaParser.parse(file);
 //        visitor.visit(cu, null);
-//    }
+    }
 
     private static final void writeMethodInvocation(String content) throws IOException{
         File file = new File(metodInvocationFile);

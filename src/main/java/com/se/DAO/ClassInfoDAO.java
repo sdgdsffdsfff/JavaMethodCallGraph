@@ -10,6 +10,10 @@ import java.sql.SQLException;
 public class ClassInfoDAO {
 
     public void InsertClassInfo(ClassInfo classInfo, Connection conn) throws SQLException {
+        //过滤过长的方法名，过滤匿名函数，过滤链式调用
+        if(classInfo.getClassName().length()>100)return;
+        if(classInfo.getClassName().contains("{")||classInfo.getClassName().contains("}")||classInfo.getClassName().contains("(")
+                ||classInfo.getClassName().contains(")"))return;
         String sql = "insert into classinfo (projectName,className,isInterface,fileName) values (?,?,?,?)";
         if(classInfo!=null){
             PreparedStatement pst = conn.prepareStatement(sql);
