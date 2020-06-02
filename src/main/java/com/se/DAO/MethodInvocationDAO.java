@@ -28,6 +28,10 @@ public class MethodInvocationDAO {
                 for(MethodCall call : calls) {
                     if(call.getCalled() != null && !call.getCalled().isEmpty()){
                         for(Method calledMethod:call.getCalled()){
+                            String calledClassName = calledMethod.getPackageAndClassName();
+                            if(calledClassName.length()>100)continue;
+                            if(calledClassName.contains("{")||calledClassName.contains("}")||calledClassName.contains("(")
+                                    ||calledClassName.contains(")"))continue;
                             pst.setString(1,projectName);
                             pst.setString(2,call.getCaller().getName());
                             pst.setString(3,calledMethod.getName());
@@ -41,9 +45,6 @@ public class MethodInvocationDAO {
                             tempMathod = calledMethod;
                         }
                         pst.executeBatch();
-
-
-
                     }
                 }
             }
