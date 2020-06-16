@@ -4,12 +4,13 @@ import com.se.entity.MethodInvocationInView;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class MethodInvocationInViewDAO {
 
-    public void insertMethodInvocationInView(List<MethodInvocationInView> methodInvocationInViewList, Connection conn) throws SQLException {
+    public static void insertMethodInvocationInView(List<MethodInvocationInView> methodInvocationInViewList, Connection conn) throws SQLException {
         String sql = "insert into methodinvocationinview (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType,callMethodID,calledMethodID,callClassID,calledClassID) values(?,?,?,?,?,?,?,?,?,?,?)";
         if(methodInvocationInViewList != null && !methodInvocationInViewList.isEmpty()) {
             PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
@@ -30,4 +31,16 @@ public class MethodInvocationInViewDAO {
             pst.executeBatch();
         }
     }
+
+    public static int selectCalledCountsByClassName(String className, Connection conn) throws SQLException {
+        String sql = "select ID from methodinvocationinview where calledClassName = '" + className + "'";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        int count = 0;
+        while(resultSet.next()){
+            count++;
+        }
+        return count;
+    }
+
 }

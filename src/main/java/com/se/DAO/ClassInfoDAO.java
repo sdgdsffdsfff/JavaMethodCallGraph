@@ -6,10 +6,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClassInfoDAO {
 
-    public void InsertClassInfo(ClassInfo classInfo, Connection conn) throws SQLException {
+
+    public static Map<Integer,String> getAllClassInfo(Connection conn) throws SQLException {
+        String sql = "select * from classinfo";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        Map<Integer,String> idMap = new HashMap<>();
+        while(resultSet.next()){
+            idMap.put(resultSet.getInt("ID"),resultSet.getString("className"));
+        }
+        return idMap;
+    }
+
+    public static void InsertClassInfo(ClassInfo classInfo, Connection conn) throws SQLException {
         //过滤过长的方法名，过滤匿名函数，过滤链式调用
         if(classInfo.getClassName().length()>100)return;
         if(classInfo.getClassName().contains("{")||classInfo.getClassName().contains("}")||classInfo.getClassName().contains("(")
@@ -25,14 +39,20 @@ public class ClassInfoDAO {
         }
     }
 
-    public String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
-//        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
+    public static void updateInvocationCounts(int id, int invocationCounts, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET invocationCounts = ? WHERE ID = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setInt(1,invocationCounts);
+        pst.setInt(2,id);
+        pst.executeUpdate();
+    }
 
+    public static String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
+//        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
         String sql = "select ID from classinfo where projectName = ? and className = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1,projectName);
         pst.setString(2,className);
-
         ResultSet resultSet = pst.executeQuery();
         if(resultSet.next()){
             return resultSet.getString("ID");

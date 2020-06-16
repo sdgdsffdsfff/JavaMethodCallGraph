@@ -186,5 +186,4 @@ public class ClassStructContainer {
         return "ClassStructContainer [classes=" + new PrettyPrintingMap<String, ClassOrInterfaceStruct>(classes) + "]";
     }
 
-
 }

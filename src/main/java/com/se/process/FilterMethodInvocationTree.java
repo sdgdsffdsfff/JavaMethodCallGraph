@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class FilterMethodInvocationTree {
     public static void main(String[] args) throws SQLException {
-        String projectName = null;
+        String projectName = "ysc";
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         MethodInvocationTreeDAO methodInvocationTreeDAO = new MethodInvocationTreeDAO();
