@@ -146,7 +146,7 @@ public class MethodUtils {
         if(className.contains("[]"))className = className.substring(0,className.indexOf('['));
         String newName;
         if(className.contains(".")){
-            newName = className.substring(0,className.indexOf('.'));
+            newName = className.substring(className.lastIndexOf('.')+1);
         }else {
             newName = className;
         }

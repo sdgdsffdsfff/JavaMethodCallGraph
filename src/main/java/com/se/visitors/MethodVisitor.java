@@ -14,7 +14,6 @@ import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -158,7 +157,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
     public void visit(VariableDeclarationExpr varExpr, Object arg) {
         Variable var = new Variable();
         var.setClazz(varExpr.getCommonType().toString());
-
         if(var.getClazz().contains("<")) {
             var.setGenericType(var.getClazz().substring(var.getClazz().indexOf('<')));
             var.setClazz(var.getClazz().substring(0,var.getClazz().indexOf('<')));
@@ -166,7 +164,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
         var.setName(varExpr.getVariables().get(0).getName().toString());
         String importString = getClazzNameWithPackage(var.getClazz());
         String varPkg;
-        System.out.println(var.getClazz());
         if(importString == null) {
             //Default package;
             if(MethodUtils.isJavaLang(var.getClazz())) {
@@ -181,7 +178,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
             varPkg = importString.substring(0, importString.lastIndexOf("."));
         }
         var.setPkg(varPkg);
-        System.err.println(var.getName() +  " ...." + var.getPkg());
         methodVariableMap.put(var.getName(), var);
         super.visit(varExpr, arg);
     }
@@ -237,7 +233,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 }
 
                 var.setName(methodCallArg.getNameAsString());
-
                 //import *
                 String pkg = getClazzNameWithPackage(var.getClazz());
 
@@ -251,15 +246,16 @@ public class MethodVisitor extends VoidVisitorAdapter {
                     } else {
                         pkg = this.pkg;
                     }
+                }else {
+                    pkg = pkg.substring(0,pkg.lastIndexOf('.'));
                 }
                 if(pkg.contains("."))
-                    var.setPkg(pkg.substring(0, pkg.lastIndexOf(".")));
+                    var.setPkg(pkg);
                 else
                     var.setPkg(pkg);
                 methodParams.put(var.getName(), var);
             }
         }
-
         //when method has body, not just method declaration
         if(n.getBody().isPresent()){
             this.visitStmt(n.getBody().get(), methodParams, callerMethod);
@@ -276,20 +272,14 @@ public class MethodVisitor extends VoidVisitorAdapter {
      */
     private void resolveMethodInvocation(Expression exp, Map<String, Variable> methodParams, Method callerMethod){
         MethodCallExpr mexpr = (MethodCallExpr)exp;
-
         if(mexpr.getScope().isPresent() && mexpr.getScope().get().isMethodCallExpr()) //处理方法调用链，递归实现
             this.resolveMethodInvocation(mexpr.getScope().get(), methodParams, callerMethod);
-
         Method calledMethod = new Method();
-
         calledMethod.setName(mexpr.getNameAsString());
-
         //get param type list of called method
         List<String> paramTypeList = getCalledMethodParamType(mexpr, methodParams, callerMethod);
         calledMethod.setParamTypeList(paramTypeList);
-
         String methodVarName = null;
-
         if(!mexpr.getScope().isPresent()){ //不是"var.method()"的形式，而是"method()"形式
             //Calling method within same class
             //todo:在同一个类内调用方法，根据方法名查询方法，设置方法参数
@@ -301,9 +291,9 @@ public class MethodVisitor extends VoidVisitorAdapter {
             methodVarName = mexpr.getScope().get().toString();
         }
         Variable methodVar = null;
-
         //find variable's info of called method
         //check caller method params -> variable map -> class field variable
+        //todo:方法参数中处理javaLang的pkg出错
         if(methodParams.containsKey(methodVarName)){
             methodVar = methodParams.get(methodVarName);
         } else if (methodVariableMap.containsKey(methodVarName)){
@@ -319,13 +309,12 @@ public class MethodVisitor extends VoidVisitorAdapter {
             methodVar.setClazz(this.clazz);
             methodVar.setPkg(this.pkg);
         }
-
+        //过滤掉JDK的方法，只存储JDK或者第三方的方法调用
         if((!MethodUtils.isJavaLang(methodVar.getID()))&&(!MethodUtils.isJDKMethod(methodVar.getID()))){
             if(methodVar.getClazz().equals("this"))
                 calledMethod.setClazz(this.clazz);  //example: this.methodName()
             else
                 calledMethod.setClazz(methodVar.getClazz());
-
             calledMethod.setPkg(methodVar.getPkg());
             MethodCallContainer.getContainer().addMethodCall(callerMethod, calledMethod);
         }
@@ -423,15 +412,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
      * @param methodParams
      * @param callerMethod
      */
-//    private void visitStmtsInMethod(List<Statement> stmts, Map<String, Variable> methodParams, Method callerMethod){
-//        if(stmts == null) //when method has empty body
-//            return;
-//
-//        //scan every statement to find out method call statements and caller method
-//        for(Statement stmt : stmts){
-//            this.visitStmt(stmt, methodParams, callerMethod);
-//        }
-//    }
 
     private void visitStmt(Statement stmt, Map<String, Variable> methodParams, Method callerMethod){
         if(stmt.isExpressionStmt()){ //expression statement
