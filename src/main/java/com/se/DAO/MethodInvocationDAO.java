@@ -3,7 +3,6 @@ package com.se.DAO;
 import com.se.entity.Method;
 import com.se.entity.MethodCall;
 import com.se.entity.MethodInvocation;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,11 +14,13 @@ import java.util.Map;
 
 public class MethodInvocationDAO {
 
+
+    //todo:过滤掉JDK的方法调用，JDK的方法调用不入库
     public void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
         String sql = null;
         PreparedStatement pst = null;
         MethodCall tempMethodCall = null;
-        Method tempMathod = null;
+        Method tempMethod = null;
         try{
             sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType) values(?,?,?,?,?,?,?)";
             if(methodCalls != null && !methodCalls.isEmpty()) {
@@ -29,7 +30,7 @@ public class MethodInvocationDAO {
                     if(call.getCalled() != null && !call.getCalled().isEmpty()){
                         for(Method calledMethod:call.getCalled()){
                             String calledClassName = calledMethod.getPackageAndClassName();
-                            if(calledClassName.length()>100)continue;
+                            if(calledClassName.length()>100||calledClassName.length()<3)continue;
                             if(calledClassName.contains("{")||calledClassName.contains("}")||calledClassName.contains("(")
                                     ||calledClassName.contains(")"))continue;
                             pst.setString(1,projectName);
@@ -42,7 +43,7 @@ public class MethodInvocationDAO {
                             pst.addBatch();
 
                             tempMethodCall = call;
-                            tempMathod = calledMethod;
+                            tempMethod = calledMethod;
                         }
                         pst.executeBatch();
                     }
@@ -52,7 +53,7 @@ public class MethodInvocationDAO {
             System.out.println(sql);
             System.out.println(pst.toString());
             System.out.println(tempMethodCall.getCaller().getPackageAndClassName());
-            System.out.println(tempMathod);
+            System.out.println(tempMethod);
             e.printStackTrace();
         }
 

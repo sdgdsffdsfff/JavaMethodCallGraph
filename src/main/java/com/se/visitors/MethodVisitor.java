@@ -83,9 +83,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
      */
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-
         this.clazz = n.getName().asString().trim();
-
         ClassInfo classInfo = new ClassInfo();
         classInfo.setClassName(this.pkg +"."+ this.clazz);
         classInfo.setInterface(n.isInterface());
@@ -103,10 +101,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
         super.visit(n, arg);
     }
 
-//    @Override
-//    public void visit(TypeDeclarationStmt n, Object arg) {
-//        super.visit(n, arg);
-//    }
 
     /**
      * 方法所属的类中创建的字段的map: instanceVariableMap
@@ -118,7 +112,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
      */
     public void visit(FieldDeclaration field, Object arg){
         Variable fieldVar = new Variable();
-
         //类名
         fieldVar.setClazz(field.getCommonType().toString());
 
@@ -128,12 +121,9 @@ public class MethodVisitor extends VoidVisitorAdapter {
             fieldVar.setGenericType(fieldVar.getClazz().substring(fieldVar.getClazz().indexOf('<')));
             fieldVar.setClazz(fieldVar.getClazz().substring(0, fieldVar.getClazz().indexOf('<')));
         }
-
         fieldVar.setName(field.getVariables().get(0).getName().toString());
-
         //处理带"*"的import
         String importString = getClazzNameWithPackage(fieldVar.getClazz());
-
         //包名
         String varPkg;
         if(importString == null){
@@ -149,7 +139,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
             varPkg = importString.substring(0, importString.lastIndexOf("."));
         }
         fieldVar.setPkg(varPkg);
-
         fieldMap.put(fieldVar.getName(), fieldVar);
 
         //TODO:hanlde overriding
@@ -174,11 +163,10 @@ public class MethodVisitor extends VoidVisitorAdapter {
             var.setGenericType(var.getClazz().substring(var.getClazz().indexOf('<')));
             var.setClazz(var.getClazz().substring(0,var.getClazz().indexOf('<')));
         }
-
         var.setName(varExpr.getVariables().get(0).getName().toString());
-
         String importString = getClazzNameWithPackage(var.getClazz());
         String varPkg;
+        System.out.println(var.getClazz());
         if(importString == null) {
             //Default package;
             if(MethodUtils.isJavaLang(var.getClazz())) {
@@ -193,7 +181,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
             varPkg = importString.substring(0, importString.lastIndexOf("."));
         }
         var.setPkg(varPkg);
-
+        System.err.println(var.getName() +  " ...." + var.getPkg());
         methodVariableMap.put(var.getName(), var);
         super.visit(varExpr, arg);
     }
@@ -408,7 +396,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
      * @return
      */
     private String getClazzNameWithPackage(String clazzName){
-
         String importString = null;
         if(importsWithoutAsterisk.get(clazzName) != null)
             importString = importsWithoutAsterisk.get(clazzName);
@@ -417,17 +404,14 @@ public class MethodVisitor extends VoidVisitorAdapter {
             while(it.hasNext()){
                 Map.Entry<String, String> entry = it.next();
                 String importStmt = entry.getValue();
-
                 String fullClassName = importStmt.concat(clazzName);
-
                 try{
                     Class clazz = Class.forName(fullClassName);
-                    //System.out.println(clazz.getName());
                     return fullClassName;
                 } catch (ClassNotFoundException e){
-                    //System.out.println("not this "+fullClassName);
+                }catch (NoClassDefFoundError ex){
+                    importString =  fullClassName;
                 }
-
             }
         }
         return importString;
@@ -612,23 +596,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
             if(expression.isMethodCallExpr()){
                 this.resolveMethodInvocation(expression, methodParams, callerMethod);
             }
-
-
-
-
-
         }
     }
-
-    //    private static int count = 0;
-//    @Override
-//    public void visit(MethodCallExpr n, Object arg) {
-//        System.out.println(n.getName());
-//        System.out.println(n.getScope().isPresent()?n.getScope().get():"null");
-//        System.out.println(n.getArguments());
-//        System.out.println(n.getTypeArguments().isPresent()?n.getTypeArguments().get():"null");
-//        count++;
-//        System.out.println(count);
-//        super.visit(n, arg);
-//    }
 }

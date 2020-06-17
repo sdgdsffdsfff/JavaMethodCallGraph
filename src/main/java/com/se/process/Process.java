@@ -22,7 +22,7 @@ import static java.lang.System.out;
 
 public class Process {
 
-    private static String sourceProjectPath = "/Users/coldilock/Downloads/JavaCodeCorpus/test-spark";
+    private static String sourceProjectPath = "C:\\Users\\Zero\\Desktop\\Pro";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {

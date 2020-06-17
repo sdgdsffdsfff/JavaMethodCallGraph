@@ -18,7 +18,7 @@ import static java.lang.System.out;
 
 public class FileProcess {
 
-    private static String sourceProjectPath = "D:\\Java-source";
+    private static String sourceProjectPath = "C:\\Users\\Zero\\Desktop\\Pro";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {
@@ -48,7 +48,7 @@ public class FileProcess {
         System.out.println("数据处理完成...");
     }
 
-    private static void processMethodCallTree(File file,Connection conn) throws IOException {
+    public static void processMethodCallTree(File file,Connection conn) throws IOException {
         MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);

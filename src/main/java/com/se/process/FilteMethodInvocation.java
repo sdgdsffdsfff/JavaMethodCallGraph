@@ -16,6 +16,7 @@ import java.util.List;
 
 public class FilteMethodInvocation {
 
+    //todo:对于com.se.service.impl.GraphServiceImpl对类com.se.service.impl.CloneSnippetDao的调用匹配失败
     public static void main(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
@@ -29,12 +30,14 @@ public class FilteMethodInvocation {
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             List<MethodInvocation> methodInvocationList = methodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){
+                System.out.println("调用类为：" + methodInvocation.getCallClassName() + "被调用类为：" + methodInvocation.getCalledClassName());
                 MethodInfo callMethodInfo = methodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
                 List<MethodInfo> calledMethodInfoList = methodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
                 if(calledMethodInfoList.size()==0)continue;
                 String callClassID = classInfoDAO.getClassIDByProjectNameAndClassName(projectName,callMethodInfo.getClassName(),conn);
                 String calledClassID = classInfoDAO.getClassIDByProjectNameAndClassName(projectName,calledMethodInfoList.get(0).getClassName(),conn);
                 if(callClassID!=null&&calledClassID!=null){
+                    System.out.println("匹配成功");
                     MethodInfo calledMethodInfo = calledMethodInfoList.get(0);
                     MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
                     methodInvocationInView.setProjectName(projectName);

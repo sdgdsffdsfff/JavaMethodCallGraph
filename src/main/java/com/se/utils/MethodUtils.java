@@ -5,16 +5,15 @@ import com.se.struct.VariableStruct;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MethodUtils {
 
-    private static final String API_DOC_PATH = "/Users/coldilock/Documents/Code/Java_Temp/MethodCallGraph/src/main/resources/jdk_doc/jdk-8u181-docs-all/docs/api";
-    private static final String JAVA_LANG_DOC_PATH = "/Users/coldilock/Documents/Code/Java_Temp/MethodCallGraph/src/main/resources/jdk_doc/jdk-8u181-docs-all/docs/api/java/lang";
-    private static final String JDK_DOC_PATH = "/Users/coldilock/Documents/Code/Java_Temp/MethodCallGraph/src/main/resources/jdk_doc";
+    private static final String API_DOC_PATH = "C:/Users/Zero/IdeaProjects/CGG/src/main/resources/callgraph/jdk_doc/jdk-8u181-docs-all/docs/api/";
+    private static final String JAVA_LANG_DOC_PATH = "C:/Users/Zero/IdeaProjects/CGG/src/main/resources/callgraph/jdk_doc/jdk-8u181-docs-all/docs/api/java/lang/";
+    private static final String JDK_DOC_PATH = "C:/Users/Zero/IdeaProjects/CGG/src/main/resources/callgraph/jdk_doc/";
     private static String[] basicType = {"byte","short","int","long","float","double","boolean","char"};
 
     private static Map<String, MethodStruct> methodMap = new HashMap<>();
@@ -144,6 +143,7 @@ public class MethodUtils {
     }
 
     public static boolean isJavaLang(String className) {
+        if(className.contains("[]"))className = className.substring(0,className.indexOf('['));
         String newName;
         if(className.contains(".")){
             newName = className.substring(0,className.indexOf('.'));
@@ -166,6 +166,7 @@ public class MethodUtils {
 
 
     public static boolean isJavaBasicType(String classname){
+        if(classname.contains("[]"))classname = classname.substring(0,classname.indexOf('['));
         for(String type : basicType){
             if(classname.equals(type))return true;
         }

@@ -89,6 +89,7 @@ public class CountInvocation {
     public static void main(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
+        countInvocationCounts(conn);
         countInvocationDept(conn);
     }
 }
