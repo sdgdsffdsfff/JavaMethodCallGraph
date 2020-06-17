@@ -47,6 +47,14 @@ public class ClassInfoDAO {
         pst.executeUpdate();
     }
 
+    public static void updateInvocationDept(String className, int invocationDept, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET invocationDept = ? WHERE className = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setInt(1,invocationDept);
+        pst.setString(2,className);
+        pst.executeUpdate();
+    }
+
     public static String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
 //        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
         String sql = "select ID from classinfo where projectName = ? and className = ?";

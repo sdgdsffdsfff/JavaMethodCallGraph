@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MethodInvocationInViewDAO {
@@ -41,6 +42,34 @@ public class MethodInvocationInViewDAO {
             count++;
         }
         return count;
+    }
+
+    public static List<String> selectAllProjectName(Connection conn) throws SQLException {
+        String sql = "select distinct projectName from methodinvocationinview";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        List<String> projectNameList = new ArrayList<>();
+        while(resultSet.next()){
+            projectNameList.add(resultSet.getString("projectName"));
+        }
+        return projectNameList;
+    }
+
+    public static List<MethodInvocationInView> getMethodInvocationInViewByProjectName(String projectName, Connection conn) throws SQLException {
+        String sql = "select * from methodinvocationinview where projectName = '" + projectName + "'";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
+        while(resultSet.next()){
+            MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
+            methodInvocationInView.setCallClassName(resultSet.getString("callClassName"));
+            methodInvocationInView.setCalledClassName(resultSet.getString("calledClassName"));
+            methodInvocationInView.setCallMethodName(resultSet.getString("callMethodName"));
+            methodInvocationInView.setCalledMethodName(resultSet.getString("calledMethodName"));
+            methodInvocationInView.setProjectName(projectName);
+            methodInvocationInViewList.add(methodInvocationInView);
+        }
+        return methodInvocationInViewList;
     }
 
 }
