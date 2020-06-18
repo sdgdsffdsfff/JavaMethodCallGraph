@@ -12,7 +12,7 @@ public class FileProcessTest {
     public void testProcessMethodCallTree() throws IOException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
-        String filePath = "C:\\Users\\Zero\\Desktop\\Pro\\MethodClone01\\src\\main\\java\\com\\se\\util\\StringUtil.java";
+        String filePath = "C:\\Users\\Zero\\Desktop\\Pro\\MethodClone01\\src\\main\\java\\com\\se\\service\\impl\\GraphServiceImpl.java";
         File file = new File(filePath);
         FileProcess.processMethodCallTree(file,conn);
     }

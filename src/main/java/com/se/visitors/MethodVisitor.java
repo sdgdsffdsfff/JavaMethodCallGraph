@@ -271,6 +271,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
      * @param callerMethod
      */
     private void resolveMethodInvocation(Expression exp, Map<String, Variable> methodParams, Method callerMethod){
+
         MethodCallExpr mexpr = (MethodCallExpr)exp;
         if(mexpr.getScope().isPresent() && mexpr.getScope().get().isMethodCallExpr()) //处理方法调用链，递归实现
             this.resolveMethodInvocation(mexpr.getScope().get(), methodParams, callerMethod);
@@ -293,7 +294,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
         Variable methodVar = null;
         //find variable's info of called method
         //check caller method params -> variable map -> class field variable
-        //todo:方法参数中处理javaLang的pkg出错
         if(methodParams.containsKey(methodVarName)){
             methodVar = methodParams.get(methodVarName);
         } else if (methodVariableMap.containsKey(methodVarName)){
@@ -301,9 +301,17 @@ public class MethodVisitor extends VoidVisitorAdapter {
         } else if(fieldMap.containsKey(methodVarName)){
             methodVar = fieldMap.get(methodVarName);
         } else if(mexpr.getScope().isPresent()){
+            //静态方法调用 todo:解决静态调用的包名问题
             methodVar = new Variable();
             methodVar.setClazz(mexpr.getScope().get().toString());
             methodVar.setStaticVar(true);
+            String pkg = importsWithoutAsterisk.get(methodVarName);
+            if(pkg == null){
+                //todo:没有星号的import匹配不上的话，就要根据带星号的import加上所有项目的类进行匹配
+                //todo:如果还是匹配不上，那么这个静态方法调用使用的是第三方类的方法并且导入第三方类的时候用了*号，
+                //todo:或者是调用类内的静态方法
+            }
+            methodVar.setPkg(pkg);
         } else {
             methodVar = new Variable();
             methodVar.setClazz(this.clazz);
@@ -317,6 +325,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 calledMethod.setClazz(methodVar.getClazz());
             calledMethod.setPkg(methodVar.getPkg());
             MethodCallContainer.getContainer().addMethodCall(callerMethod, calledMethod);
+            System.err.println(calledMethod.getPackageAndClassName() + "..." + calledMethod.getPkg() + ".." + methodVar.getName());
         }
 
     }
@@ -349,7 +358,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
 
         for(Expression pn : paramNamrs){
             String paramName = pn.isNameExpr() ? ((NameExpr) pn).getNameAsString() : ((MethodCallExpr) pn).getNameAsString();
-
             Variable paramVar;
             if(methodParams.containsKey(paramName)) {
                 paramVar = methodParams.get(paramName);
@@ -527,7 +535,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
      * @param callerMethod
      */
     private void getMethodCallInExpression(Expression exp, Map<String, Variable> methodParams, Method callerMethod){
-
         if(exp.isMethodCallExpr()){ //is a method call expression
             this.resolveMethodInvocation(exp, methodParams, callerMethod);
         } else if(exp.isVariableDeclarationExpr()){
