@@ -306,6 +306,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
             methodVar.setClazz(mexpr.getScope().get().toString());
             methodVar.setStaticVar(true);
             String pkg = importsWithoutAsterisk.get(methodVarName);
+            pkg = pkg.substring(0,pkg.lastIndexOf('.'));
             if(pkg == null){
                 //todo:没有星号的import匹配不上的话，就要根据带星号的import加上所有项目的类进行匹配
                 //todo:如果还是匹配不上，那么这个静态方法调用使用的是第三方类的方法并且导入第三方类的时候用了*号，
