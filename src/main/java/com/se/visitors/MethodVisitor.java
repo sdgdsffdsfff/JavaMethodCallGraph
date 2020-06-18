@@ -6,7 +6,6 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInfoDAO;
 import com.se.container.MethodCallContainer;
 import com.se.entity.ClassInfo;
@@ -14,6 +13,7 @@ import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -25,6 +25,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
     private String fileName;
     private String pkg; //包名
     private String clazz;   //类名
+    private List<String> classInfoList;
 
     private Map<String, String> importsWithoutAsterisk = new HashMap<>();
     private Map<String, String> importsWithAsterisk = new HashMap<>();
@@ -32,9 +33,10 @@ public class MethodVisitor extends VoidVisitorAdapter {
     private Map<String, Variable> methodVariableMap = new HashMap<>();    //调用者方法里面定义的变量
     private Map<String, Variable> calledMethodParamMap = new HashMap<>();   //被调用方法的参数
 
-    public MethodVisitor(String projectName, String fileName, Connection conn){
+    public MethodVisitor(String projectName, String fileName, List<String> classInfoList, Connection conn){
         this.projectName = projectName;
         this.fileName = fileName;
+        this.classInfoList = classInfoList;
         this.conn = conn;
     }
 
@@ -83,17 +85,23 @@ public class MethodVisitor extends VoidVisitorAdapter {
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
         this.clazz = n.getName().asString().trim();
+
+        if("GraphServiceImpl".equals(this.clazz)){
+            System.out.println("catch you!");
+        }
+
+
         ClassInfo classInfo = new ClassInfo();
         classInfo.setClassName(this.pkg +"."+ this.clazz);
         classInfo.setInterface(n.isInterface());
         classInfo.setProjectName(this.projectName);
         classInfo.setFileName(this.fileName);
-        ClassInfoDAO classInfoDAO = new ClassInfoDAO();
-        try {
-            classInfoDAO.InsertClassInfo(classInfo,conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        ClassInfoDAO classInfoDAO = new ClassInfoDAO();
+//        try {
+//            classInfoDAO.InsertClassInfo(classInfo,conn);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         this.importsWithoutAsterisk.put(this.clazz, this.pkg.concat(".").concat(this.clazz));
 
@@ -403,6 +411,10 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 Map.Entry<String, String> entry = it.next();
                 String importStmt = entry.getValue();
                 String fullClassName = importStmt.concat(clazzName);
+
+                if(classInfoList != null && classInfoList.contains(fullClassName))
+                    return fullClassName;
+
                 try{
                     Class clazz = Class.forName(fullClassName);
                     return fullClassName;

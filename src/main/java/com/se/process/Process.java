@@ -9,6 +9,7 @@ import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
 import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
+import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
 
 import java.io.File;
@@ -18,11 +19,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static java.lang.System.out;
-
 public class Process {
 
-    private static String sourceProjectPath = "C:\\Users\\Zero\\Desktop\\Pro";
+    private static String sourceProjectPath = "/Users/coldilock/Downloads/JavaCodeCorpus/Pro";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {
@@ -47,7 +46,8 @@ public class Process {
     public static void getMethodInvocation(Connection conn) throws SQLException {
         //获取数据库中已有的项目名列表
         MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
-        oldProjectNameList = methodInvocationDAO.getAllProjectNameFromDB(conn);
+        ClassInfoDAO classInfoDAO = new ClassInfoDAO();
+        oldProjectNameList = classInfoDAO.getAllProjectNameFromDB(conn);
 
         File dir = new File(sourceProjectPath);
         LinkedList<String> folders = new LinkedList<>();
@@ -63,15 +63,39 @@ public class Process {
 
             System.out.println("正在处理的项目为：" + f);
             for (String filePath : FileHelper.getSubFile(f, "java")) {
-                out.println("正在处理的文件为：" + filePath);
+                File file = new File(filePath);
+                //获取项目中所有类并存储
+                processClassInfo(file, conn);
+            }
+            //从数据库中获取该项目中的所有类
+            List<String> classInfoList = classInfoDAO.getAllClassInfoList(projectName, conn);
+
+            for (String filePath : FileHelper.getSubFile(f, "java")) {
+                System.out.println("正在处理的文件为：" + filePath);
                 File file = new File(filePath);
                 //获取方法调用
-                processMethodCallTree(file,conn);
+                processMethodCallTree(file, classInfoList, conn);
             }
             //存储方法调用
-            methodInvocationDAO.saveMethodInvocation(projectName,MethodCallContainer.getContainer().getMethodCalls(),conn);
+            methodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
         }
+
         System.out.println("数据处理完成...");
+    }
+
+    /**
+     * 使用JavaParser获取项目中所有的类
+     * @param file
+     * @param conn
+     */
+    private static void processClassInfo(File file,Connection conn){
+        ClassVisitor visitor = new ClassVisitor(projectName,file.getName(),conn);
+        try{
+            CompilationUnit cu = JavaParser.parse(file);
+            visitor.visit(cu, null);
+        }catch (Exception ex){
+            //ex.printStackTrace();
+        }
     }
 
     /**
@@ -79,8 +103,8 @@ public class Process {
      * @param file
      * @param conn
      */
-    private static void processMethodCallTree(File file,Connection conn){
-        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),conn);
+    private static void processMethodCallTree(File file, List<String> classInfoList, Connection conn){
+        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(), classInfoList, conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);

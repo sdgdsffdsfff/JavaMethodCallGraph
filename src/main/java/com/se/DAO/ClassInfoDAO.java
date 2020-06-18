@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClassInfoDAO {
@@ -21,6 +23,18 @@ public class ClassInfoDAO {
             idMap.put(resultSet.getInt("ID"),resultSet.getString("className"));
         }
         return idMap;
+    }
+
+    public static List<String> getAllClassInfoList(String projectName, Connection conn) throws SQLException {
+        String sql = "select * from classinfo where projectName = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, projectName);
+        ResultSet resultSet = pst.executeQuery();
+        List<String> classInfoList = new ArrayList<>();
+        while(resultSet.next()){
+            classInfoList.add(resultSet.getString("className"));
+        }
+        return classInfoList;
     }
 
     public static void InsertClassInfo(ClassInfo classInfo, Connection conn) throws SQLException {
@@ -66,5 +80,16 @@ public class ClassInfoDAO {
             return resultSet.getString("ID");
         }
         return null;
+    }
+
+    public List<String> getAllProjectNameFromDB(Connection conn) throws SQLException {
+        List<String> projectNameList = new ArrayList<>();
+        String sql = "select distinct projectName from classinfo";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            projectNameList.add(resultSet.getString("projectName"));
+        }
+        return projectNameList;
     }
 }
