@@ -25,6 +25,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
     private String fileName;
     private String pkg; //包名
     private String clazz;   //类名
+    private List<String> classInfoList;
 
     private Map<String, String> importsWithoutAsterisk = new HashMap<>();
     private Map<String, String> importsWithAsterisk = new HashMap<>();
@@ -32,10 +33,11 @@ public class MethodVisitor extends VoidVisitorAdapter {
     private Map<String, Variable> methodVariableMap = new HashMap<>();    //调用者方法里面定义的变量
     private Map<String, Variable> calledMethodParamMap = new HashMap<>();   //被调用方法的参数
 
-    public MethodVisitor(String projectName, String fileName, Connection conn){
+    public MethodVisitor(String projectName, String fileName,List<String> classInfoList, Connection conn){
         this.projectName = projectName;
         this.fileName = fileName;
         this.conn = conn;
+        this.classInfoList = classInfoList;
     }
 
     /**
@@ -307,9 +309,13 @@ public class MethodVisitor extends VoidVisitorAdapter {
             methodVar.setStaticVar(true);
             String pkg = importsWithoutAsterisk.get(methodVarName);
             if(pkg == null){
-                //todo:没有星号的import匹配不上的话，就要根据带星号的import加上所有项目的类进行匹配
-                //todo:如果还是匹配不上，那么这个静态方法调用使用的是第三方类的方法并且导入第三方类的时候用了*号，
-                //todo:或者是调用类内的静态方法
+                //没有星号的import匹配不上的话，就要根据带星号的import加上所有项目的类进行匹配
+                //如果还是匹配不上，那么这个静态方法调用使用的是第三方类的方法并且导入第三方类的时候用了*号，
+                //或者是调用类内的静态方法
+            }
+            if(pkg!=null){
+                pkg = pkg.substring(0,pkg.lastIndexOf('.'));
+                System.out.println(pkg);
             }
             methodVar.setPkg(pkg);
         } else {
@@ -402,6 +408,10 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 Map.Entry<String, String> entry = it.next();
                 String importStmt = entry.getValue();
                 String fullClassName = importStmt.concat(clazzName);
+
+                if(classInfoList != null && classInfoList.contains(fullClassName))
+                    return fullClassName;
+
                 try{
                     Class clazz = Class.forName(fullClassName);
                     return fullClassName;

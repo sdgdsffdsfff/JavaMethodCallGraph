@@ -3,6 +3,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.BuildConnection;
+import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.container.MethodCallContainer;
 import com.se.utils.*;
@@ -13,6 +14,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.List;
 
 import static java.lang.System.out;
 
@@ -25,7 +27,7 @@ public class FileProcess {
         return new File(projectPath).getName();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         File dir = new File(sourceProjectPath);
@@ -48,8 +50,9 @@ public class FileProcess {
         System.out.println("数据处理完成...");
     }
 
-    public static void processMethodCallTree(File file,Connection conn) throws IOException {
-        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),conn);
+    public static void processMethodCallTree(File file,Connection conn) throws IOException, SQLException {
+        List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
+        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),classInfoList,conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);

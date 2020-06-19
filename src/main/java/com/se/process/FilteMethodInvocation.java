@@ -16,7 +16,6 @@ import java.util.List;
 
 public class FilteMethodInvocation {
 
-    //todo:对于com.se.service.impl.GraphServiceImpl对类com.se.service.impl.CloneSnippetDao的调用匹配失败
     public static void main(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
@@ -37,7 +36,6 @@ public class FilteMethodInvocation {
                 String callClassID = classInfoDAO.getClassIDByProjectNameAndClassName(projectName,callMethodInfo.getClassName(),conn);
                 String calledClassID = classInfoDAO.getClassIDByProjectNameAndClassName(projectName,calledMethodInfoList.get(0).getClassName(),conn);
                 if(callClassID!=null&&calledClassID!=null){
-                    System.out.println("匹配成功");
                     MethodInfo calledMethodInfo = calledMethodInfoList.get(0);
                     MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
                     methodInvocationInView.setProjectName(projectName);

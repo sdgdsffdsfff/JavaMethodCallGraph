@@ -14,6 +14,6 @@ public class FileProcessTest {
         Connection conn = buildConnection.buildConnect();
         String filePath = "C:\\Users\\Zero\\Desktop\\Pro\\MethodClone01\\src\\main\\java\\com\\se\\service\\impl\\GraphServiceImpl.java";
         File file = new File(filePath);
-        FileProcess.processMethodCallTree(file,conn);
+        //FileProcess.processMethodCallTree(file,conn);
     }
 }
