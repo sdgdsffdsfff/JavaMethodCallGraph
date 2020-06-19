@@ -29,7 +29,7 @@ public class FilteMethodInvocation {
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             List<MethodInvocation> methodInvocationList = methodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){
-                System.out.println("调用类为：" + methodInvocation.getCallClassName() + "被调用类为：" + methodInvocation.getCalledClassName());
+                //System.out.println("调用类为：" + methodInvocation.getCallClassName() + "被调用类为：" + methodInvocation.getCalledClassName());
                 MethodInfo callMethodInfo = methodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
                 List<MethodInfo> calledMethodInfoList = methodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
                 if(calledMethodInfoList.size()==0)continue;
