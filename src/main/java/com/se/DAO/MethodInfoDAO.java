@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MethodInfoDAO {
 
-    public void InsertMethodInfo(MethodInfo methodInfo, Connection conn) throws SQLException {
+    public static void InsertMethodInfo(MethodInfo methodInfo, Connection conn) throws SQLException {
         String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName) values (?,?,?,?,?,?)";
         if(methodInfo!=null){
             PreparedStatement pst = conn.prepareStatement(sql);
@@ -25,7 +25,7 @@ public class MethodInfoDAO {
         }
     }
 
-    public List<MethodInfo> getMethodInfoByNameAndClass(String projectName,String className,String methodName,Connection conn){
+    public static List<MethodInfo> getMethodInfoByNameAndClass(String projectName,String className,String methodName,Connection conn){
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'";
 
         String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ?";
@@ -58,7 +58,7 @@ public class MethodInfoDAO {
         return methodInfoList;
     }
 
-    public MethodInfo getMethodInfoByNameClassReturnParameters(String projectName,String className,String methodName,String returnType,String methodParameters,Connection conn) throws SQLException {
+    public static MethodInfo getMethodInfoByNameClassReturnParameters(String projectName,String className,String methodName,String returnType,String methodParameters,Connection conn) throws SQLException {
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'and returnType = '" + returnType + "'and methodParameters = '" + methodParameters +"'";
 
         String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and returnType = ? and methodParameters = ?";

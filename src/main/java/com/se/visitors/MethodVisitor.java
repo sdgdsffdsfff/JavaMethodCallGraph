@@ -331,7 +331,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 calledMethod.setClazz(methodVar.getClazz());
             calledMethod.setPkg(methodVar.getPkg());
             MethodCallContainer.getContainer().addMethodCall(callerMethod, calledMethod);
-            System.err.println(calledMethod.getPackageAndClassName() + "..." + calledMethod.getPkg() + ".." + methodVar.getName());
+            //System.err.println(calledMethod.getPackageAndClassName() + "..." + calledMethod.getPkg() + ".." + methodVar.getName());
         }
 
     }

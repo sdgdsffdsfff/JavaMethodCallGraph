@@ -72,4 +72,12 @@ public class MethodInvocationInViewDAO {
         return methodInvocationInViewList;
     }
 
+
+    public static void updateIsRecursive(String projectName, Connection conn) throws SQLException {
+        String sql = "UPDATE methodinvocationinview SET isRecursive = 1 WHERE callMethodID = calledMethodID AND projectName = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,projectName);
+        pst.executeUpdate();
+    }
+
 }

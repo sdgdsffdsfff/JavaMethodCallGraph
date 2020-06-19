@@ -3,13 +3,14 @@ package com.se.DAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import com.se.config.DataConfig;
 
 public class BuildConnection {
 
-    private String url = "jdbc:mysql://localhost:3306/methodinvocation?serverTimezone=UTC&useSSL=false";
-    private String driver = "com.mysql.jdbc.Driver";
-    private String user = "root";
-    private String password = "15927029790";
+    private String url = DataConfig.url;
+    private String driver = DataConfig.driver;
+    private String user = DataConfig.user;
+    private String password = DataConfig.password;
 
     public Connection buildConnect(){
         Connection conn = null;

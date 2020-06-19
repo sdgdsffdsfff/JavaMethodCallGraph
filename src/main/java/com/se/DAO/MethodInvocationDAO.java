@@ -16,7 +16,7 @@ public class MethodInvocationDAO {
 
 
     //todo:过滤掉JDK的方法调用，JDK的方法调用不入库
-    public void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
+    public static void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
         String sql = null;
         PreparedStatement pst = null;
         MethodCall tempMethodCall = null;
@@ -59,7 +59,7 @@ public class MethodInvocationDAO {
 
     }
 
-    public List<String> getAllProjectNameFromDB(Connection conn) throws SQLException {
+    public static List<String> getAllProjectNameFromDB(Connection conn) throws SQLException {
         List<String> projectNameList = new ArrayList<>();
         String sql = "select distinct projectName from methodinvocationinfo";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -70,7 +70,7 @@ public class MethodInvocationDAO {
         return projectNameList;
     }
 
-    public List<MethodInvocation> getMethodInvocationByProjectName(String projectName,Connection conn) throws SQLException {
+    public static List<MethodInvocation> getMethodInvocationByProjectName(String projectName,Connection conn) throws SQLException {
         List<MethodInvocation> methodInvocationList = new ArrayList<>();
 //        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
 

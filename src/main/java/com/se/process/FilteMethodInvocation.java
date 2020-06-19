@@ -16,7 +16,7 @@ import java.util.List;
 
 public class FilteMethodInvocation {
 
-    public static void main(String[] args) throws SQLException {
+    public static void doFiler(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();

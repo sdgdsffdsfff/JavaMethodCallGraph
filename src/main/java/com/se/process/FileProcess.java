@@ -27,7 +27,7 @@ public class FileProcess {
         return new File(projectPath).getName();
     }
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void doProcess() throws IOException, SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         File dir = new File(sourceProjectPath);

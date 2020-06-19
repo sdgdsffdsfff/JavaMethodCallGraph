@@ -3,6 +3,7 @@ package com.se.process;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.*;
+import com.se.config.DataConfig;
 import com.se.container.MethodCallContainer;
 import com.se.entity.MethodInfo;
 import com.se.entity.MethodInvocation;
@@ -11,7 +12,6 @@ import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,7 +21,6 @@ import java.util.List;
 
 public class Process {
 
-    private static String sourceProjectPath = "/Users/coldilock/Downloads/JavaCodeCorpus/Pro";
     private static String projectName;
     public static String getProjectNameFromProjectPath(String projectPath)
     {
@@ -31,11 +30,18 @@ public class Process {
     public static List<String> oldProjectNameList = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException {
+        //建立数据库连接
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
+        //分析源项目代码，抽取需要的信息
         getMethodInvocation(conn);
+        //匹配方法调用关系
         filterMethodInvocation(conn);
-        filterMethodInvocationTree(conn);
+        //根据配置信息决定时候需要统计调用次数和调用深度
+        if(DataConfig.analyseInvocationCounts){
+            CountInvocation.countInvocationCounts(conn);
+            CountInvocation.countInvocationDept(conn);
+        }
     }
 
     /**
@@ -44,22 +50,15 @@ public class Process {
      * @throws SQLException
      */
     public static void getMethodInvocation(Connection conn) throws SQLException {
-        //获取数据库中已有的项目名列表
-        MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
-        oldProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
-
-        File dir = new File(sourceProjectPath);
-        LinkedList<String> folders = new LinkedList<>();
-        FileHandler.getFolders(dir,folders);
-        System.out.println("项目数为："+folders.size());
-        for(String f:folders) {
-            projectName = getProjectNameFromProjectPath(f);
-
-            //数据库中已有的项目不进行检测
-            if(oldProjectNameList!=null && oldProjectNameList.contains(projectName))
-                continue;
+        if(DataConfig.analyseSingleProject){
+            System.out.println("对单个项目进行处理");
+            projectName = getProjectNameFromProjectPath(DataConfig.sourceProjectPath);
+            if(oldProjectNameList!=null && oldProjectNameList.contains(projectName)){
+                System.out.println("数据库中已有该项目信息");
+                return;
+            }
             newProjectNameList.add(projectName);
-
+            String f = DataConfig.sourceProjectPath;
             System.out.println("正在处理的项目为：" + f);
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 File file = new File(filePath);
@@ -68,7 +67,6 @@ public class Process {
             }
             //从数据库中获取该项目中的所有类
             List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
-
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 System.out.println("正在处理的文件为：" + filePath);
                 File file = new File(filePath);
@@ -76,9 +74,40 @@ public class Process {
                 processMethodCallTree(file, classInfoList, conn);
             }
             //存储方法调用
-            methodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
-        }
+            MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
+        }else {
+            System.out.println("对父目录中所有的项目进行处理");
+            //获取数据库中已有的项目名列表
+            oldProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
+            File dir = new File(DataConfig.sourceProjectParentPath);
+            LinkedList<String> folders = new LinkedList<>();
+            FileHandler.getFolders(dir,folders);
+            System.out.println("项目数为："+folders.size());
+            for(String f:folders) {
+                projectName = getProjectNameFromProjectPath(f);
+                //数据库中已有的项目不进行检测
+                if(oldProjectNameList!=null && oldProjectNameList.contains(projectName))
+                    continue;
+                newProjectNameList.add(projectName);
+                System.out.println("正在处理的项目为：" + f);
+                for (String filePath : FileHelper.getSubFile(f, "java")) {
+                    File file = new File(filePath);
+                    //获取项目中所有类并存储
+                    processClassInfo(file, conn);
+                }
+                //从数据库中获取该项目中的所有类
+                List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
 
+                for (String filePath : FileHelper.getSubFile(f, "java")) {
+                    System.out.println("正在处理的文件为：" + filePath);
+                    File file = new File(filePath);
+                    //获取方法调用
+                    processMethodCallTree(file, classInfoList, conn);
+                }
+                //存储方法调用
+                MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
+            }
+        }
         System.out.println("数据处理完成...");
     }
 
@@ -119,21 +148,16 @@ public class Process {
      */
     public static void filterMethodInvocation(Connection conn) throws SQLException {
         MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
-        MethodInvocationInViewDAO methodInvocationInViewDAO = new MethodInvocationInViewDAO();
-        MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
-
         for(String projectName : newProjectNameList){
             //数据库中已有的项目不进行检测
             if(oldProjectNameList != null && oldProjectNameList.contains(projectName)) continue;
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             //根据项目名获取该项目中的所有方法调用
             List<MethodInvocation> methodInvocationList = methodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
-
             for(MethodInvocation methodInvocation:methodInvocationList){
-
-                MethodInfo callMethodInfo = methodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
-                List<MethodInfo> calledMethodInfoList = methodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
+                MethodInfo callMethodInfo = MethodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
+                List<MethodInfo> calledMethodInfoList = MethodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
                 if(calledMethodInfoList.size()==0) continue;
                 String callClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName,callMethodInfo.getClassName(),conn);
                 String calledClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName,calledMethodInfoList.get(0).getClassName(),conn);
@@ -154,24 +178,9 @@ public class Process {
                     methodInvocationInViewList.add(methodInvocationInView);
                 }
             }
-            methodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViewList,conn);
+            MethodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViewList,conn);
+            MethodInvocationInViewDAO.updateIsRecursive(projectName,conn);
         }
     }
 
-    /**
-     * 过滤方法调用树
-     * @param conn
-     * @throws SQLException
-     */
-    public static void filterMethodInvocationTree(Connection conn) throws SQLException {
-        for(String projectName : newProjectNameList){
-            //数据库中已有的项目不进行检测
-            if(oldProjectNameList != null && oldProjectNameList.contains(projectName)) continue;
-
-            MethodInvocationTreeDAO methodInvocationTreeDAO = new MethodInvocationTreeDAO();
-            methodInvocationTreeDAO.insertIntoMethodInvocationTree(projectName, conn);
-            methodInvocationTreeDAO.updateIsRecursive(projectName, conn);
-        }
-
-    }
 }

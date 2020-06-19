@@ -57,8 +57,6 @@ public class ClassVisitor extends VoidVisitorAdapter {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-//        this.importsWithoutAsterisk.put(this.clazz, this.pkg.concat(".").concat(this.clazz));
         super.visit(n, arg);
     }
 }
