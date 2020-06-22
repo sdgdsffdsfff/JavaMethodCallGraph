@@ -4,7 +4,9 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.*;
 import com.se.config.DataConfig;
+import com.se.container.ClassInfoContainer;
 import com.se.container.MethodCallContainer;
+import com.se.container.MethodInfoContainer;
 import com.se.entity.MethodInfo;
 import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
@@ -12,6 +14,7 @@ import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,11 +33,18 @@ public class Process {
     public static List<String> oldProjectNameList = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException {
+        long startTime = System.currentTimeMillis(); ///////
+
         //建立数据库连接
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         //分析源项目代码，抽取需要的信息
         getMethodInvocation(conn);
+
+
+        long endTime1 = System.currentTimeMillis(); ///////
+
+
         //匹配方法调用关系
         filterMethodInvocation(conn);
         //根据配置信息决定时候需要统计调用次数和调用深度
@@ -42,6 +52,13 @@ public class Process {
             CountInvocation.countInvocationCounts(conn);
             CountInvocation.countInvocationDept(conn);
         }
+
+
+        long endTime2 = System.currentTimeMillis();  ///////
+
+
+        System.out.println("程序运行时间1：" + (endTime1 - startTime) + "ms");  ///////
+        System.out.println("程序运行时间2：" + (endTime2 - startTime) + "ms");  ///////
     }
 
     /**
@@ -62,19 +79,29 @@ public class Process {
             System.out.println("正在处理的项目为：" + f);
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 File file = new File(filePath);
-                //获取项目中所有类并存储
+                //获取项目中所有类
                 processClassInfo(file, conn);
             }
-            //从数据库中获取该项目中的所有类
+
+            //存储当前项目中的所有类
+            ClassInfoDAO.saveClassInfoList(ClassInfoContainer.getContainer().getClassInfoList(), conn);
+            //从获取该项目中的所有类
             List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
+
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 System.out.println("正在处理的文件为：" + filePath);
                 File file = new File(filePath);
                 //获取方法调用
                 processMethodCallTree(file, classInfoList, conn);
             }
-            //存储方法调用
+
+            //存储当前项目中的所有方法
+            MethodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoList(), conn);
+            //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
+
+            ClassInfoContainer.getContainer().clear();
+            MethodInfoContainer.getContainer().clear();
         }else {
             System.out.println("对父目录中所有的项目进行处理");
             //获取数据库中已有的项目名列表
@@ -92,10 +119,12 @@ public class Process {
                 System.out.println("正在处理的项目为：" + f);
                 for (String filePath : FileHelper.getSubFile(f, "java")) {
                     File file = new File(filePath);
-                    //获取项目中所有类并存储
+                    //存储类
                     processClassInfo(file, conn);
                 }
-                //从数据库中获取该项目中的所有类
+                //存储当前项目中的所有类
+                ClassInfoDAO.saveClassInfoList(ClassInfoContainer.getContainer().getClassInfoList(), conn);
+                //从获取该项目中的所有类
                 List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
 
                 for (String filePath : FileHelper.getSubFile(f, "java")) {
@@ -104,8 +133,13 @@ public class Process {
                     //获取方法调用
                     processMethodCallTree(file, classInfoList, conn);
                 }
-                //存储方法调用
+                //存储当前项目中的所有方法
+                MethodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoList(), conn);
+                //存储当前项目中的所有方法调用
                 MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
+
+                ClassInfoContainer.getContainer().clear();
+                MethodInfoContainer.getContainer().clear();
             }
         }
         System.out.println("数据处理完成...");

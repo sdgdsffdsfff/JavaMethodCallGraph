@@ -53,6 +53,29 @@ public class ClassInfoDAO {
         }
     }
 
+    /**
+     * 存储一个项目内的所有类
+     * @param classInfoList
+     */
+    public static void saveClassInfoList(List<ClassInfo> classInfoList, Connection conn) throws SQLException{
+        String sql = "insert into classinfo (projectName,className,isInterface,fileName) values (?,?,?,?)";
+        if(classInfoList != null && !classInfoList.isEmpty()){
+            PreparedStatement pst = conn.prepareStatement(sql);
+            for(ClassInfo classInfo : classInfoList){
+                //过滤过长的方法名，过滤匿名函数，过滤链式调用
+                if(classInfo.getClassName().length()>100 || classInfo.getClassName().contains("{")||classInfo.getClassName().contains("}")||classInfo.getClassName().contains("(")
+                        ||classInfo.getClassName().contains(")"))return;
+                pst.setString(1,classInfo.getProjectName());
+                pst.setString(2,classInfo.getClassName());
+                pst.setString(3,classInfo.getInterface().toString());
+                pst.setString(4,classInfo.getFileName());
+                pst.addBatch();
+            }
+            pst.executeBatch();
+            pst.clearBatch();
+        }
+    }
+
     public static void updateInvocationCounts(int id, int invocationCounts, Connection conn) throws SQLException {
         String sql = "UPDATE classinfo SET invocationCounts = ? WHERE ID = ?";
         PreparedStatement pst = conn.prepareStatement(sql);

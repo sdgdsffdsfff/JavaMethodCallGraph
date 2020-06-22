@@ -3,11 +3,10 @@ package com.se.visitors;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.se.DAO.ClassInfoDAO;
+import com.se.container.ClassInfoContainer;
 import com.se.entity.ClassInfo;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class ClassVisitor extends VoidVisitorAdapter {
     private Connection conn;
@@ -51,12 +50,8 @@ public class ClassVisitor extends VoidVisitorAdapter {
         classInfo.setInterface(n.isInterface());
         classInfo.setProjectName(this.projectName);
         classInfo.setFileName(this.fileName);
-        ClassInfoDAO classInfoDAO = new ClassInfoDAO();
-        try {
-            classInfoDAO.InsertClassInfo(classInfo,conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        ClassInfoContainer.getContainer().addClassInfo(classInfo);
         super.visit(n, arg);
     }
 }

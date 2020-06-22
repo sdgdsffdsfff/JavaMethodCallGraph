@@ -6,16 +6,14 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.se.DAO.ClassInfoDAO;
-import com.se.DAO.MethodInfoDAO;
 import com.se.container.MethodCallContainer;
-import com.se.entity.ClassInfo;
+import com.se.container.MethodInfoContainer;
 import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
+
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 
 public class MethodVisitor extends VoidVisitorAdapter {
@@ -85,17 +83,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
         this.clazz = n.getName().asString().trim();
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassName(this.pkg +"."+ this.clazz);
-        classInfo.setInterface(n.isInterface());
-        classInfo.setProjectName(this.projectName);
-        classInfo.setFileName(this.fileName);
-        ClassInfoDAO classInfoDAO = new ClassInfoDAO();
-        try {
-            classInfoDAO.InsertClassInfo(classInfo,conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         this.importsWithoutAsterisk.put(this.clazz, this.pkg.concat(".").concat(this.clazz));
 
@@ -213,13 +200,8 @@ public class MethodVisitor extends VoidVisitorAdapter {
         callerMethod.setParamTypeList(paramTypeList);
         callerMethod.setReturnType(n.getType());
 
-        MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         MethodInfo methodInfo = new MethodInfo(projectName,callerMethod);
-        try {
-            methodInfoDAO.InsertMethodInfo(methodInfo,conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        MethodInfoContainer.getContainer().addMethodInfo(methodInfo);
 
         //add method scope variables to list
         Map<String, Variable> methodParams = new HashMap<>();
