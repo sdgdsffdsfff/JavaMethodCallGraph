@@ -44,6 +44,17 @@ public class MethodInvocationInViewDAO {
         return count;
     }
 
+    public static int selectCallCountsByClassName(String className, Connection conn) throws SQLException {
+        String sql = "select ID from methodinvocationinview where callClassName = '" + className + "'";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        int count = 0;
+        while(resultSet.next()){
+            count++;
+        }
+        return count;
+    }
+
     public static List<String> selectAllProjectName(Connection conn) throws SQLException {
         String sql = "select distinct projectName from methodinvocationinview";
         PreparedStatement pst = conn.prepareStatement(sql);

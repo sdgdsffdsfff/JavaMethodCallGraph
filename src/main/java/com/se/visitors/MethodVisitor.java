@@ -315,7 +315,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
             }
             if(pkg!=null){
                 pkg = pkg.substring(0,pkg.lastIndexOf('.'));
-                System.out.println(pkg);
             }
             methodVar.setPkg(pkg);
         } else {

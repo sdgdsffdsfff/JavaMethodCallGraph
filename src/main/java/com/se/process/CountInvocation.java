@@ -4,6 +4,7 @@ import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.entity.GraphNode;
+import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
 
 import java.sql.Connection;
@@ -15,19 +16,31 @@ import java.util.*;
 public class CountInvocation {
 
 
-    //统计每个类的被调用次数
-    public static void countInvocationCounts(Connection conn) throws SQLException {
-        Map<Integer,String> idMap = ClassInfoDAO.getAllClassInfo(conn);
-        for(Integer integer:idMap.keySet()){
-            String className = idMap.get(integer);
-            int count = MethodInvocationInViewDAO.selectCalledCountsByClassName(className,conn);
-            ClassInfoDAO.updateInvocationCounts(integer,count,conn);
+    //统计每个类的调用次数与被调用次数
+    public static void countInvokeCounts(Connection conn) throws SQLException {
+        System.out.println("正在进行调用次数统计");
+        List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
+        for(String projectName:projectNameList){
+            System.out.println("正在处理的项目名称为：" + projectName);
+            Map<Integer,String> idMap = ClassInfoDAO.getClassInfoByProjectName(projectName,conn);
+            List<List<Integer>> invokeInfoList = new ArrayList<>();
+            for(Integer Id:idMap.keySet()){
+                List<Integer> list = new ArrayList<>();
+                String className = idMap.get(Id);
+                int invokedCount = MethodInvocationInViewDAO.selectCalledCountsByClassName(className,conn);
+                list.add(invokedCount);
+                int invokeCount = MethodInvocationInViewDAO.selectCallCountsByClassName(className,conn);
+                list.add(invokeCount);
+                invokeInfoList.add(list);
+                list.add(Id);
+            }
+            ClassInfoDAO.updateInvokeCounts(invokeInfoList,conn);
         }
     }
 
-
     //统计每个类被调用的深度
     public static void countInvocationDept(Connection conn) throws SQLException {
+        System.out.println("正在统计调用深度");
         List<String> projectNameList = MethodInvocationInViewDAO.selectAllProjectName(conn);
         Map<String,GraphNode> graphNodeMap = new HashMap<>();
         Map<String,GraphNode> calledMethodMap = new HashMap<>();
@@ -85,4 +98,6 @@ public class CountInvocation {
             }
         }
     }
+
+
 }

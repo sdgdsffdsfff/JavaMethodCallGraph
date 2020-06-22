@@ -37,10 +37,10 @@ public class Process {
         getMethodInvocation(conn);
         //匹配方法调用关系
         filterMethodInvocation(conn);
-        //根据配置信息决定时候需要统计调用次数和调用深度
+        //根据配置信息决定是否需要统计调用次数和调用深度
         if(DataConfig.analyseInvocationCounts){
-            CountInvocation.countInvocationCounts(conn);
-            CountInvocation.countInvocationDept(conn);
+            CountInvocation.countInvokeCounts(conn);
+            //CountInvocation.countInvocationDept(conn);
         }
     }
 

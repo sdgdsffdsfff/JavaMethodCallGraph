@@ -15,8 +15,20 @@ public class ClassInfoDAO {
 
 
     public static Map<Integer,String> getAllClassInfo(Connection conn) throws SQLException {
-        String sql = "select * from classinfo";
+        String sql = "select ID,className from classinfo";
         PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        Map<Integer,String> idMap = new HashMap<>();
+        while(resultSet.next()){
+            idMap.put(resultSet.getInt("ID"),resultSet.getString("className"));
+        }
+        return idMap;
+    }
+
+    public static Map<Integer,String> getClassInfoByProjectName(String projectName, Connection conn) throws SQLException {
+        String sql = "select ID,className from classinfo where projectName = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,projectName);
         ResultSet resultSet = pst.executeQuery();
         Map<Integer,String> idMap = new HashMap<>();
         while(resultSet.next()){
@@ -53,13 +65,19 @@ public class ClassInfoDAO {
         }
     }
 
-    public static void updateInvocationCounts(int id, int invocationCounts, Connection conn) throws SQLException {
-        String sql = "UPDATE classinfo SET invocationCounts = ? WHERE ID = ?";
+
+    public static void updateInvokeCounts(List<List<Integer>> invokeList, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET invokedCounts = ?, invokeCounts = ? WHERE ID = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setInt(1,invocationCounts);
-        pst.setInt(2,id);
-        pst.executeUpdate();
+        for(List<Integer> list:invokeList){
+            pst.setInt(1,list.get(0));
+            pst.setInt(2,list.get(1));
+            pst.setInt(3,list.get(2));
+            pst.addBatch();
+        }
+        pst.executeBatch();
     }
+
 
     public static void updateInvocationDept(String className, int invocationDept, Connection conn) throws SQLException {
         String sql = "UPDATE classinfo SET invocationDept = ? WHERE className = ?";
@@ -70,7 +88,6 @@ public class ClassInfoDAO {
     }
 
     public static String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
-//        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
         String sql = "select ID from classinfo where projectName = ? and className = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1,projectName);
