@@ -33,18 +33,11 @@ public class Process {
     public static List<String> oldProjectNameList = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException {
-        long startTime = System.currentTimeMillis(); ///////
-
         //建立数据库连接
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         //分析源项目代码，抽取需要的信息
         getMethodInvocation(conn);
-
-
-        long endTime1 = System.currentTimeMillis(); ///////
-
-
         //匹配方法调用关系
         filterMethodInvocation(conn);
         //根据配置信息决定时候需要统计调用次数和调用深度
@@ -52,13 +45,6 @@ public class Process {
             CountInvocation.countInvocationCounts(conn);
             CountInvocation.countInvocationDept(conn);
         }
-
-
-        long endTime2 = System.currentTimeMillis();  ///////
-
-
-        System.out.println("程序运行时间1：" + (endTime1 - startTime) + "ms");  ///////
-        System.out.println("程序运行时间2：" + (endTime2 - startTime) + "ms");  ///////
     }
 
     /**
