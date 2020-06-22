@@ -14,9 +14,10 @@ import java.util.Map;
 public class ClassInfoDAO {
 
 
-    public static Map<Integer,String> getAllClassInfo(Connection conn) throws SQLException {
-        String sql = "select * from classinfo";
+    public static Map<Integer,String> getClassInfoByProjectName(String projectName, Connection conn) throws SQLException {
+        String sql = "select ID,className from classinfo where projectName = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,projectName);
         ResultSet resultSet = pst.executeQuery();
         Map<Integer,String> idMap = new HashMap<>();
         while(resultSet.next()){
@@ -35,22 +36,6 @@ public class ClassInfoDAO {
             classInfoList.add(resultSet.getString("className"));
         }
         return classInfoList;
-    }
-
-    public static void InsertClassInfo(ClassInfo classInfo, Connection conn) throws SQLException {
-        //过滤过长的方法名，过滤匿名函数，过滤链式调用
-        if(classInfo.getClassName().length()>100)return;
-        if(classInfo.getClassName().contains("{")||classInfo.getClassName().contains("}")||classInfo.getClassName().contains("(")
-                ||classInfo.getClassName().contains(")"))return;
-        String sql = "insert into classinfo (projectName,className,isInterface,fileName) values (?,?,?,?)";
-        if(classInfo!=null){
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1,classInfo.getProjectName());
-            pst.setString(2,classInfo.getClassName());
-            pst.setString(3,classInfo.getInterface().toString());
-            pst.setString(4,classInfo.getFileName());
-            pst.executeUpdate();
-        }
     }
 
     /**
@@ -76,12 +61,17 @@ public class ClassInfoDAO {
         }
     }
 
-    public static void updateInvocationCounts(int id, int invocationCounts, Connection conn) throws SQLException {
-        String sql = "UPDATE classinfo SET invocationCounts = ? WHERE ID = ?";
+    public static void updateInvokeCounts(List<List<Integer>> invokeInfoList, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET invokedCounts = ?,invokeCounts = ? WHERE ID = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setInt(1,invocationCounts);
-        pst.setInt(2,id);
-        pst.executeUpdate();
+        for(List<Integer> list:invokeInfoList){
+            pst.setInt(1,list.get(0));
+            pst.setInt(2,list.get(1));
+            pst.setInt(3,list.get(2));
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        pst.clearBatch();
     }
 
     public static void updateInvocationDept(String className, int invocationDept, Connection conn) throws SQLException {
