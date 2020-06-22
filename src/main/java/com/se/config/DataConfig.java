@@ -24,6 +24,10 @@ public class DataConfig {
     public static final boolean analyseSingleProject = true;
     //是否需要对于方法调用链的调用深度和每个类的被调用次数进行统计
     public static final boolean analyseInvocationCounts = true;
+    //方法粒度的克隆组检测结果文件路径
+    public static final String measureIndexFilePath = "C:\\Users\\Zero\\IdeaProjects\\JavaMethodCallGraph\\JavaMethodCallGraph\\src\\main\\resources\\clone_result\\MeasureIndex.csv";
+    //克隆检测的measureIndex文件路径
+    public static final String cloneGroupFilePath = "C:\\Users\\Zero\\IdeaProjects\\JavaMethodCallGraph\\JavaMethodCallGraph\\src\\main\\resources\\clone_result\\type123_method_group_result.csv";
 
 
 }

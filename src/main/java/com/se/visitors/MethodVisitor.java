@@ -1,5 +1,6 @@
 package com.se.visitors;
 
+import com.github.javaparser.Range;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.*;
@@ -12,7 +13,6 @@ import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
-
 import java.sql.Connection;
 import java.util.*;
 
@@ -182,12 +182,20 @@ public class MethodVisitor extends VoidVisitorAdapter {
     @Override
     public void visit(MethodDeclaration n, Object arg) {
         super.visit(n, arg);
-
         //create caller method info
         Method callerMethod = new Method();
         callerMethod.setName(n.getName().asString());
         callerMethod.setClazz(clazz);
         callerMethod.setPkg(pkg);
+        Optional<BlockStmt> body = n.getBody();
+        if(body.isPresent()){
+            Optional<Range> range = n.getRange();
+            if(range.isPresent()){
+                Range r = range.get();
+                callerMethod.setBeginLine(r.begin.line);
+                callerMethod.setEndLine(r.end.line);
+            }
+        }
 
         //collect and add param type to list
         List<Parameter> paramList = n.getParameters();

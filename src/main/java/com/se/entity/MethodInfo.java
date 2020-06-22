@@ -10,6 +10,8 @@ public class MethodInfo {
         this.returnType = method.getReturnTypeStr();
         this.qualifiedName = method.getQualifiedName();
         this.methodParameters = method.getParamTypeList().toString();
+        this.beginLine = method.getBeginLine();
+        this.endLine = method.getEndLine();
     }
 
     public MethodInfo(){
@@ -23,6 +25,8 @@ public class MethodInfo {
     private String methodParameters;
     private String qualifiedName;
     private String ID;
+    private int beginLine;
+    private int endLine;
 
 
     public String getProjectName() {
@@ -82,5 +86,21 @@ public class MethodInfo {
 
     public void setID(String ID) {
         this.ID = ID;
+    }
+
+    public int getBeginLine() {
+        return beginLine;
+    }
+
+    public void setBeginLine(int beginLine) {
+        this.beginLine = beginLine;
+    }
+
+    public int getEndLine() {
+        return endLine;
+    }
+
+    public void setEndLine(int endLine) {
+        this.endLine = endLine;
     }
 }

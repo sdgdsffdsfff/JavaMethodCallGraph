@@ -19,6 +19,10 @@ public class Method {
 
     private List<String> paramTypeList;
 
+    private int beginLine;
+
+    private int endLine;
+
     public String getName() {
         return name;
     }
@@ -132,4 +136,19 @@ public class Method {
     }
 
 
+    public int getBeginLine() {
+        return beginLine;
+    }
+
+    public void setBeginLine(int beginLine) {
+        this.beginLine = beginLine;
+    }
+
+    public int getEndLine() {
+        return endLine;
+    }
+
+    public void setEndLine(int endLine) {
+        this.endLine = endLine;
+    }
 }

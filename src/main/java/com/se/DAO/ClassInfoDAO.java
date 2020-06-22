@@ -1,5 +1,6 @@
 package com.se.DAO;
 
+import com.se.entity.ClassAsset;
 import com.se.entity.ClassInfo;
 
 import java.sql.Connection;
@@ -83,7 +84,6 @@ public class ClassInfoDAO {
     }
 
     public static String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{
-//        String sql = "select ID from classinfo where projectName = '" + projectName +"'and className = '" + className +"'";
         String sql = "select ID from classinfo where projectName = ? and className = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1,projectName);
@@ -105,4 +105,23 @@ public class ClassInfoDAO {
         }
         return projectNameList;
     }
+
+    public static List<ClassAsset> selectClassInfoByFilePath(String filePath, Connection conn) throws SQLException {
+        String selectSQL = "select projectName,className,content from classinfo where filename = '" + filePath +"'";
+        PreparedStatement stmt = conn.prepareStatement(selectSQL);
+        ResultSet rs = stmt.executeQuery(selectSQL);
+        if(rs!=null){
+            List<ClassAsset> classAssetList = new ArrayList<>();
+            while(rs.next()){
+                ClassAsset classAsset = new ClassAsset();
+                classAsset.setProjectName(rs.getString("projectname"));
+                classAsset.setFilePath(filePath);
+                classAsset.setContent(rs.getString("content"));
+                classAssetList.add(classAsset);
+            }
+            return classAssetList;
+        }
+        return null;
+    }
+
 }

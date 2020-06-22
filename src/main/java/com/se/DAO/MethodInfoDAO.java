@@ -11,22 +11,8 @@ import java.util.List;
 
 public class MethodInfoDAO {
 
-    public static void InsertMethodInfo(MethodInfo methodInfo, Connection conn) throws SQLException {
-        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName) values (?,?,?,?,?,?)";
-        if(methodInfo!=null){
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1,methodInfo.getProjectName());
-            pst.setString(2,methodInfo.getClassName());
-            pst.setString(3,methodInfo.getMethodName());
-            pst.setString(4,methodInfo.getReturnType());
-            pst.setString(5,methodInfo.getMethodParameters());
-            pst.setString(6,methodInfo.getQualifiedName());
-            pst.executeUpdate();
-        }
-    }
-
     public static void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
-        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName) values (?,?,?,?,?,?)";
+        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,beginLine,endLine) values (?,?,?,?,?,?,?,?)";
         if(methodInfoList != null && !methodInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
             for(MethodInfo methodInfo : methodInfoList){
@@ -36,6 +22,8 @@ public class MethodInfoDAO {
                 pst.setString(4,methodInfo.getReturnType());
                 pst.setString(5,methodInfo.getMethodParameters());
                 pst.setString(6,methodInfo.getQualifiedName());
+                pst.setInt(7,methodInfo.getBeginLine());
+                pst.setInt(8,methodInfo.getEndLine());
                 pst.addBatch();
             }
             pst.executeBatch();
