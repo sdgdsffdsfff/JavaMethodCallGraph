@@ -27,6 +27,7 @@ public class MethodInfo {
     private String ID;
     private int beginLine;
     private int endLine;
+    private boolean asset;
 
 
     public String getProjectName() {
@@ -80,14 +81,6 @@ public class MethodInfo {
     }
 
 
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
     public int getBeginLine() {
         return beginLine;
     }
@@ -102,5 +95,21 @@ public class MethodInfo {
 
     public void setEndLine(int endLine) {
         this.endLine = endLine;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public boolean isAsset() {
+        return asset;
+    }
+
+    public void setAsset(boolean asset) {
+        this.asset = asset;
     }
 }

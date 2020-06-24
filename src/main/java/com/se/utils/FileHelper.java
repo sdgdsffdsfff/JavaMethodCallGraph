@@ -1,5 +1,7 @@
 package com.se.utils;
 
+import com.se.entity.MeasureIndex;
+
 import java.io.*;
 import java.util.*;
 
@@ -80,6 +82,23 @@ public class FileHelper {
 		return cloneGroupList;
 	}
 
+	public static List<MeasureIndex> readMeasureIndex(String measureIndexPath) throws IOException {
+		List<MeasureIndex> resultList = new ArrayList<>();
+		File file = new File(measureIndexPath);
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String line = "";
+		while((line = bufferedReader.readLine())!=null){
+			String[] strings = line.split(",");
+			int id = Integer.parseInt(strings[0]);
+			String filePath = strings[1];
+			int beginLine = Integer.parseInt(strings[2]);
+			int endLine = Integer.parseInt(strings[3]);
+			MeasureIndex measureIndex = new MeasureIndex(id,filePath,beginLine,endLine);
+			resultList.add(measureIndex);
+		}
+		return resultList;
+	}
 }
 
 

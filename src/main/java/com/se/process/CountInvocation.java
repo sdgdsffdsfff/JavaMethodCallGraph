@@ -1,10 +1,8 @@
 package com.se.process;
 
-import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.entity.GraphNode;
-import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
 
 import java.sql.Connection;

@@ -37,7 +37,7 @@ public class Process {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         //分析源项目代码，抽取需要的信息
-        getMethodInvocation(conn);
+        //getMethodInvocation(conn);
         //匹配方法调用关系
         filterMethodInvocation(conn);
         //根据配置信息决定是否需要统计调用次数和调用深度
@@ -137,7 +137,7 @@ public class Process {
      * @param conn
      */
     private static void processClassInfo(File file,Connection conn){
-        ClassVisitor visitor = new ClassVisitor(projectName,file.getName(),conn);
+        ClassVisitor visitor = new ClassVisitor(projectName,file.getPath(),conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
@@ -167,14 +167,13 @@ public class Process {
      * @throws SQLException
      */
     public static void filterMethodInvocation(Connection conn) throws SQLException {
-        MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
         for(String projectName : newProjectNameList){
             //数据库中已有的项目不进行检测
             if(oldProjectNameList != null && oldProjectNameList.contains(projectName)) continue;
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             //根据项目名获取该项目中的所有方法调用
-            List<MethodInvocation> methodInvocationList = methodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
+            List<MethodInvocation> methodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){
                 MethodInfo callMethodInfo = MethodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
                 List<MethodInfo> calledMethodInfoList = MethodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);

@@ -11,13 +11,13 @@ import java.sql.Connection;
 public class ClassVisitor extends VoidVisitorAdapter {
     private Connection conn;
     private String projectName;
-    private String fileName;
+    private String filePath;
     private String pkg; //包名
     private String clazz;   //类名
 
-    public ClassVisitor(String projectName, String fileName, Connection conn){
+    public ClassVisitor(String projectName, String filePath, Connection conn){
         this.projectName = projectName;
-        this.fileName = fileName;
+        this.filePath = filePath;
         this.conn = conn;
     }
 
@@ -49,8 +49,8 @@ public class ClassVisitor extends VoidVisitorAdapter {
         classInfo.setClassName(this.pkg +"."+ this.clazz);
         classInfo.setInterface(n.isInterface());
         classInfo.setProjectName(this.projectName);
-        classInfo.setFileName(this.fileName);
-
+        this.filePath = this.filePath.replace("\\","|");
+        classInfo.setFilePath(this.filePath);
         ClassInfoContainer.getContainer().addClassInfo(classInfo);
         super.visit(n, arg);
     }

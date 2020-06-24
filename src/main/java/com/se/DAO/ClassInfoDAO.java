@@ -1,7 +1,6 @@
 package com.se.DAO;
-
-import com.se.entity.ClassAsset;
 import com.se.entity.ClassInfo;
+import org.checkerframework.checker.units.qual.C;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,7 +43,7 @@ public class ClassInfoDAO {
      * @param classInfoList
      */
     public static void saveClassInfoList(List<ClassInfo> classInfoList, Connection conn) throws SQLException{
-        String sql = "insert into classinfo (projectName,className,isInterface,fileName) values (?,?,?,?)";
+        String sql = "insert into classinfo (projectName,className,isInterface,filePath) values (?,?,?,?)";
         if(classInfoList != null && !classInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
             for(ClassInfo classInfo : classInfoList){
@@ -54,7 +53,7 @@ public class ClassInfoDAO {
                 pst.setString(1,classInfo.getProjectName());
                 pst.setString(2,classInfo.getClassName());
                 pst.setString(3,classInfo.getInterface().toString());
-                pst.setString(4,classInfo.getFileName());
+                pst.setString(4,classInfo.getFilePath());
                 pst.addBatch();
             }
             pst.executeBatch();
@@ -69,6 +68,21 @@ public class ClassInfoDAO {
             pst.setInt(1,list.get(0));
             pst.setInt(2,list.get(1));
             pst.setInt(3,list.get(2));
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        pst.clearBatch();
+    }
+
+    public static void updateAsset(List<ClassInfo> classInfoList, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET asset = ? WHERE ID = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        for(ClassInfo classInfo:classInfoList){
+            if(classInfo.isAsset())
+                pst.setInt(1,1);
+            else
+                pst.setInt(1,0);
+            pst.setInt(2,classInfo.getID());
             pst.addBatch();
         }
         pst.executeBatch();
@@ -106,22 +120,33 @@ public class ClassInfoDAO {
         return projectNameList;
     }
 
-    public static List<ClassAsset> selectClassInfoByFilePath(String filePath, Connection conn) throws SQLException {
-        String selectSQL = "select projectName,className,content from classinfo where filename = '" + filePath +"'";
-        PreparedStatement stmt = conn.prepareStatement(selectSQL);
-        ResultSet rs = stmt.executeQuery(selectSQL);
-        if(rs!=null){
-            List<ClassAsset> classAssetList = new ArrayList<>();
-            while(rs.next()){
-                ClassAsset classAsset = new ClassAsset();
-                classAsset.setProjectName(rs.getString("projectname"));
-                classAsset.setFilePath(filePath);
-                classAsset.setContent(rs.getString("content"));
-                classAssetList.add(classAsset);
-            }
-            return classAssetList;
+    public static List<ClassInfo> getClassInfoByFilePath(String filePath, Connection connection) throws SQLException {
+        List<ClassInfo> classInfoList = new ArrayList<>();
+        String sql = "select ID,className from classinfo where filePath = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,filePath);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            ClassInfo classInfo = new ClassInfo();
+            classInfo.setID(resultSet.getInt("ID"));
+            classInfo.setClassName(resultSet.getString("className"));
+            classInfoList.add(classInfo);
         }
-        return null;
+        return classInfoList;
     }
 
+    public static ClassInfo getClassInfoByClassName(String className, Connection connection) throws SQLException {
+        String sql = "select ID,invokeCounts,invokedCounts from classinfo where className = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,className);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ClassInfo classInfo = new ClassInfo();
+        while(resultSet.next()){
+            classInfo.setID(resultSet.getInt("ID"));
+            classInfo.setClassName(className);
+            classInfo.setInvokeCounts(resultSet.getInt("invokeCounts"));
+            classInfo.setInvokedCounts(resultSet.getInt("invokedCounts"));
+        }
+        return classInfo;
+    }
 }
