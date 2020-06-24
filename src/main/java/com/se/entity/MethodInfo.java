@@ -28,6 +28,7 @@ public class MethodInfo {
     private int beginLine;
     private int endLine;
     private boolean asset;
+    private int cloneGroupId;
 
 
     public String getProjectName() {
@@ -111,5 +112,13 @@ public class MethodInfo {
 
     public void setAsset(boolean asset) {
         this.asset = asset;
+    }
+
+    public int getCloneGroupId() {
+        return cloneGroupId;
+    }
+
+    public void setCloneGroupId(int cloneGroupId) {
+        this.cloneGroupId = cloneGroupId;
     }
 }

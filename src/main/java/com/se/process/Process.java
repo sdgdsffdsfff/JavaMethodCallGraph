@@ -37,13 +37,13 @@ public class Process {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         //分析源项目代码，抽取需要的信息
-        //getMethodInvocation(conn);
+        getMethodInvocation(conn);
         //匹配方法调用关系
         filterMethodInvocation(conn);
         //根据配置信息决定是否需要统计调用次数和调用深度
         if(DataConfig.analyseInvocationCounts){
             CountInvocation.countInvokeCounts(conn);
-            //CountInvocation.countInvocationDept(conn);
+            CountInvocation.countInvocationDept(conn);
         }
     }
 

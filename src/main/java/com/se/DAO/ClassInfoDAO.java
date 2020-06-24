@@ -74,20 +74,6 @@ public class ClassInfoDAO {
         pst.clearBatch();
     }
 
-    public static void updateAsset(List<ClassInfo> classInfoList, Connection conn) throws SQLException {
-        String sql = "UPDATE classinfo SET asset = ? WHERE ID = ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        for(ClassInfo classInfo:classInfoList){
-            if(classInfo.isAsset())
-                pst.setInt(1,1);
-            else
-                pst.setInt(1,0);
-            pst.setInt(2,classInfo.getID());
-            pst.addBatch();
-        }
-        pst.executeBatch();
-        pst.clearBatch();
-    }
 
     public static void updateInvocationDept(String className, int invocationDept, Connection conn) throws SQLException {
         String sql = "UPDATE classinfo SET invocationDept = ? WHERE className = ?";

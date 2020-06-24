@@ -53,8 +53,8 @@ public class CloneMining {
     public static void main(String[] args) throws IOException, SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection connection = buildConnection.buildConnect();
-        //linkCloneDataAndModel(connection);
-        List<ClassInfo> classInfos = new ArrayList<>();
+        linkCloneDataAndModel(connection);
+        List<MethodInfo> methodInfoList= new ArrayList<>();
         List<List<Integer>> cloneGroupList =  FileHelper.readCloneGroupToList(DataConfig.cloneGroupFilePath);
         System.out.println("正在从克隆检测信息中挖掘代码资产");
         int count = 1;
@@ -64,16 +64,19 @@ public class CloneMining {
                 MethodInfo methodInfo = MethodInfoDAO.getMethodInfoByCloneId(id,connection);
                 ClassInfo classInfo = ClassInfoDAO.getClassInfoByClassName(methodInfo.getClassName(),connection);
                 if(CalculateUtil.CalCouplingRate(classInfo.getInvokeCounts(),classInfo.getInvokedCounts()))
-                    classInfo.setAsset(true);
+                    methodInfo.setAsset(true);
                 else
-                    classInfo.setAsset(false);
+                    methodInfo.setAsset(false);
+                methodInfo.setCloneGroupId(count);
+                if(methodInfo.getID()!=null)
+                    methodInfoList.add(methodInfo);
             }
             //每挖掘出500个资产进行一次数据库update操作
-            if(classInfos.size()%500 == 0){
-                ClassInfoDAO.updateAsset(classInfos,connection);
-                classInfos.clear();
+            if(methodInfoList.size()%500 == 0){
+                MethodInfoDAO.updateAsset(methodInfoList,connection);
+                methodInfoList.clear();
             }
         }
-        ClassInfoDAO.updateAsset(classInfos,connection);
+        MethodInfoDAO.updateAsset(methodInfoList,connection);
     }
 }

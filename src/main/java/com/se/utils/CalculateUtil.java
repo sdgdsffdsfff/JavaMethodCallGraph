@@ -2,7 +2,7 @@ package com.se.utils;
 
 public class CalculateUtil {
 
-    private static double rateThreshold = 5;
+    private static double rateThreshold = 2;
 
     public static boolean CalCouplingRate(int invokeCounts, int invokedCounts){
         double invoke,invoked;
@@ -17,7 +17,7 @@ public class CalculateUtil {
             invoked = invokedCounts;
         }
         double rate = invoked/invoke;
-        return rate > 5;
+        return rate > rateThreshold;
     }
 
 }

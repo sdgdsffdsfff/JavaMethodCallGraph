@@ -131,4 +131,21 @@ public class MethodInfoDAO {
         return methodInfo;
     }
 
+    public static void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
+        conn.setAutoCommit(false);
+        String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ? WHERE ID = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        for(MethodInfo methodInfo:methodInfoList){
+            if(methodInfo.isAsset())
+                pst.setInt(1,1);
+            else
+                pst.setInt(1,0);
+            pst.setInt(2,methodInfo.getCloneGroupId());
+            pst.setString(3,methodInfo.getID());
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        conn.commit();
+        conn.setAutoCommit(true);
+    }
 }
