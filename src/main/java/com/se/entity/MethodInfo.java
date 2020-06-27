@@ -12,6 +12,7 @@ public class MethodInfo {
         this.methodParameters = method.getParamTypeList().toString();
         this.beginLine = method.getBeginLine();
         this.endLine = method.getEndLine();
+        this.methodContent = method.getMethodContent();
     }
 
     public MethodInfo(){
@@ -29,6 +30,7 @@ public class MethodInfo {
     private int endLine;
     private boolean asset;
     private int cloneGroupId;
+    private String methodContent;
 
 
     public String getProjectName() {
@@ -120,5 +122,13 @@ public class MethodInfo {
 
     public void setCloneGroupId(int cloneGroupId) {
         this.cloneGroupId = cloneGroupId;
+    }
+
+    public String getMethodContent() {
+        return methodContent;
+    }
+
+    public void setMethodContent(String methodContent) {
+        this.methodContent = methodContent;
     }
 }

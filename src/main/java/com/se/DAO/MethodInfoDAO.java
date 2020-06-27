@@ -13,7 +13,7 @@ import java.util.Map;
 public class MethodInfoDAO {
 
     public static void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
-        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,beginLine,endLine) values (?,?,?,?,?,?,?,?)";
+        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,methodContent,beginLine,endLine) values (?,?,?,?,?,?,?,?,?)";
         if(methodInfoList != null && !methodInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
             for(MethodInfo methodInfo : methodInfoList){
@@ -23,13 +23,13 @@ public class MethodInfoDAO {
                 pst.setString(4,methodInfo.getReturnType());
                 pst.setString(5,methodInfo.getMethodParameters());
                 pst.setString(6,methodInfo.getQualifiedName());
-                pst.setInt(7,methodInfo.getBeginLine());
-                pst.setInt(8,methodInfo.getEndLine());
+                pst.setString(7,methodInfo.getMethodContent());
+                pst.setInt(8,methodInfo.getBeginLine());
+                pst.setInt(9,methodInfo.getEndLine());
                 pst.addBatch();
             }
             pst.executeBatch();
             pst.clearBatch();
-
         }
     }
 
@@ -95,14 +95,12 @@ public class MethodInfoDAO {
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'and returnType = '" + returnType + "'and methodParameters = '" + methodParameters +"'";
 
         String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and returnType = ? and methodParameters = ?";
-
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1,projectName);
         pst.setString(2,className);
         pst.setString(3,methodName);
         pst.setString(4,returnType);
         pst.setString(5,methodParameters);
-
         ResultSet resultSet = pst.executeQuery();
         while(resultSet.next()){
             MethodInfo methodInfo = new MethodInfo();

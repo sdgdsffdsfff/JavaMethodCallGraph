@@ -13,7 +13,7 @@ public class DataConfig {
     //连接数据库的密码
     public static final String password = "15927029790";
     //所有待分析项目的父目录
-    public static final String sourceProjectParentPath = "D:\\java-source";
+    public static final String sourceProjectParentPath = "D:\\java-source7";
     //单个待分析项目的目录
     public static final String sourceProjectPath = "C:\\Users\\Zero\\IdeaProjects\\MethodCallVisual";
     //API文档的路径
@@ -23,7 +23,7 @@ public class DataConfig {
     //是否对单个项目进行分析，为true则分析单个项目，为false则对父目录中所有的项目进行分析
     public static final boolean analyseSingleProject = false;
     //是否需要对于方法调用链的调用深度和每个类的被调用次数进行统计
-    public static final boolean analyseInvocationCounts = true;
+    public static final boolean analyseInvocationCounts = false;
     //方法粒度的克隆组检测结果文件路径
     public static final String measureIndexFilePath = "C:\\Users\\Zero\\IdeaProjects\\JavaMethodCallGraph\\JavaMethodCallGraph\\src\\main\\resources\\java-source\\result\\MeasureIndex.csv";
     //克隆检测的measureIndex文件路径

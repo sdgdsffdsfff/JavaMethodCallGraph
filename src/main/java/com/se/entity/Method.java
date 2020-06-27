@@ -23,6 +23,8 @@ public class Method {
 
     private int endLine;
 
+    private String methodContent;
+
     public String getName() {
         return name;
     }
@@ -150,5 +152,13 @@ public class Method {
 
     public void setEndLine(int endLine) {
         this.endLine = endLine;
+    }
+
+    public String getMethodContent() {
+        return methodContent;
+    }
+
+    public void setMethodContent(String methodContent) {
+        this.methodContent = methodContent;
     }
 }

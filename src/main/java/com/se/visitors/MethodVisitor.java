@@ -187,6 +187,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
         callerMethod.setName(n.getName().asString());
         callerMethod.setClazz(clazz);
         callerMethod.setPkg(pkg);
+        callerMethod.setMethodContent(n.toString());
         Optional<BlockStmt> body = n.getBody();
         if(body.isPresent()){
             Optional<Range> range = n.getRange();

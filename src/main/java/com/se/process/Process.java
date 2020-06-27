@@ -7,14 +7,11 @@ import com.se.config.DataConfig;
 import com.se.container.ClassInfoContainer;
 import com.se.container.MethodCallContainer;
 import com.se.container.MethodInfoContainer;
-import com.se.entity.MethodInfo;
-import com.se.entity.MethodInvocation;
-import com.se.entity.MethodInvocationInView;
 import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
+import com.se.utils.ListUtils;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,15 +28,25 @@ public class Process {
     }
     public static List<String> newProjectNameList = new ArrayList<>();
     public static List<String> oldProjectNameList = new ArrayList<>();
+    private static int threadNum = 3;
 
     public static void main(String[] args) throws SQLException {
         //建立数据库连接
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         //分析源项目代码，抽取需要的信息
-        getMethodInvocation(conn);
+        //getMethodInvocation(conn);
         //匹配方法调用关系
-        filterMethodInvocation(conn);
+        newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
+        //将projectNameList等分为多份，同时用多个线程并行处理
+        List<List<String>> projectNameLists = ListUtils.divideList(newProjectNameList,threadNum);
+        System.out.println(projectNameLists);
+        for(int i = 0;i<threadNum;i++){
+            FilterMethodInvocation filterMethodInvocation = new FilterMethodInvocation(projectNameLists.get(i),conn);
+            Thread thread = new Thread(filterMethodInvocation);
+            thread.start();
+        }
+        //FilterMethodInvocation.filterMethodInvocation(conn,newProjectNameList);
         //根据配置信息决定是否需要统计调用次数和调用深度
         if(DataConfig.analyseInvocationCounts){
             CountInvocation.countInvokeCounts(conn);
@@ -75,6 +82,9 @@ public class Process {
             List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
 
             for (String filePath : FileHelper.getSubFile(f, "java")) {
+                if(filePath.contains("\\test")){
+                    continue;
+                }
                 System.out.println("正在处理的文件为：" + filePath);
                 File file = new File(filePath);
                 //获取方法调用
@@ -114,6 +124,9 @@ public class Process {
                 List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
 
                 for (String filePath : FileHelper.getSubFile(f, "java")) {
+                    if(filePath.contains("\\test")){
+                        continue;
+                    }
                     System.out.println("正在处理的文件为：" + filePath);
                     File file = new File(filePath);
                     //获取方法调用
@@ -158,47 +171,6 @@ public class Process {
             visitor.visit(cu, null);
         }catch (Exception ex){
             //ex.printStackTrace();
-        }
-    }
-
-    /**
-     * 过滤方法调用
-     * @param conn
-     * @throws SQLException
-     */
-    public static void filterMethodInvocation(Connection conn) throws SQLException {
-        List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
-        for(String projectName : newProjectNameList){
-            //数据库中已有的项目不进行检测
-            if(oldProjectNameList != null && oldProjectNameList.contains(projectName)) continue;
-            System.out.println("正在进行方法调用匹配的项目为:" + projectName);
-            //根据项目名获取该项目中的所有方法调用
-            List<MethodInvocation> methodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
-            for(MethodInvocation methodInvocation:methodInvocationList){
-                MethodInfo callMethodInfo = MethodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
-                List<MethodInfo> calledMethodInfoList = MethodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
-                if(calledMethodInfoList.size()==0) continue;
-                String callClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName,callMethodInfo.getClassName(),conn);
-                String calledClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName,calledMethodInfoList.get(0).getClassName(),conn);
-                if(callClassID != null && calledClassID != null){
-                    MethodInfo calledMethodInfo = calledMethodInfoList.get(0);
-                    MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
-                    methodInvocationInView.setProjectName(projectName);
-                    methodInvocationInView.setCallClassName(callMethodInfo.getClassName());
-                    methodInvocationInView.setCallMethodName(callMethodInfo.getMethodName());
-                    methodInvocationInView.setCallMethodID(callMethodInfo.getID());
-                    methodInvocationInView.setCallMethodParameters(callMethodInfo.getMethodParameters());
-                    methodInvocationInView.setCallMethodReturnType(callMethodInfo.getReturnType());
-                    methodInvocationInView.setCalledClassName(calledMethodInfo.getClassName());
-                    methodInvocationInView.setCalledMethodName(calledMethodInfo.getMethodName());
-                    methodInvocationInView.setCalledMethodID(calledMethodInfo.getID());
-                    methodInvocationInView.setCallClassID(callClassID);
-                    methodInvocationInView.setCalledClassID(calledClassID);
-                    methodInvocationInViewList.add(methodInvocationInView);
-                }
-            }
-            MethodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViewList,conn);
-            MethodInvocationInViewDAO.updateIsRecursive(projectName,conn);
         }
     }
 
