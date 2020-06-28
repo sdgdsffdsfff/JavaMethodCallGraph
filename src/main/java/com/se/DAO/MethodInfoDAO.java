@@ -129,6 +129,22 @@ public class MethodInfoDAO {
         return methodInfo;
     }
 
+    public static List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
+        String sql = "select ID,methodName,className from methodinfo where projectName = ?";
+        List<MethodInfo> methodInfoList = new ArrayList<>();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,projectName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        MethodInfo methodInfo = new MethodInfo();
+        while(resultSet.next()){
+            methodInfo.setID(String.valueOf(resultSet.getInt("ID")));
+            methodInfo.setClassName(resultSet.getString("className"));
+            methodInfo.setMethodName("methodName");
+            methodInfoList.add(methodInfo);
+        }
+        return methodInfoList;
+    }
+
     public static void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
         conn.setAutoCommit(false);
         String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ? WHERE ID = ?";

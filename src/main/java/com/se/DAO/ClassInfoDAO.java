@@ -26,6 +26,18 @@ public class ClassInfoDAO {
         return idMap;
     }
 
+    public static Map<String,Integer> getClassInfoMapByProjectName(String projectName, Connection conn) throws SQLException {
+        String sql = "select ID,className from classinfo where projectName = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,projectName);
+        ResultSet resultSet = pst.executeQuery();
+        Map<String,Integer> idMap = new HashMap<>();
+        while(resultSet.next()){
+            idMap.put(resultSet.getString("className"),resultSet.getInt("ID"));
+        }
+        return idMap;
+    }
+
     public static List<String> getAllClassInfoList(String projectName, Connection conn) throws SQLException {
         String sql = "select * from classinfo where projectName = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
