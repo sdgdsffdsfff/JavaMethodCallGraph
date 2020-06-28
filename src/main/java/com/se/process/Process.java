@@ -28,6 +28,7 @@ public class Process {
     }
     public static List<String> newProjectNameList = new ArrayList<>();
     public static List<String> oldProjectNameList = new ArrayList<>();
+    //线程数量
     private static int threadNum = 3;
 
     public static void main(String[] args) throws SQLException {
@@ -40,7 +41,6 @@ public class Process {
         newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
         //将projectNameList等分为多份，同时用多个线程并行处理
         List<List<String>> projectNameLists = ListUtils.divideList(newProjectNameList,threadNum);
-        System.out.println(projectNameLists);
         for(int i = 0;i<threadNum;i++){
             FilterMethodInvocation filterMethodInvocation = new FilterMethodInvocation(projectNameLists.get(i),conn);
             Thread thread = new Thread(filterMethodInvocation);
@@ -75,7 +75,6 @@ public class Process {
                 //获取项目中所有类
                 processClassInfo(file, conn);
             }
-
             //存储当前项目中的所有类
             ClassInfoDAO.saveClassInfoList(ClassInfoContainer.getContainer().getClassInfoList(), conn);
             //从获取该项目中的所有类

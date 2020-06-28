@@ -16,6 +16,7 @@ public class MethodInvocationInViewDAO {
         if(methodInvocationInViewList != null && !methodInvocationInViewList.isEmpty()) {
             PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
             for(MethodInvocationInView methodInvocationInView : methodInvocationInViewList) {
+                if(methodInvocationInView.getCallClassID() == null||methodInvocationInView.getCalledClassID() == null)continue;
                 pst.setString(1,methodInvocationInView.getProjectName());
                 pst.setString(2,methodInvocationInView.getCallMethodName());
                 pst.setString(3,methodInvocationInView.getCalledMethodName());

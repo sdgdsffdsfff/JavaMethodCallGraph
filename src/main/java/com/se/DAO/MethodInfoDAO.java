@@ -135,11 +135,11 @@ public class MethodInfoDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,projectName);
         ResultSet resultSet = preparedStatement.executeQuery();
-        MethodInfo methodInfo = new MethodInfo();
         while(resultSet.next()){
+            MethodInfo methodInfo = new MethodInfo();
             methodInfo.setID(String.valueOf(resultSet.getInt("ID")));
             methodInfo.setClassName(resultSet.getString("className"));
-            methodInfo.setMethodName("methodName");
+            methodInfo.setMethodName(resultSet.getString("methodName"));
             methodInfoList.add(methodInfo);
         }
         return methodInfoList;

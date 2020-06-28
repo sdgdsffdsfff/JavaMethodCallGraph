@@ -85,9 +85,9 @@ public class FilterMethodInvocation implements Runnable {
             for(MethodInvocation methodInvocation:methodInvocationList){
                 MethodInfo callMethodInfo = null,calledMethodInfo = null;
                 for(MethodInfo methodInfo:methodInfoList){
-                    if(methodInvocation.getCallClassName().equals(methodInfo.getClassName())&&methodInvocation.getCallMethodName().equals(methodInfo.getMethodName())){
+                    if(methodInvocation.getCallClassName().equals(methodInfo.getClassName())&&methodInvocation.getCallMethodName().contains(methodInfo.getMethodName())){
                         callMethodInfo = methodInfo;
-                    }else if(methodInvocation.getCalledClassName().equals(methodInfo.getClassName())&&methodInvocation.getCalledMethodName().equals(methodInfo.getMethodName())){
+                    }else if(methodInvocation.getCalledClassName().equals(methodInfo.getClassName())&&methodInvocation.getCalledMethodName().contains(methodInfo.getMethodName())){
                         calledMethodInfo = methodInfo;
                     }
                 }
