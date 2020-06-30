@@ -87,12 +87,16 @@ public class ClassInfoDAO {
     }
 
 
-    public static void updateInvocationDept(String className, int invocationDept, Connection conn) throws SQLException {
+    public static void updateInvocationDept(Map<String,Integer> invocationDeptMap, Connection conn) throws SQLException {
         String sql = "UPDATE classinfo SET invocationDept = ? WHERE className = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setInt(1,invocationDept);
-        pst.setString(2,className);
-        pst.executeUpdate();
+        for(String className:invocationDeptMap.keySet()){
+            pst.setInt(1,invocationDeptMap.get(className));
+            pst.setString(2,className);
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        pst.clearBatch();
     }
 
     public static String getClassIDByProjectNameAndClassName(String projectName,String className,Connection conn) throws SQLException{

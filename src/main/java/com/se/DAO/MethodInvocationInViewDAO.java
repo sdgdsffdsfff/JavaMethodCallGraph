@@ -35,7 +35,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static int selectCalledCountsByClassName(String className, Connection conn) throws SQLException {
-        String sql = "select ID from methodinvocationinview where calledClassName = '" + className + "'";
+        String sql = "select ID from methodinvocationinview where calledClassName = '" + className + "' and callClassName != calledClassName";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         int count = 0;
@@ -46,7 +46,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static int selectCallCountsByClassName(String className, Connection conn) throws SQLException {
-        String sql = "select ID from methodinvocationinview where callClassName = '" + className + "'";
+        String sql = "select ID from methodinvocationinview where callClassName = '" + className + "' and callClassName != calledClassName";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         int count = 0;

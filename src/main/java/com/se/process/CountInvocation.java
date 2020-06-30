@@ -91,11 +91,12 @@ public class CountInvocation {
                     }
                 }
             }
+            Map<String,Integer> invocationDeptMap = new HashMap<>();
             for(GraphNode graphNode:graphNodeMap.values()){
-                ClassInfoDAO.updateInvocationDept(graphNode.getName(),graphNode.getCalledDept(),conn);
+                invocationDeptMap.put(graphNode.getName(),graphNode.getCalledDept());
             }
+            ClassInfoDAO.updateInvocationDept(invocationDeptMap,conn);
         }
     }
-
 
 }
