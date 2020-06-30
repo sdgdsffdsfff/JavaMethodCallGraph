@@ -86,6 +86,12 @@ public class ClassInfoDAO {
         pst.clearBatch();
     }
 
+    public static void updateDefaultInvokeDept(Connection conn) throws SQLException {
+        String sql = "update classinfo set invocationDept = '0' where invocationDept is null";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.executeUpdate();
+    }
+
 
     public static void updateInvocationDept(Map<String,Integer> invocationDeptMap, Connection conn) throws SQLException {
         String sql = "UPDATE classinfo SET invocationDept = ? WHERE className = ?";

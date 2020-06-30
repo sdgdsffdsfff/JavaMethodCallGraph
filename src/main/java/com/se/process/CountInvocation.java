@@ -97,6 +97,8 @@ public class CountInvocation {
             }
             ClassInfoDAO.updateInvocationDept(invocationDeptMap,conn);
         }
+        ClassInfoDAO.updateDefaultInvokeDept(conn);
+        System.out.println("调用深度统计完成");
     }
 
 }
