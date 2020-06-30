@@ -11,10 +11,7 @@ import com.se.utils.FileHelper;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CloneMining {
 
@@ -60,8 +57,11 @@ public class CloneMining {
         int count = 1;
         for(List<Integer> list:cloneGroupList){
             System.out.println("正在处理的克隆组是编号是：" + count++);
+            Set<String> projectNameSet = new HashSet<>();
+            List<MethodInfo> GroupMethodList = new ArrayList<>();
             for(Integer id:list){
                 MethodInfo methodInfo = MethodInfoDAO.getMethodInfoByCloneId(id,connection);
+                projectNameSet.add(methodInfo.getProjectName());
                 ClassInfo classInfo = ClassInfoDAO.getClassInfoByClassName(methodInfo.getClassName(),connection);
                 if(CalculateUtil.CalCouplingRate(classInfo.getInvokeCounts(),classInfo.getInvokedCounts()))
                     methodInfo.setAsset(true);
@@ -69,8 +69,18 @@ public class CloneMining {
                     methodInfo.setAsset(false);
                 methodInfo.setCloneGroupId(count);
                 if(methodInfo.getID()!=null)
-                    methodInfoList.add(methodInfo);
+                    GroupMethodList.add(methodInfo);
             }
+            if(projectNameSet.size()>1){
+                for(MethodInfo methodInfo:GroupMethodList){
+                    methodInfo.setIsSameProjectClone(0);
+                }
+            }else {
+                for(MethodInfo methodInfo:GroupMethodList){
+                    methodInfo.setIsSameProjectClone(1);
+                }
+            }
+            methodInfoList.addAll(GroupMethodList);
             //每挖掘出500个资产进行一次数据库update操作
             if(methodInfoList.size()%500 == 0){
                 MethodInfoDAO.updateAsset(methodInfoList,connection);

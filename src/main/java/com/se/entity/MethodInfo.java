@@ -31,6 +31,7 @@ public class MethodInfo {
     private boolean asset;
     private int cloneGroupId;
     private String methodContent;
+    private int isSameProjectClone;
 
 
     public String getProjectName() {
@@ -130,5 +131,13 @@ public class MethodInfo {
 
     public void setMethodContent(String methodContent) {
         this.methodContent = methodContent;
+    }
+
+    public int getIsSameProjectClone() {
+        return isSameProjectClone;
+    }
+
+    public void setIsSameProjectClone(int isSameProjectClone) {
+        this.isSameProjectClone = isSameProjectClone;
     }
 }

@@ -117,7 +117,7 @@ public class MethodInfoDAO {
     }
 
     public static MethodInfo getMethodInfoByCloneId(int cloneId, Connection connection) throws SQLException {
-        String sql = "select ID,className from methodinfo where cloneId = ?";
+        String sql = "select ID,className,projectName from methodinfo where cloneId = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1,cloneId);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -125,6 +125,7 @@ public class MethodInfoDAO {
         while(resultSet.next()){
             methodInfo.setID(String.valueOf(resultSet.getInt("ID")));
             methodInfo.setClassName(resultSet.getString("className"));
+            methodInfo.setProjectName(resultSet.getString("projectName"));
         }
         return methodInfo;
     }
