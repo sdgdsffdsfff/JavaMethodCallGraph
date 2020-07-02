@@ -36,9 +36,9 @@ public class Process {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         //分析源项目代码，抽取需要的信息
-        getMethodInvocation(conn);
+        //getMethodInvocation(conn);
         //匹配方法调用关系
-        //newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
+        newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
         //将projectNameList等分为多份，同时用多个线程并行处理
         List<List<String>> projectNameLists = ListUtils.divideList(newProjectNameList,threadNum);
         for(int i = 0;i<threadNum;i++){
