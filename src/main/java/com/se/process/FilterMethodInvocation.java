@@ -13,24 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FilterMethodInvocation implements Runnable {
+public class FilterMethodInvocation{
 
-    private List<String> projectNameList = new ArrayList<>();
-    private Connection connection;
-
-    public FilterMethodInvocation(List<String> projectNameList,Connection connection){
-        this.projectNameList = projectNameList;
-        this.connection = connection;
-    }
 
     /**
      * 过滤方法调用
      * @param conn
      * @throws SQLException
      * 已完成用多线程的方式加快匹配速度
-     * 但速度还是不够快，主要原因是数据库的select语句太多
      */
-    private void filterMethodInvocation(Connection conn,List<String> projectNameList) throws SQLException {
+    public static void filterMethodInvocation(Connection conn, List<String> projectNameList) throws SQLException {
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
         StopWatch stopWatch = new StopWatch();
         for(String projectName : projectNameList){
@@ -118,13 +110,4 @@ public class FilterMethodInvocation implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        try {
-            doFilter(connection,projectNameList);
-            //filterMethodInvocation(connection,projectNameList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

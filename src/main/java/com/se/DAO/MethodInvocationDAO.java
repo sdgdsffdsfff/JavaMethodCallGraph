@@ -16,7 +16,7 @@ public class MethodInvocationDAO {
 
 
     //todo:过滤掉JDK的方法调用，JDK的方法调用不入库
-    public static void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
+    public synchronized static void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
         String sql = null;
         PreparedStatement pst = null;
         MethodCall tempMethodCall = null;
@@ -75,10 +75,8 @@ public class MethodInvocationDAO {
 //        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
 
         String sql = "select * from methodinvocationinfo where projectName = ?";
-
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setString(1, projectName);
-
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()){
             MethodInvocation methodInvocation = new MethodInvocation();

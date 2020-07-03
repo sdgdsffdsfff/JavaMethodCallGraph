@@ -54,7 +54,7 @@ public class ClassInfoDAO {
      * 存储一个项目内的所有类
      * @param classInfoList
      */
-    public static void saveClassInfoList(List<ClassInfo> classInfoList, Connection conn) throws SQLException{
+    public synchronized static void saveClassInfoList(List<ClassInfo> classInfoList, Connection conn) throws SQLException{
         String sql = "insert into classinfo (projectName,className,isInterface,filePath) values (?,?,?,?)";
         if(classInfoList != null && !classInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);

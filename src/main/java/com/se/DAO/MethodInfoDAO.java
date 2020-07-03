@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class MethodInfoDAO {
 
-    public static void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
+    public synchronized static void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
         String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,methodContent,beginLine,endLine) values (?,?,?,?,?,?,?,?,?)";
         if(methodInfoList != null && !methodInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
