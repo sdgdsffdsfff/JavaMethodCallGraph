@@ -8,34 +8,28 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.se.container.MethodCallContainer;
-import com.se.container.MethodInfoContainer2;
+import com.se.container.MethodInfoContainer;
 import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
-
-import java.sql.Connection;
 import java.util.*;
 
 public class MethodVisitor extends VoidVisitorAdapter {
 
-    private Connection conn;
     private String projectName;
-    private String fileName;
     private String pkg; //包名
     private String clazz;   //类名
     private List<String> classInfoList;
-
     private Map<String, String> importsWithoutAsterisk = new HashMap<>();
     private Map<String, String> importsWithAsterisk = new HashMap<>();
     private Map<String, Variable> fieldMap = new HashMap<>(); //方法所属的类中定义的字段
     private Map<String, Variable> methodVariableMap = new HashMap<>();    //调用者方法里面定义的变量
     private Map<String, Variable> calledMethodParamMap = new HashMap<>();   //被调用方法的参数
 
-    public MethodVisitor(String projectName, String fileName,List<String> classInfoList, Connection conn){
+
+    public MethodVisitor(String projectName,List<String> classInfoList){
         this.projectName = projectName;
-        this.fileName = fileName;
-        this.conn = conn;
         this.classInfoList = classInfoList;
     }
 
@@ -212,7 +206,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
 
         MethodInfo methodInfo = new MethodInfo(projectName,callerMethod);
 //        MethodInfoContainer.getContainer().addMethodInfo(methodInfo);
-        MethodInfoContainer2.getContainer().addMethodInfo(projectName, methodInfo);
+        MethodInfoContainer.getContainer().addMethodInfo(projectName, methodInfo);
 
         //add method scope variables to list
         Map<String, Variable> methodParams = new HashMap<>();
@@ -322,7 +316,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
             else
                 calledMethod.setClazz(methodVar.getClazz());
             calledMethod.setPkg(methodVar.getPkg());
-            MethodCallContainer.getContainer().addMethodCall(callerMethod, calledMethod);
+            MethodCallContainer.getContainer().addMethodCall(projectName, callerMethod, calledMethod);
             //System.err.println(calledMethod.getPackageAndClassName() + "..." + calledMethod.getPkg() + ".." + methodVar.getName());
         }
 

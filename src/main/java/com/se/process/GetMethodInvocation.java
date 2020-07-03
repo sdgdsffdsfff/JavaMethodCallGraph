@@ -7,17 +7,20 @@ import com.se.DAO.MethodInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.config.DataConfig;
 import com.se.container.MethodCallContainer;
-import com.se.container.MethodInfoContainer2;
+import com.se.container.MethodInfoContainer;
 import com.se.entity.ClassInfo;
+import com.se.entity.MethodCall;
+import com.se.entity.MethodInfo;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetMethodInvocation implements Runnable {
 
@@ -52,18 +55,21 @@ public class GetMethodInvocation implements Runnable {
 //                continue;
             newProjectNameList.add(projectName);
             System.out.println("正在处理的项目为：" + f);
-            List<ClassInfo> classInfos = new ArrayList<>();
+            List<ClassInfo> classInfosContainer = new ArrayList<>();
             for (String filePath : FileHelper.getSubFile(f, "java")) {
+                if(filePath.contains("\\test")){
+                    continue;
+                }
                 File file = new File(filePath);
                 //存储类
-                processClassInfo(file, classInfos, conn);
+                processClassInfo(file, classInfosContainer);
             }
             //存储当前项目中的所有类
-            System.out.println("存入数据库的项目为:" + f);
-            ClassInfoDAO.saveClassInfoList(classInfos, conn);
+            ClassInfoDAO.saveClassInfoList(classInfosContainer, conn);
             //从获取该项目中的所有类
             List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
-
+            List<MethodInfo> methodInfoListContainer = new ArrayList<>();
+            Map<String, MethodCall> methodCallMapContainer = new HashMap<>();
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 if(filePath.contains("\\test")){
                     continue;
@@ -71,17 +77,16 @@ public class GetMethodInvocation implements Runnable {
                 System.out.println("正在处理的文件为：" + filePath);
                 File file = new File(filePath);
                 //获取方法调用
-                processMethodCallTree(file, classInfoList, conn);
+                processMethodCallTree(file, classInfoList);
             }
             //存储当前项目中的所有方法
-            MethodInfoDAO.saveMethodInfoList(MethodInfoContainer2.getContainer().getMethodInfoListByProjectName(projectName), conn);
-            //MethodInfoDAO.saveMethodInfoList(new ArrayList<>(MethodInfoContainer.getContainer().getMethodInfoList()), conn);
+            MethodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoListByProjectName(projectName), conn);
 
             //存储当前项目中的所有方法调用
-            MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
+            MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);
 
-            MethodInfoContainer2.getContainer().clearMethodInfoListByProjectName(projectName);
-            //MethodInfoContainer.getContainer().clear();
+            MethodInfoContainer.getContainer().clearMethodInfoListByProjectName(projectName);
+            MethodCallContainer.getContainer().clearMethodCallByProjectName(projectName);
 
         }
         System.out.println("数据处理完成...");
@@ -90,10 +95,9 @@ public class GetMethodInvocation implements Runnable {
     /**
      * 使用JavaParser获取项目中所有的类
      * @param file
-     * @param conn
      */
-    private void processClassInfo(File file,List<ClassInfo> classInfos,Connection conn){
-        ClassVisitor visitor = new ClassVisitor(projectName,file.getPath(),conn);
+    private void processClassInfo(File file,List<ClassInfo> classInfos){
+        ClassVisitor visitor = new ClassVisitor(projectName,file.getPath());
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
@@ -106,10 +110,9 @@ public class GetMethodInvocation implements Runnable {
     /**
      * 使用JavaParser获取方法调用
      * @param file
-     * @param conn
      */
-    private void processMethodCallTree(File file, List<String> classInfoList, Connection conn){
-        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(), classInfoList, conn);
+    private void processMethodCallTree(File file, List<String> classInfoList){
+        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
@@ -121,7 +124,6 @@ public class GetMethodInvocation implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println(folders.toString());
             getMethodInvocation(folders,connection);
             //匹配方法调用关系
             //newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);

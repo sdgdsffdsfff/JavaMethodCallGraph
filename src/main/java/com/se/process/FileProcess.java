@@ -45,17 +45,17 @@ public class FileProcess {
                 processMethodCallTree(file,conn);
             }
             MethodInvocationDAO methodInvocationDAO = new MethodInvocationDAO();
-            methodInvocationDAO.saveMethodInvocation(projectName,MethodCallContainer.getContainer().getMethodCalls(),conn);
+           // methodInvocationDAO.saveMethodInvocation(projectName,MethodCallContainer.getContainer().getMethodCalls(),conn);
         }
         System.out.println("数据处理完成...");
     }
 
     public static void processMethodCallTree(File file,Connection conn) throws IOException, SQLException {
         List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
-        MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),classInfoList,conn);
+        //MethodVisitor visitor = new MethodVisitor(projectName,file.getName(),classInfoList,conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
-            visitor.visit(cu, null);
+            //visitor.visit(cu, null);
         } catch (Exception ex){
             //ex.printStackTrace();
         }

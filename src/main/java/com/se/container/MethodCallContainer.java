@@ -1,18 +1,18 @@
 package com.se.container;
 
-import com.alibaba.fastjson.JSONArray;
 import com.se.entity.Method;
 import com.se.entity.MethodCall;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MethodCallContainer {
-    private ConcurrentHashMap<String, MethodCall> methodCalls;
+    private ConcurrentHashMap<String, Map<String, MethodCall>> projectName2MethodCallMap;
     private static MethodCallContainer container;
 
     private MethodCallContainer() {
-        methodCalls = new ConcurrentHashMap<String, MethodCall>();
+        projectName2MethodCallMap = new ConcurrentHashMap<>();
     }
 
     public synchronized static MethodCallContainer getContainer() {
@@ -22,51 +22,47 @@ public class MethodCallContainer {
         return container;
     }
 
-    public synchronized ConcurrentHashMap<String, MethodCall> getMethodCalls()
+    public synchronized Map<String, MethodCall> getMethodCallsByProjectName(String projectName)
     {
-        return methodCalls;
+        return projectName2MethodCallMap.get(projectName);
     }
 
-    public synchronized void addMethodCall(Method caller, Method called) {
-        MethodCall methodCall = methodCalls.get(caller.getQualifiedName());
-        if(methodCall != null) {
-            if(!methodCall.containsCalled(called)) {
+    public synchronized void addMethodCall(String projectName, Method caller, Method called) {
+        if(projectName2MethodCallMap.containsKey(projectName)){
+            Map<String,MethodCall> methodCallMap = projectName2MethodCallMap.get(projectName);
+            MethodCall methodCall = methodCallMap.get(caller.getQualifiedName());
+            if(methodCall != null) {
+                if(!methodCall.containsCalled(called)) {
+                    methodCall.addCalled(called);
+                    methodCallMap.put(caller.getQualifiedName(), methodCall);
+                }
+            } else {
+                methodCall = new MethodCall();
+                methodCall.setCaller(caller);
                 methodCall.addCalled(called);
+                methodCallMap.put(caller.getQualifiedName(), methodCall);
             }
-        } else {
-            methodCall = new MethodCall();
+            projectName2MethodCallMap.put(projectName,methodCallMap);
+        }else {
+            Map<String,MethodCall> methodCallMap = new HashMap<>();
+            MethodCall methodCall = new MethodCall();
             methodCall.setCaller(caller);
             methodCall.addCalled(called);
-            methodCalls.put(caller.getQualifiedName(), methodCall);
+            methodCallMap.put(caller.getQualifiedName(), methodCall);
+            projectName2MethodCallMap.put(projectName,methodCallMap);
         }
     }
 
-    public synchronized MethodCall getMethodCall(String caller) {
-        return methodCalls.get(caller);
+    public synchronized MethodCall getMethodCall(String projectName, String caller) {
+        if(projectName2MethodCallMap.containsKey(projectName)){
+            return projectName2MethodCallMap.get(projectName).get(caller);
+        }else {
+            return null;
+        }
     }
 
-    @Override
-    public String toString() {
-        JSONArray projectMethodCallArray = new JSONArray();
-
-        if(methodCalls != null && !methodCalls.isEmpty()) {
-            Collection<MethodCall> calls = methodCalls.values();
-
-            for(MethodCall call : calls) {
-                projectMethodCallArray.add(call.toJSON());
-            }
-        }
-        return projectMethodCallArray.toString();
-    }
-
-    public String toJSON(){
-        JSONArray projectMethodCallArray = new JSONArray();
-        if(methodCalls != null && !methodCalls.isEmpty()) {
-            Collection<MethodCall> calls = methodCalls.values();
-            for(MethodCall call : calls) {
-                projectMethodCallArray.add(call.toJSON());
-            }
-        }
-        return projectMethodCallArray.toString();
+    public synchronized void clearMethodCallByProjectName(String projectName){
+        projectName2MethodCallMap.get(projectName).clear();
+        projectName2MethodCallMap.remove(projectName);
     }
 }

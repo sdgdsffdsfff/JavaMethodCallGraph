@@ -68,6 +68,7 @@ public class FilterMethodInvocation{
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
         StopWatch stopWatch = new StopWatch();
         for(String projectName : projectNameList){
+            projectName = projectName.substring(projectName.lastIndexOf("\\") + 1);
             stopWatch.start();
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             //根据项目名获取该项目中的所有方法调用

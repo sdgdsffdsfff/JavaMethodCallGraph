@@ -5,20 +5,17 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.se.entity.ClassInfo;
 
-import java.sql.Connection;
-
 public class ClassVisitor extends VoidVisitorAdapter {
-    private Connection conn;
+
     private String projectName;
     private String filePath;
     private String pkg; //包名
     private String clazz;   //类名
     private ClassInfo classInfo;
 
-    public ClassVisitor(String projectName, String filePath, Connection conn){
+    public ClassVisitor(String projectName, String filePath){
         this.projectName = projectName;
         this.filePath = filePath;
-        this.conn = conn;
     }
 
     /**
