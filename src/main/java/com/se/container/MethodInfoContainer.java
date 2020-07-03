@@ -18,15 +18,15 @@ public class MethodInfoContainer {
         return container;
     }
 
-    public void addMethodInfo(MethodInfo methodInfo){
+    public synchronized void addMethodInfo(MethodInfo methodInfo){
         methodInfoList.add(methodInfo);
     }
 
-    public List<MethodInfo> getMethodInfoList(){
+    public synchronized List<MethodInfo> getMethodInfoList(){
         return methodInfoList;
     }
 
-    public void clear(){
+    public synchronized void clear(){
         methodInfoList.clear();
     }
 }

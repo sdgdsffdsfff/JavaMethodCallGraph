@@ -60,7 +60,7 @@ public class ClassInfoDAO {
             PreparedStatement pst = conn.prepareStatement(sql);
             for(ClassInfo classInfo : classInfoList){
                 //过滤过长的方法名，过滤匿名函数，过滤链式调用
-                if(classInfo.getClassName().length()>100 || classInfo.getClassName().contains("{")||classInfo.getClassName().contains("}")||classInfo.getClassName().contains("(")
+                if(classInfo == null||classInfo.getClassName().length()>100 || classInfo.getClassName().contains("{")||classInfo.getClassName().contains("}")||classInfo.getClassName().contains("(")
                         ||classInfo.getClassName().contains(")"))continue;
                 pst.setString(1,classInfo.getProjectName());
                 pst.setString(2,classInfo.getClassName());

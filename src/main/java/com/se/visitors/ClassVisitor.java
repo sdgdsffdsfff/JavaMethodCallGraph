@@ -3,7 +3,6 @@ package com.se.visitors;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.se.container.ClassInfoContainer;
 import com.se.entity.ClassInfo;
 
 import java.sql.Connection;
@@ -14,6 +13,7 @@ public class ClassVisitor extends VoidVisitorAdapter {
     private String filePath;
     private String pkg; //包名
     private String clazz;   //类名
+    private ClassInfo classInfo;
 
     public ClassVisitor(String projectName, String filePath, Connection conn){
         this.projectName = projectName;
@@ -51,7 +51,15 @@ public class ClassVisitor extends VoidVisitorAdapter {
         classInfo.setProjectName(this.projectName);
         this.filePath = this.filePath.replace("\\","|");
         classInfo.setFilePath(this.filePath);
-        ClassInfoContainer.getContainer().addClassInfo(classInfo);
+        this.classInfo = classInfo;
         super.visit(n, arg);
+    }
+
+    public ClassInfo getClassInfo() {
+        return classInfo;
+    }
+
+    public void setClassInfo(ClassInfo classInfo) {
+        this.classInfo = classInfo;
     }
 }

@@ -6,9 +6,9 @@ import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.config.DataConfig;
-import com.se.container.ClassInfoContainer;
 import com.se.container.MethodCallContainer;
 import com.se.container.MethodInfoContainer;
+import com.se.entity.ClassInfo;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
@@ -16,9 +16,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class GetMethodInvocation implements Runnable {
 
@@ -48,18 +46,20 @@ public class GetMethodInvocation implements Runnable {
         oldProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
         for(String f:folders) {
             projectName = getProjectNameFromProjectPath(f);
-            //数据库中已有的项目不进行检测
+//            数据库中已有的项目不进行检测
 //            if(oldProjectNameList!=null && oldProjectNameList.contains(projectName))
 //                continue;
             newProjectNameList.add(projectName);
             System.out.println("正在处理的项目为：" + f);
+            List<ClassInfo> classInfos = new ArrayList<>();
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 File file = new File(filePath);
                 //存储类
-                processClassInfo(file, conn);
+                processClassInfo(file, classInfos, conn);
             }
             //存储当前项目中的所有类
-            ClassInfoDAO.saveClassInfoList(new ArrayList<>(ClassInfoContainer.getContainer().getClassInfoList()), conn);
+            System.out.println("存入数据库的项目为:" + f);
+            ClassInfoDAO.saveClassInfoList(classInfos, conn);
             //从获取该项目中的所有类
             List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
 
@@ -76,7 +76,6 @@ public class GetMethodInvocation implements Runnable {
             MethodInfoDAO.saveMethodInfoList(new ArrayList<>(MethodInfoContainer.getContainer().getMethodInfoList()), conn);
             //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
-            ClassInfoContainer.getContainer().clear();
             MethodInfoContainer.getContainer().clear();
         }
         System.out.println("数据处理完成...");
@@ -87,7 +86,7 @@ public class GetMethodInvocation implements Runnable {
      * @param file
      * @param conn
      */
-    private void processClassInfo(File file,Connection conn){
+    private void processClassInfo(File file,List<ClassInfo> classInfos,Connection conn){
         ClassVisitor visitor = new ClassVisitor(projectName,file.getPath(),conn);
         try{
             CompilationUnit cu = JavaParser.parse(file);
@@ -95,6 +94,7 @@ public class GetMethodInvocation implements Runnable {
         }catch (Exception ex){
             //ex.printStackTrace();
         }
+        classInfos.add(visitor.getClassInfo());
     }
 
     /**

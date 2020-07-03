@@ -22,12 +22,12 @@ public class MethodCallContainer {
         return container;
     }
 
-    public ConcurrentHashMap<String, MethodCall> getMethodCalls()
+    public synchronized ConcurrentHashMap<String, MethodCall> getMethodCalls()
     {
         return methodCalls;
     }
 
-    public void addMethodCall(Method caller, Method called) {
+    public synchronized void addMethodCall(Method caller, Method called) {
         MethodCall methodCall = methodCalls.get(caller.getQualifiedName());
         if(methodCall != null) {
             if(!methodCall.containsCalled(called)) {
@@ -41,7 +41,7 @@ public class MethodCallContainer {
         }
     }
 
-    public MethodCall getMethodCall(String caller) {
+    public synchronized MethodCall getMethodCall(String caller) {
         return methodCalls.get(caller);
     }
 
