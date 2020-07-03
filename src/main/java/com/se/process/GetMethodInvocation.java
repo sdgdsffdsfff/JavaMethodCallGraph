@@ -7,11 +7,12 @@ import com.se.DAO.MethodInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.config.DataConfig;
 import com.se.container.MethodCallContainer;
-import com.se.container.MethodInfoContainer;
+import com.se.container.MethodInfoContainer2;
 import com.se.entity.ClassInfo;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class GetMethodInvocation implements Runnable {
 
-    private static String projectName;
+    private String projectName;
     private static String getProjectNameFromProjectPath(String projectPath)
     {
         return new File(projectPath).getName();
@@ -73,10 +74,15 @@ public class GetMethodInvocation implements Runnable {
                 processMethodCallTree(file, classInfoList, conn);
             }
             //存储当前项目中的所有方法
-            MethodInfoDAO.saveMethodInfoList(new ArrayList<>(MethodInfoContainer.getContainer().getMethodInfoList()), conn);
+            MethodInfoDAO.saveMethodInfoList(MethodInfoContainer2.getContainer().getMethodInfoListByProjectName(projectName), conn);
+            //MethodInfoDAO.saveMethodInfoList(new ArrayList<>(MethodInfoContainer.getContainer().getMethodInfoList()), conn);
+
             //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
-            MethodInfoContainer.getContainer().clear();
+
+            MethodInfoContainer2.getContainer().clearMethodInfoListByProjectName(projectName);
+            //MethodInfoContainer.getContainer().clear();
+
         }
         System.out.println("数据处理完成...");
     }

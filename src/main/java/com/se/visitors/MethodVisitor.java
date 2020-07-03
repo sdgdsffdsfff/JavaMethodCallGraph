@@ -8,11 +8,12 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.se.container.MethodCallContainer;
-import com.se.container.MethodInfoContainer;
+import com.se.container.MethodInfoContainer2;
 import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
+
 import java.sql.Connection;
 import java.util.*;
 
@@ -210,7 +211,8 @@ public class MethodVisitor extends VoidVisitorAdapter {
         callerMethod.setReturnType(n.getType());
 
         MethodInfo methodInfo = new MethodInfo(projectName,callerMethod);
-        MethodInfoContainer.getContainer().addMethodInfo(methodInfo);
+//        MethodInfoContainer.getContainer().addMethodInfo(methodInfo);
+        MethodInfoContainer2.getContainer().addMethodInfo(projectName, methodInfo);
 
         //add method scope variables to list
         Map<String, Variable> methodParams = new HashMap<>();
