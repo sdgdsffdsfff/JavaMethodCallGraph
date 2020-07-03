@@ -17,6 +17,7 @@ public class MethodInvocationDAO {
 
     //todo:过滤掉JDK的方法调用，JDK的方法调用不入库
     public synchronized static void saveMethodInvocation(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
+        System.out.println("保存到数据库的项目名为：" + projectName);
         String sql = null;
         PreparedStatement pst = null;
         MethodCall tempMethodCall = null;

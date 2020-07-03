@@ -10,17 +10,15 @@ import com.se.container.ClassInfoContainer;
 import com.se.container.MethodCallContainer;
 import com.se.container.MethodInfoContainer;
 import com.se.utils.FileHelper;
-import com.se.utils.ListUtils;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GetMethodInvocation implements Runnable {
 
@@ -77,7 +75,7 @@ public class GetMethodInvocation implements Runnable {
             //存储当前项目中的所有方法
             MethodInfoDAO.saveMethodInfoList(new ArrayList<>(MethodInfoContainer.getContainer().getMethodInfoList()), conn);
             //存储当前项目中的所有方法调用
-            MethodInvocationDAO.saveMethodInvocation(projectName, new HashMap<>(MethodCallContainer.getContainer().getMethodCalls()),conn);
+            MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCalls(),conn);
             ClassInfoContainer.getContainer().clear();
             MethodInfoContainer.getContainer().clear();
         }
@@ -117,15 +115,16 @@ public class GetMethodInvocation implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println(folders.toString());
             getMethodInvocation(folders,connection);
             //匹配方法调用关系
             //newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
             //将projectNameList等分为多份，同时用多个线程并行处理
-            FilterMethodInvocation.filterMethodInvocation(this.connection,newProjectNameList);
+            FilterMethodInvocation.doFilter(this.connection,new ArrayList<>(folders));
             //根据配置信息决定是否需要统计调用次数和调用深度
             if(DataConfig.analyseInvocationCounts){
-                CountInvocation.countInvokeCounts(this.connection);
-                CountInvocation.countInvocationDept(this.connection);
+//                CountInvocation.countInvokeCounts(this.connection);
+//                CountInvocation.countInvocationDept(this.connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();

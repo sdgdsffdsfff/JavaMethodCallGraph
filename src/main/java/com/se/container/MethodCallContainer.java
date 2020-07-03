@@ -5,15 +5,14 @@ import com.se.entity.Method;
 import com.se.entity.MethodCall;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MethodCallContainer {
-    private Map<String, MethodCall> methodCalls;
+    private ConcurrentHashMap<String, MethodCall> methodCalls;
     private static MethodCallContainer container;
 
     private MethodCallContainer() {
-        methodCalls = new HashMap<String, MethodCall>();
+        methodCalls = new ConcurrentHashMap<String, MethodCall>();
     }
 
     public synchronized static MethodCallContainer getContainer() {
@@ -23,7 +22,7 @@ public class MethodCallContainer {
         return container;
     }
 
-    public Map<String, MethodCall> getMethodCalls()
+    public ConcurrentHashMap<String, MethodCall> getMethodCalls()
     {
         return methodCalls;
     }
