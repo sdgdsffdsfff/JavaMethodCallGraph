@@ -37,7 +37,9 @@ public class MethodInfoContainer {
     }
 
     public synchronized void clearMethodInfoListByProjectName(String projectName){
-        projectName2MethodInfoMap.get(projectName).clear();
-        projectName2MethodInfoMap.remove(projectName);
+        if(projectName2MethodInfoMap.get(projectName)!=null){
+            projectName2MethodInfoMap.get(projectName).clear();
+            projectName2MethodInfoMap.remove(projectName);
+        }
     }
 }
