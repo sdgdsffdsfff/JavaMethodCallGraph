@@ -15,9 +15,8 @@ public class CountInvocation {
 
 
     //统计每个类的调用次数与被调用次数
-    public static void countInvokeCounts(Connection conn) throws SQLException {
+    public static void countInvokeCounts(List<String> projectNameList, Connection conn) throws SQLException {
         System.out.println("正在进行调用次数统计");
-        List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
         for(String projectName:projectNameList){
             System.out.println("正在处理的项目名称为：" + projectName);
             Map<Integer,String> idMap = ClassInfoDAO.getClassInfoByProjectName(projectName,conn);
@@ -37,9 +36,8 @@ public class CountInvocation {
     }
 
     //统计每个类被调用的深度
-    public static void countInvocationDept(Connection conn) throws SQLException {
+    public static void countInvocationDept(List<String> projectNameList,Connection conn) throws SQLException {
         System.out.println("正在统计调用深度");
-        List<String> projectNameList = MethodInvocationInViewDAO.selectAllProjectName(conn);
         Map<String,GraphNode> graphNodeMap = new HashMap<>();
         Map<String,GraphNode> calledMethodMap = new HashMap<>();
         Map<String,GraphNode> callMethodMap = new HashMap<>();

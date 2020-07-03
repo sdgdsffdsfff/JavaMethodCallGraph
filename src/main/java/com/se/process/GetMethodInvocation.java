@@ -1,5 +1,4 @@
 package com.se.process;
-
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.ClassInfoDAO;
@@ -9,8 +8,6 @@ import com.se.config.DataConfig;
 import com.se.container.MethodCallContainer;
 import com.se.container.MethodInfoContainer;
 import com.se.entity.ClassInfo;
-import com.se.entity.MethodCall;
-import com.se.entity.MethodInfo;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
@@ -18,19 +15,16 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GetMethodInvocation implements Runnable {
 
     private String projectName;
+
     private static String getProjectNameFromProjectPath(String projectPath)
     {
         return new File(projectPath).getName();
     }
-    private static List<String> newProjectNameList = new ArrayList<>();
-    private static List<String> oldProjectNameList = new ArrayList<>();
     private Connection connection;
     private List<String> folders;
 
@@ -47,13 +41,8 @@ public class GetMethodInvocation implements Runnable {
     public void getMethodInvocation(List<String> projectNameList,Connection conn) throws SQLException {
         System.out.println("线程处理的项目数为：" + projectNameList.size());
         //获取数据库中已有的项目名列表
-        oldProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
         for(String f:folders) {
             projectName = getProjectNameFromProjectPath(f);
-//            数据库中已有的项目不进行检测
-//            if(oldProjectNameList!=null && oldProjectNameList.contains(projectName))
-//                continue;
-            newProjectNameList.add(projectName);
             System.out.println("正在处理的项目为：" + f);
             List<ClassInfo> classInfosContainer = new ArrayList<>();
             for (String filePath : FileHelper.getSubFile(f, "java")) {
@@ -68,8 +57,6 @@ public class GetMethodInvocation implements Runnable {
             ClassInfoDAO.saveClassInfoList(classInfosContainer, conn);
             //从获取该项目中的所有类
             List<String> classInfoList = ClassInfoDAO.getAllClassInfoList(projectName, conn);
-            List<MethodInfo> methodInfoListContainer = new ArrayList<>();
-            Map<String, MethodCall> methodCallMapContainer = new HashMap<>();
             for (String filePath : FileHelper.getSubFile(f, "java")) {
                 if(filePath.contains("\\test")){
                     continue;
@@ -124,15 +111,25 @@ public class GetMethodInvocation implements Runnable {
     @Override
     public void run() {
         try {
-            getMethodInvocation(folders,connection);
+            List<String> oldProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
+            List<String> newProjectNameList = new ArrayList<>();
+            List<String> newFolders = new ArrayList<>();
+            //过滤数据库中已有项目
+            for(String folder:folders){
+                String name = getProjectNameFromProjectPath(folder);
+                if(!oldProjectNameList.contains(name)){
+                    newFolders.add(folder);
+                    newProjectNameList.add(name);
+                }
+            }
+            this.folders = newFolders;
+            getMethodInvocation(newProjectNameList,connection);
             //匹配方法调用关系
-            //newProjectNameList = ClassInfoDAO.getAllProjectNameFromDB(conn);
-            //将projectNameList等分为多份，同时用多个线程并行处理
-            FilterMethodInvocation.doFilter(this.connection,new ArrayList<>(folders));
+            FilterMethodInvocation.doFilter(this.connection,newProjectNameList);
             //根据配置信息决定是否需要统计调用次数和调用深度
             if(DataConfig.analyseInvocationCounts){
-//                CountInvocation.countInvokeCounts(this.connection);
-//                CountInvocation.countInvocationDept(this.connection);
+                CountInvocation.countInvokeCounts(newProjectNameList,this.connection);
+                CountInvocation.countInvocationDept(newProjectNameList,this.connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();
