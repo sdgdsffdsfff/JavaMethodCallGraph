@@ -20,16 +20,24 @@ public class Process {
         BuildConnection buildConnection = new BuildConnection();
         Connection conn = buildConnection.buildConnect();
         ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-        LinkedList<String> folders = new LinkedList<>();
-        File dir = new File(DataConfig.sourceProjectParentPath);
-        FileHandler.getFolders(dir,folders);
-        System.out.println("项目数为："+folders.size());
-        List<List<String>> folderList = ListUtils.divideList(folders,threadNum);
-        //分析源项目代码，抽取需要的信息
-        for(int i = 0;i<threadNum;i++){
-            cachedThreadPool.execute(new GetMethodInvocation(folderList.get(i),conn));
+        if(!DataConfig.analyseSingleProject){
+            LinkedList<String> folders = new LinkedList<>();
+            File dir = new File(DataConfig.sourceProjectParentPath);
+            FileHandler.getFolders(dir,folders);
+            System.out.println("项目数为："+folders.size());
+            List<List<String>> folderList = ListUtils.divideList(folders,threadNum);
+            //分析源项目代码，抽取需要的信息
+            for(int i = 0;i<threadNum;i++){
+                cachedThreadPool.execute(new GetMethodInvocation(folderList.get(i),conn));
+            }
+            cachedThreadPool.shutdown();
+        }else {
+            System.out.println("对单个项目进行分析");
+            LinkedList<String> folders = new LinkedList<>();
+            folders.add(DataConfig.sourceProjectPath);
+            cachedThreadPool.execute(new GetMethodInvocation(folders,conn));
+            cachedThreadPool.shutdown();
         }
-        cachedThreadPool.shutdown();
     }
 
 }

@@ -62,7 +62,9 @@ public class MethodCallContainer {
     }
 
     public synchronized void clearMethodCallByProjectName(String projectName){
-        projectName2MethodCallMap.get(projectName).clear();
-        projectName2MethodCallMap.remove(projectName);
+        if(projectName2MethodCallMap.containsKey(projectName)) {
+            projectName2MethodCallMap.get(projectName).clear();
+            projectName2MethodCallMap.remove(projectName);
+        }
     }
 }

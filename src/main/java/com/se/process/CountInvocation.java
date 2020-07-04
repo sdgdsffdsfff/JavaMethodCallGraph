@@ -18,7 +18,7 @@ public class CountInvocation {
     public static void countInvokeCounts(List<String> projectNameList, Connection conn) throws SQLException {
         System.out.println("正在进行调用次数统计");
         for(String projectName:projectNameList){
-            System.out.println("正在处理的项目名称为：" + projectName);
+            System.out.println("正在进行调用次数统计的项目名称为：" + projectName);
             Map<Integer,String> idMap = ClassInfoDAO.getClassInfoByProjectName(projectName,conn);
             List<List<Integer>> invokeInfoList = new ArrayList<>();
             for(Integer Id:idMap.keySet()){
@@ -42,7 +42,7 @@ public class CountInvocation {
         Map<String,GraphNode> calledMethodMap = new HashMap<>();
         Map<String,GraphNode> callMethodMap = new HashMap<>();
         for(String projectName:projectNameList){
-            System.out.println("正在处理的项目名为：" + projectName);
+            System.out.println("正在进行调用深度统计的项目名为：" + projectName);
             List<MethodInvocationInView> methodInvocationInViewList = MethodInvocationInViewDAO.getMethodInvocationInViewByProjectName(projectName,conn);
             for(MethodInvocationInView methodInvocationInView:methodInvocationInViewList){
                 //过滤类内调用
