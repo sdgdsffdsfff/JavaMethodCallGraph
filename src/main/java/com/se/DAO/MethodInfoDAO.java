@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class MethodInfoDAO {
 
-    public synchronized static void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
+    public void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
         String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,methodContent,beginLine,endLine) values (?,?,?,?,?,?,?,?,?)";
         if(methodInfoList != null && !methodInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
@@ -33,7 +33,7 @@ public class MethodInfoDAO {
         }
     }
 
-    public static List<MethodInfo> getMethodInfoByNameAndClass(String projectName,String className,String methodName,Connection conn){
+    public List<MethodInfo> getMethodInfoByNameAndClass(String projectName,String className,String methodName,Connection conn){
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'";
 
         String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ?";
@@ -63,7 +63,7 @@ public class MethodInfoDAO {
         return methodInfoList;
     }
 
-    public static List<MethodInfo> getMethodIdListByClassName(String className,Connection connection) throws SQLException {
+    public List<MethodInfo> getMethodIdListByClassName(String className,Connection connection) throws SQLException {
         String sql = "select ID,beginLine,endLine from methodinfo where className = ?";
         PreparedStatement pst = connection.prepareStatement(sql);
         pst.setString(1,className);
@@ -79,7 +79,7 @@ public class MethodInfoDAO {
         return methodInfos;
     }
 
-    public static void updateCloneId(Map<Integer,Integer> cloneIdMap, Connection connection) throws SQLException {
+    public void updateCloneId(Map<Integer,Integer> cloneIdMap, Connection connection) throws SQLException {
         String sql = "UPDATE methodinfo SET cloneId = ? where ID = ?";
         PreparedStatement pst = connection.prepareStatement(sql);
         for(Integer id:cloneIdMap.keySet()){
@@ -91,7 +91,7 @@ public class MethodInfoDAO {
         pst.clearBatch();
     }
 
-    public static MethodInfo getMethodInfoByNameClassReturnParameters(String projectName,String className,String methodName,String returnType,String methodParameters,Connection conn) throws SQLException {
+    public MethodInfo getMethodInfoByNameClassReturnParameters(String projectName,String className,String methodName,String returnType,String methodParameters,Connection conn) throws SQLException {
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'and returnType = '" + returnType + "'and methodParameters = '" + methodParameters +"'";
 
         String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and returnType = ? and methodParameters = ?";
@@ -116,7 +116,7 @@ public class MethodInfoDAO {
         return null;
     }
 
-    public static MethodInfo getMethodInfoByCloneId(int cloneId, Connection connection) throws SQLException {
+    public MethodInfo getMethodInfoByCloneId(int cloneId, Connection connection) throws SQLException {
         String sql = "select ID,className,projectName from methodinfo where cloneId = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1,cloneId);
@@ -130,7 +130,7 @@ public class MethodInfoDAO {
         return methodInfo;
     }
 
-    public static List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
+    public List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
         String sql = "select ID,methodName,className from methodinfo where projectName = ?";
         List<MethodInfo> methodInfoList = new ArrayList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -146,7 +146,7 @@ public class MethodInfoDAO {
         return methodInfoList;
     }
 
-    public static void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
+    public void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
         conn.setAutoCommit(false);
         String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ? WHERE ID = ?";
         PreparedStatement pst = conn.prepareStatement(sql);

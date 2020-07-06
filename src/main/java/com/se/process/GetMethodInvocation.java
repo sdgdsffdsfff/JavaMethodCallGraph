@@ -67,7 +67,8 @@ public class GetMethodInvocation implements Runnable {
                 processMethodCallTree(file, classInfoList);
             }
             //存储当前项目中的所有方法
-            MethodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoListByProjectName(projectName), conn);
+            MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
+            methodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoListByProjectName(projectName), conn);
 
             //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);

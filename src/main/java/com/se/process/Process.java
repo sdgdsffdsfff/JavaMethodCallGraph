@@ -18,7 +18,6 @@ public class Process {
     public static void main(String[] args){
         //建立数据库连接
         BuildConnection buildConnection = new BuildConnection();
-        Connection conn = buildConnection.buildConnect();
         ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
         if(!DataConfig.analyseSingleProject){
             LinkedList<String> folders = new LinkedList<>();
@@ -28,6 +27,7 @@ public class Process {
             List<List<String>> folderList = ListUtils.divideList(folders,threadNum);
             //分析源项目代码，抽取需要的信息
             for(int i = 0;i<threadNum;i++){
+                Connection conn = buildConnection.buildConnect();
                 cachedThreadPool.execute(new GetMethodInvocation(folderList.get(i),conn));
             }
             cachedThreadPool.shutdown();
@@ -35,6 +35,7 @@ public class Process {
             System.out.println("对单个项目进行分析");
             LinkedList<String> folders = new LinkedList<>();
             folders.add(DataConfig.sourceProjectPath);
+            Connection conn = buildConnection.buildConnect();
             cachedThreadPool.execute(new GetMethodInvocation(folders,conn));
             cachedThreadPool.shutdown();
         }

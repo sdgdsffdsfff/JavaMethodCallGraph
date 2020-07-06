@@ -22,12 +22,13 @@ public class CloneMining {
         int count = 0;
         Map<Integer,Integer> cloneIdMap = new HashMap<>();
         System.out.println("正在进行克隆检测结果与数据库数据的匹配");
+        MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         for(MeasureIndex measureIndex:measureIndexList){
             String filePath = measureIndex.getFilePath();
             filePath = filePath.replace("\\","|");
             List<ClassInfo> classInfos = ClassInfoDAO.getClassInfoByFilePath(filePath,connection);
             for(ClassInfo classInfo:classInfos){
-                List<MethodInfo> methodInfoList = MethodInfoDAO.getMethodIdListByClassName(classInfo.getClassName(),connection);
+                List<MethodInfo> methodInfoList = methodInfoDAO.getMethodIdListByClassName(classInfo.getClassName(),connection);
                 for(MethodInfo methodInfo:methodInfoList){
                     //如果匹配成功，则进行更新
                     if(Math.abs(methodInfo.getBeginLine() - measureIndex.getBeginLine())<=2 && Math.abs(methodInfo.getEndLine()-measureIndex.getEndLine())<=2){
@@ -39,11 +40,11 @@ public class CloneMining {
             //批次进行update
             if(count%1000 == 0){
                 System.out.println("正在进行数据库的更新操作");
-                MethodInfoDAO.updateCloneId(cloneIdMap,connection);
+                methodInfoDAO.updateCloneId(cloneIdMap,connection);
                 cloneIdMap.clear();
             }
         }
-        MethodInfoDAO.updateCloneId(cloneIdMap,connection);
+        methodInfoDAO.updateCloneId(cloneIdMap,connection);
     }
 
 
@@ -55,12 +56,13 @@ public class CloneMining {
         List<List<Integer>> cloneGroupList =  FileHelper.readCloneGroupToList(DataConfig.cloneGroupFilePath);
         System.out.println("正在从克隆检测信息中挖掘代码资产");
         int count = 1;
+        MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         for(List<Integer> list:cloneGroupList){
             System.out.println("正在处理的克隆组是编号是：" + count++);
             Set<String> projectNameSet = new HashSet<>();
             List<MethodInfo> GroupMethodList = new ArrayList<>();
             for(Integer id:list){
-                MethodInfo methodInfo = MethodInfoDAO.getMethodInfoByCloneId(id,connection);
+                MethodInfo methodInfo = methodInfoDAO.getMethodInfoByCloneId(id,connection);
                 projectNameSet.add(methodInfo.getProjectName());
                 ClassInfo classInfo = ClassInfoDAO.getClassInfoByClassName(methodInfo.getClassName(),connection);
                 if(CalculateUtil.CalCouplingRate(classInfo.getInvokeCounts(),classInfo.getInvokedCounts()))
@@ -83,10 +85,10 @@ public class CloneMining {
             methodInfoList.addAll(GroupMethodList);
             //每挖掘出500个资产进行一次数据库update操作
             if(methodInfoList.size()%500 == 0){
-                MethodInfoDAO.updateAsset(methodInfoList,connection);
+                methodInfoDAO.updateAsset(methodInfoList,connection);
                 methodInfoList.clear();
             }
         }
-        MethodInfoDAO.updateAsset(methodInfoList,connection);
+        methodInfoDAO.updateAsset(methodInfoList,connection);
     }
 }

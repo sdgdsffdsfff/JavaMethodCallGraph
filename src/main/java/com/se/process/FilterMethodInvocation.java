@@ -33,8 +33,9 @@ public class FilterMethodInvocation{
             //根据项目名获取该项目中的所有方法调用
             List<MethodInvocation> methodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){
-                MethodInfo callMethodInfo = MethodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
-                List<MethodInfo> calledMethodInfoList = MethodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
+                MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
+                MethodInfo callMethodInfo = methodInfoDAO.getMethodInfoByNameClassReturnParameters(projectName,methodInvocation.getCallClassName(),methodInvocation.getCallMethodName(),methodInvocation.getCallMethodReturnType(),methodInvocation.getCallMethodParameters(),conn);
+                List<MethodInfo> calledMethodInfoList = methodInfoDAO.getMethodInfoByNameAndClass(projectName,methodInvocation.getCalledClassName(),methodInvocation.getCalledMethodName(),conn);
                 if(calledMethodInfoList.size()==0) continue;
                 String callClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName,callMethodInfo.getClassName(),conn);
                 String calledClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName,calledMethodInfoList.get(0).getClassName(),conn);
@@ -72,7 +73,8 @@ public class FilterMethodInvocation{
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             //根据项目名获取该项目中的所有方法调用
             List<MethodInvocation> methodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
-            List<MethodInfo> methodInfoList = MethodInfoDAO.getMethodInfoListByProjectName(projectName,conn);
+            MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
+            List<MethodInfo> methodInfoList = methodInfoDAO.getMethodInfoListByProjectName(projectName,conn);
             Map<String,Integer> classMap = ClassInfoDAO.getClassInfoMapByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){
                 MethodInfo callMethodInfo = null,calledMethodInfo = null;
