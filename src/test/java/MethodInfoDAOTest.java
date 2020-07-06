@@ -19,7 +19,8 @@ public class MethodInfoDAOTest {
         methodInfo.setID("1");
         methodInfo.setCloneGroupId(1);
         methodInfos.add(methodInfo);
-        MethodInfoDAO.updateAsset(methodInfos,connection);
+        MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
+        methodInfoDAO.updateAsset(methodInfos,connection);
     }
 
 }
