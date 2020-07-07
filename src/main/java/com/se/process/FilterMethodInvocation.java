@@ -10,6 +10,7 @@ import org.apache.commons.lang.time.StopWatch;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,15 +76,18 @@ public class FilterMethodInvocation{
             List<MethodInvocation> methodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
             MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
             List<MethodInfo> methodInfoList = methodInfoDAO.getMethodInfoListByProjectName(projectName,conn);
+            HashMap<String,MethodInfo> methodInfoHashMap = new HashMap<>();
+            for(MethodInfo methodInfo:methodInfoList){
+                methodInfoHashMap.put(methodInfo.getQualifiedName(),methodInfo);
+            }
             Map<String,Integer> classMap = ClassInfoDAO.getClassInfoMapByProjectName(projectName,conn);
             for(MethodInvocation methodInvocation:methodInvocationList){
                 MethodInfo callMethodInfo = null,calledMethodInfo = null;
-                for(MethodInfo methodInfo:methodInfoList){
-                    if(methodInvocation.getCallClassName().equals(methodInfo.getClassName())&&methodInvocation.getCallMethodName().contains(methodInfo.getMethodName())){
-                        callMethodInfo = methodInfo;
-                    }else if(methodInvocation.getCalledClassName().equals(methodInfo.getClassName())&&methodInvocation.getCalledMethodName().contains(methodInfo.getMethodName())){
-                        calledMethodInfo = methodInfo;
-                    }
+                if(methodInfoHashMap.containsKey(methodInvocation.getQualifiedCallMethodName())){
+                    callMethodInfo = methodInfoHashMap.get(methodInvocation.getQualifiedCallMethodName());
+                }
+                if(methodInfoHashMap.containsKey(methodInvocation.getQualifiedCalledMethodName())){
+                    calledMethodInfo = methodInfoHashMap.get(methodInvocation.getQualifiedCalledMethodName());
                 }
                 if(callMethodInfo == null||calledMethodInfo == null)continue;
                 String callClassID = String.valueOf(classMap.get(callMethodInfo.getClassName()));

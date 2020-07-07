@@ -10,6 +10,14 @@ public class MethodInvocation
     private String CallMethodParameters;
     private String CallMethodReturnType;
 
+    public String getQualifiedCallMethodName(){
+        return getCallClassName() + "." + getCallMethodName();
+    }
+
+    public String getQualifiedCalledMethodName(){
+        return getCalledClassName() + "." + getCalledMethodName();
+    }
+
     public String getCallClassName() {
         return CallClassName;
     }

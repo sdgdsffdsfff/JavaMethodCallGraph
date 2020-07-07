@@ -131,7 +131,7 @@ public class MethodInfoDAO {
     }
 
     public List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
-        String sql = "select ID,methodName,className from methodinfo where projectName = ?";
+        String sql = "select ID,methodName,className,qualifiedName from methodinfo where projectName = ?";
         List<MethodInfo> methodInfoList = new ArrayList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,projectName);
@@ -141,6 +141,7 @@ public class MethodInfoDAO {
             methodInfo.setID(String.valueOf(resultSet.getInt("ID")));
             methodInfo.setClassName(resultSet.getString("className"));
             methodInfo.setMethodName(resultSet.getString("methodName"));
+            methodInfo.setQualifiedName(resultSet.getString("qualifiedName"));
             methodInfoList.add(methodInfo);
         }
         return methodInfoList;

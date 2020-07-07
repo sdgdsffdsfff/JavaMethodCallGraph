@@ -42,6 +42,7 @@ public class GetMethodInvocation implements Runnable {
         System.out.println("线程处理的项目数为：" + projectNameList.size());
         //获取数据库中已有的项目名列表
         for(String f:folders) {
+            int fileSize = 0;
             projectName = getProjectNameFromProjectPath(f);
             System.out.println("正在处理的项目为：" + f);
             List<ClassInfo> classInfosContainer = new ArrayList<>();
@@ -62,6 +63,7 @@ public class GetMethodInvocation implements Runnable {
                     continue;
                 }
                 System.out.println("正在处理的文件为：" + filePath);
+                fileSize++;
                 File file = new File(filePath);
                 //获取方法调用
                 processMethodCallTree(file, classInfoList);
@@ -72,10 +74,9 @@ public class GetMethodInvocation implements Runnable {
 
             //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);
-
             MethodInfoContainer.getContainer().clearMethodInfoListByProjectName(projectName);
             MethodCallContainer.getContainer().clearMethodCallByProjectName(projectName);
-
+            System.out.println("项目中的文件数为：" + fileSize);
         }
         System.out.println("数据处理完成...");
     }
@@ -130,7 +131,7 @@ public class GetMethodInvocation implements Runnable {
             //根据配置信息决定是否需要统计调用次数和调用深度
             if(DataConfig.analyseInvocationCounts){
                 CountInvocation.countInvokeCounts(newProjectNameList,this.connection);
-                //CountInvocation.countInvocationDept(newProjectNameList,this.connection);
+                CountInvocation.countInvocationDept(newProjectNameList,this.connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();
