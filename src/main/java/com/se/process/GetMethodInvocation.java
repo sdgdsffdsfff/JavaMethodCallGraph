@@ -62,7 +62,7 @@ public class GetMethodInvocation implements Runnable {
                 if(filePath.contains("\\test")){
                     continue;
                 }
-                System.out.println("正在处理的文件为：" + filePath);
+                //System.out.println("正在处理的文件为：" + filePath);
                 fileSize++;
                 File file = new File(filePath);
                 //获取方法调用
@@ -71,7 +71,6 @@ public class GetMethodInvocation implements Runnable {
             //存储当前项目中的所有方法
             MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
             methodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoListByProjectName(projectName), conn);
-
             //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);
             MethodInfoContainer.getContainer().clearMethodInfoListByProjectName(projectName);
@@ -131,7 +130,7 @@ public class GetMethodInvocation implements Runnable {
             //根据配置信息决定是否需要统计调用次数和调用深度
             if(DataConfig.analyseInvocationCounts){
                 CountInvocation.countInvokeCounts(newProjectNameList,this.connection);
-                CountInvocation.countInvocationDept(newProjectNameList,this.connection);
+                //CountInvocation.countInvocationDept(newProjectNameList,this.connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();

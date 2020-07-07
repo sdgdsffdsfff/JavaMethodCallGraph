@@ -21,15 +21,37 @@ public class CountInvocation {
             System.out.println("正在进行调用次数统计的项目名称为：" + projectName);
             Map<Integer,String> idMap = ClassInfoDAO.getClassInfoByProjectName(projectName,conn);
             List<List<Integer>> invokeInfoList = new ArrayList<>();
+            List<MethodInvocationInView> methodInvocationInViewList = MethodInvocationInViewDAO.getMethodInvocationInViewByProjectName(projectName,conn);
+            HashMap<String,Integer> callCountsMap = new HashMap<>();
+            HashMap<String,Integer> calledCountsMap = new HashMap<>();
+            for(MethodInvocationInView methodInvocationInView:methodInvocationInViewList){
+                if(callCountsMap.containsKey(methodInvocationInView.getCallClassName())){
+                    int count = callCountsMap.get(methodInvocationInView.getCallClassName());
+                    callCountsMap.put(methodInvocationInView.getCallClassName(),count+1);
+                }else {
+                    callCountsMap.put(methodInvocationInView.getCallClassName(),1);
+                }
+                if(calledCountsMap.containsKey(methodInvocationInView.getCalledClassName())){
+                    int count = calledCountsMap.get(methodInvocationInView.getCalledClassName());
+                    calledCountsMap.put(methodInvocationInView.getCalledClassName(),count+1);
+                }else {
+                    calledCountsMap.put(methodInvocationInView.getCalledClassName(),1);
+                }
+            }
             for(Integer Id:idMap.keySet()){
                 List<Integer> list = new ArrayList<>();
                 String className = idMap.get(Id);
-                int invokedCount = MethodInvocationInViewDAO.selectCalledCountsByClassName(className,conn);
+                int invokedCount = 0,invokeCount = 0;
+                if(calledCountsMap.containsKey(className)){
+                    invokedCount = calledCountsMap.get(className);
+                }
+                if(callCountsMap.containsKey(className)){
+                    invokeCount = callCountsMap.get(className);
+                }
                 list.add(invokedCount);
-                int invokeCount = MethodInvocationInViewDAO.selectCallCountsByClassName(className,conn);
                 list.add(invokeCount);
-                invokeInfoList.add(list);
                 list.add(Id);
+                invokeInfoList.add(list);
             }
             ClassInfoDAO.updateInvokeCounts(invokeInfoList,conn);
         }
@@ -53,15 +75,16 @@ public class CountInvocation {
                 calledMethodMap.put(methodInvocationInView.getCalledClassName(),new GraphNode(methodInvocationInView.getCalledClassID(),methodInvocationInView.getCalledClassName(), 2));
                 callMethodMap.put(methodInvocationInView.getCallClassName(),new GraphNode(methodInvocationInView.getCallClassID(),methodInvocationInView.getCallClassName(), 2));
             }
-            System.out.println("全部类的个数为" + graphNodeMap.size());
-            System.out.println("调用类的个数为" + callMethodMap.size());
-            System.out.println("被调用类的个数为" + calledMethodMap.size());
+//            System.out.println("全部类的个数为" + graphNodeMap.size());
+//            System.out.println("调用类的个数为" + callMethodMap.size());
+//            System.out.println("被调用类的个数为" + calledMethodMap.size());
             Map<String, GraphNode> rootGraphNode = new HashMap<>();
             for(String name:graphNodeMap.keySet()){
                 boolean addFlag = true;
                 for(String className:calledMethodMap.keySet()){
-                    if(name.equals(className)){
+                    if (name.equals(className)) {
                         addFlag = false;
+                        break;
                     }
                 }
                 if(addFlag)rootGraphNode.put(name,graphNodeMap.get(name));
