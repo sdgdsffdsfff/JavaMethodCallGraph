@@ -67,9 +67,9 @@ public class FilterMethodInvocation{
 
     //在进行方法调用匹配时将一个项目的信息都读入内存中，然后匹配
     public static void doFilter(Connection conn,List<String> projectNameList) throws SQLException {
-        List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
         StopWatch stopWatch = new StopWatch();
         for(String projectName : projectNameList){
+            List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
             stopWatch.start();
             System.out.println("正在进行方法调用匹配的项目为:" + projectName);
             //根据项目名获取该项目中的所有方法调用

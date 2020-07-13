@@ -13,9 +13,9 @@ public class DataConfig {
     //连接数据库的密码
     public static final String password = "15927029790";
     //所有待分析项目的父目录
-    public static final String sourceProjectParentPath = "D:\\java-source7";
+    public static final String sourceProjectParentPath = "D:\\java-source";
     //单个待分析项目的目录
-    public static final String sourceProjectPath = "D:\\java-source";
+    public static final String sourceProjectPath = "D:\\java-source\\yuliskov";
     //API文档的路径
     public static final String API_DOC_PATH = "src/main/resources/docs/api/";
     //java.lang文档的路径

@@ -75,9 +75,6 @@ public class CountInvocation {
                 calledMethodMap.put(methodInvocationInView.getCalledClassName(),new GraphNode(methodInvocationInView.getCalledClassID(),methodInvocationInView.getCalledClassName(), 2));
                 callMethodMap.put(methodInvocationInView.getCallClassName(),new GraphNode(methodInvocationInView.getCallClassID(),methodInvocationInView.getCallClassName(), 2));
             }
-//            System.out.println("全部类的个数为" + graphNodeMap.size());
-//            System.out.println("调用类的个数为" + callMethodMap.size());
-//            System.out.println("被调用类的个数为" + calledMethodMap.size());
             Map<String, GraphNode> rootGraphNode = new HashMap<>();
             for(String name:graphNodeMap.keySet()){
                 boolean addFlag = true;
@@ -122,4 +119,52 @@ public class CountInvocation {
         System.out.println("调用深度统计完成");
     }
 
+    public static void countInvocationDept2(List<String> projectNameList,Connection conn) throws SQLException {
+        System.out.println("正在统计调用深度");
+        for(String projectName:projectNameList){
+            System.out.println("正在统计调用深度的项目为：" + projectName);
+            List<MethodInvocationInView> methodInvocationInViewList = MethodInvocationInViewDAO.getInfoByProjectName(projectName,conn);
+            Set<String> callClassSet = new HashSet<>();
+            Set<String> calledClassSet = new HashSet<>();
+            Map<String,List<String>> callTree = new HashMap<>();
+            for(MethodInvocationInView methodInvocationInView:methodInvocationInViewList){
+                String callClassName = methodInvocationInView.getCallClassName();
+                String calledClassName = methodInvocationInView.getCalledClassName();
+                if(callClassName.equals(calledClassName))continue;
+                callClassSet.add(callClassName);
+                callClassSet.add(calledClassName);
+                calledClassSet.add(calledClassName);
+                if(callTree.containsKey(methodInvocationInView.getCallClassName())){
+                    List<String> calledClassList = callTree.get(callClassName);
+                    calledClassList.add(calledClassName);
+                    callTree.put(callClassName,calledClassList);
+                }else {
+                    List<String> calledClassList = new ArrayList<>();
+                    calledClassList.add(calledClassName);
+                    callTree.put(callClassName,calledClassList);
+                }
+            }
+            Map<String,Integer> classNodeMap = new HashMap<>();
+            for(String name:callClassSet){
+                classNodeMap.put(name,0);
+            }
+            callClassSet.removeAll(calledClassSet);
+            Queue<String> rootNodeQueue = new LinkedList<>(callClassSet);
+            while(!rootNodeQueue.isEmpty()){
+                String rootNodeName = rootNodeQueue.poll();
+                int dept = classNodeMap.getOrDefault(rootNodeName,0);
+                List<String> calledClassList = callTree.get(rootNodeName);
+                if(calledClassList == null||dept>30)continue;
+                for(String name:calledClassList){
+                    if(classNodeMap.getOrDefault(name,0)<dept+1){
+                        classNodeMap.put(name,dept+1);
+                    }
+                    rootNodeQueue.add(name);
+                }
+            }
+            ClassInfoDAO.updateInvocationDept(classNodeMap,conn);
+        }
+        ClassInfoDAO.updateDefaultInvokeDept(conn);
+        System.out.println("调用深度统计完成");
+    }
 }

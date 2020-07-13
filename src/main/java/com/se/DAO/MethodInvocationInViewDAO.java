@@ -85,6 +85,22 @@ public class MethodInvocationInViewDAO {
     }
 
 
+    public static List<MethodInvocationInView> getInfoByProjectName(String projectName, Connection conn) throws SQLException {
+        String sql = "select callClassName,calledClassName from methodinvocationinview where projectName = '" + projectName + "'";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet resultSet = pst.executeQuery();
+        List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
+        while(resultSet.next()){
+            MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
+            methodInvocationInView.setCallClassName(resultSet.getString("callClassName"));
+            methodInvocationInView.setCalledClassName(resultSet.getString("calledClassName"));
+            methodInvocationInView.setProjectName(projectName);
+            methodInvocationInViewList.add(methodInvocationInView);
+        }
+        return methodInvocationInViewList;
+    }
+
+
     public static void updateIsRecursive(String projectName, Connection conn) throws SQLException {
         String sql = "UPDATE methodinvocationinview SET isRecursive = 1 WHERE callMethodID = calledMethodID AND projectName = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
