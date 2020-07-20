@@ -32,6 +32,7 @@ public class MethodInfo {
     private int cloneGroupId;
     private String methodContent;
     private int isSameProjectClone;
+    private String filePath;
 
 
     public String getProjectName() {
@@ -139,5 +140,13 @@ public class MethodInfo {
 
     public void setIsSameProjectClone(int isSameProjectClone) {
         this.isSameProjectClone = isSameProjectClone;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

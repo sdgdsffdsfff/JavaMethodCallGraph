@@ -1,10 +1,10 @@
 package com.se.process;
 
+import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.entity.GraphNode;
 import com.se.entity.MethodInvocationInView;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -150,16 +150,20 @@ public class CountInvocation {
             }
             callClassSet.removeAll(calledClassSet);
             Queue<String> rootNodeQueue = new LinkedList<>(callClassSet);
+            HashSet<String> nodeSet = new HashSet<>(callClassSet);
             while(!rootNodeQueue.isEmpty()){
                 String rootNodeName = rootNodeQueue.poll();
                 int dept = classNodeMap.getOrDefault(rootNodeName,0);
                 List<String> calledClassList = callTree.get(rootNodeName);
-                if(calledClassList == null||dept>30)continue;
+                if(calledClassList == null||dept>20)continue;
                 for(String name:calledClassList){
                     if(classNodeMap.getOrDefault(name,0)<dept+1){
                         classNodeMap.put(name,dept+1);
                     }
-                    rootNodeQueue.add(name);
+                    if(!nodeSet.contains(name)){
+                        rootNodeQueue.add(name);
+                        nodeSet.add(name);
+                    }
                 }
             }
             ClassInfoDAO.updateInvocationDept(classNodeMap,conn);
@@ -167,4 +171,13 @@ public class CountInvocation {
         ClassInfoDAO.updateDefaultInvokeDept(conn);
         System.out.println("调用深度统计完成");
     }
+
+    public static void main(String[] args) throws SQLException {
+        BuildConnection buildConnection = new BuildConnection();
+        Connection connection = buildConnection.buildConnect();
+        List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
+        CountInvocation.countInvokeCounts(projectNameList,connection);
+        CountInvocation.countInvocationDept2(projectNameList,connection);
+    }
+
 }

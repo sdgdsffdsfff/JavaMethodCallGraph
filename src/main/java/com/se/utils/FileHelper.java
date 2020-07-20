@@ -1,5 +1,6 @@
 package com.se.utils;
 
+import com.se.config.DataConfig;
 import com.se.entity.MeasureIndex;
 
 import java.io.*;
@@ -82,8 +83,8 @@ public class FileHelper {
 		return cloneGroupList;
 	}
 
-	public static List<MeasureIndex> readMeasureIndex(String measureIndexPath) throws IOException {
-		List<MeasureIndex> resultList = new ArrayList<>();
+	public static Map<String,List<MeasureIndex>> readMeasureIndex(String measureIndexPath) throws IOException {
+		Map<String,List<MeasureIndex>> measureMap = new HashMap<>();
 		File file = new File(measureIndexPath);
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -94,10 +95,17 @@ public class FileHelper {
 			String filePath = strings[1];
 			int beginLine = Integer.parseInt(strings[2]);
 			int endLine = Integer.parseInt(strings[3]);
-			MeasureIndex measureIndex = new MeasureIndex(id,filePath,beginLine,endLine);
-			resultList.add(measureIndex);
+			MeasureIndex measureIndex;
+			if(DataConfig.analyseSingleProject){
+				measureIndex = new MeasureIndex(id,filePath,beginLine,endLine,DataConfig.sourceProjectPath);
+			}else {
+				measureIndex = new MeasureIndex(id,filePath,beginLine,endLine,DataConfig.sourceProjectParentPath);
+			}
+			List<MeasureIndex> list = measureMap.getOrDefault(measureIndex.getProjectName(),new ArrayList<>());
+			list.add(measureIndex);
+			measureMap.put(measureIndex.getProjectName(),list);
 		}
-		return resultList;
+		return measureMap;
 	}
 }
 

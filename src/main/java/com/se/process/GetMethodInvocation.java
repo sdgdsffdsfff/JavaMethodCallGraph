@@ -130,7 +130,6 @@ public class GetMethodInvocation implements Runnable {
             //根据配置信息决定是否需要统计调用次数和调用深度
             if(DataConfig.analyseInvocationCounts){
                 CountInvocation.countInvokeCounts(newProjectNameList,this.connection);
-                CountInvocation.countInvocationDept2(newProjectNameList,this.connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();

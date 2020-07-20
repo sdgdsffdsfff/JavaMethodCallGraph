@@ -2,17 +2,21 @@ package com.se.entity;
 
 public class MeasureIndex {
 
-    public MeasureIndex(int id, String filePath, int beginLine, int endLine) {
+    public MeasureIndex(int id, String filePath, int beginLine, int endLine,String sourcePath) {
         this.id = id;
         this.filePath = filePath;
         this.beginLine = beginLine;
         this.endLine = endLine;
+        String tempStr  = filePath.replace(sourcePath,"");
+        tempStr = tempStr.substring(1);
+        this.projectName = tempStr.substring(0,tempStr.indexOf("\\"));
     }
 
     private int id;
     private String filePath;
     private int beginLine;
     private int endLine;
+    private String projectName;
 
     public int getId() {
         return id;
@@ -47,4 +51,11 @@ public class MeasureIndex {
     }
 
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 }

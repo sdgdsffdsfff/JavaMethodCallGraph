@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +80,24 @@ public class MethodInfoDAO {
         return methodInfos;
     }
 
+
+    public List<MethodInfo> getMethodIdListByProjectName(String projectName,Connection connection) throws SQLException {
+        String sql = "select ID,beginLine,endLine,className from methodinfo where projectName = ?";
+        PreparedStatement pst = connection.prepareStatement(sql);
+        pst.setString(1,projectName);
+        List<MethodInfo> methodInfos = new ArrayList<>();
+        ResultSet resultSet = pst.executeQuery();
+        while(resultSet.next()){
+            MethodInfo methodInfo = new MethodInfo();
+            methodInfo.setID(resultSet.getString("ID"));
+            methodInfo.setBeginLine(resultSet.getInt("beginLine"));
+            methodInfo.setEndLine(resultSet.getInt("endLine"));
+            methodInfo.setClassName(resultSet.getString("className"));
+            methodInfos.add(methodInfo);
+        }
+        return methodInfos;
+    }
+
     public void updateCloneId(Map<Integer,Integer> cloneIdMap, Connection connection) throws SQLException {
         String sql = "UPDATE methodinfo SET cloneId = ? where ID = ?";
         PreparedStatement pst = connection.prepareStatement(sql);
@@ -130,6 +149,21 @@ public class MethodInfoDAO {
         return methodInfo;
     }
 
+    public Map<Integer,MethodInfo> getAllMethodInfo(Connection connection) throws SQLException {
+        String sql = "select ID,className,projectName,cloneId from methodinfo";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        Map<Integer,MethodInfo> methodInfoMap = new HashMap<>();
+        while(resultSet.next()){
+            MethodInfo methodInfo = new MethodInfo();
+            methodInfo.setID(String.valueOf(resultSet.getInt("ID")));
+            methodInfo.setClassName(resultSet.getString("className"));
+            methodInfo.setProjectName(resultSet.getString("projectName"));
+            methodInfoMap.put(resultSet.getInt("cloneId"),methodInfo);
+        }
+        return methodInfoMap;
+    }
+
     public List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
         String sql = "select ID,methodName,className,qualifiedName from methodinfo where projectName = ?";
         List<MethodInfo> methodInfoList = new ArrayList<>();
@@ -149,7 +183,7 @@ public class MethodInfoDAO {
 
     public void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
         conn.setAutoCommit(false);
-        String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ? WHERE ID = ?";
+        String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ?,isSameProjectClone = ? WHERE ID = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
         for(MethodInfo methodInfo:methodInfoList){
             if(methodInfo.isAsset())
@@ -157,7 +191,8 @@ public class MethodInfoDAO {
             else
                 pst.setInt(1,0);
             pst.setInt(2,methodInfo.getCloneGroupId());
-            pst.setString(3,methodInfo.getID());
+            pst.setInt(3,methodInfo.getIsSameProjectClone());
+            pst.setString(4,methodInfo.getID());
             pst.addBatch();
         }
         pst.executeBatch();

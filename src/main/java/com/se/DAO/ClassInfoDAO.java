@@ -26,6 +26,22 @@ public class ClassInfoDAO {
         return idMap;
     }
 
+    public static List<ClassInfo> getClassListByProjectName(String projectName,Connection connection) throws SQLException{
+        String sql = "select className,filePath from classinfo where projectName = ?";
+        PreparedStatement pst = connection.prepareStatement(sql);
+        pst.setString(1,projectName);
+        ResultSet resultSet = pst.executeQuery();
+        List<ClassInfo> classInfoList = new ArrayList<>();
+        while(resultSet.next()){
+            ClassInfo classInfo = new ClassInfo();
+            classInfo.setProjectName(projectName);
+            classInfo.setClassName(resultSet.getString("className"));
+            classInfo.setFilePath(resultSet.getString("filePath"));
+            classInfoList.add(classInfo);
+        }
+        return classInfoList;
+    }
+
     public static Map<String,Integer> getClassInfoMapByProjectName(String projectName, Connection conn) throws SQLException {
         String sql = "select ID,className from classinfo where projectName = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -157,4 +173,20 @@ public class ClassInfoDAO {
         }
         return classInfo;
     }
+
+
+    public static Map<String,List<Integer>> getAllClassInvokeInfo(Connection connection) throws SQLException {
+        String sql = "select className,invokeCounts,invokedCounts from classinfo";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        Map<String,List<Integer>> classInvokeMap = new HashMap<>();
+        while(resultSet.next()){
+            List<Integer> integerList = new ArrayList<>();
+            integerList.add(resultSet.getInt("invokeCounts"));
+            integerList.add(resultSet.getInt("invokedCounts"));
+            classInvokeMap.put(resultSet.getString("className"),integerList);
+        }
+        return classInvokeMap;
+    }
+
 }
