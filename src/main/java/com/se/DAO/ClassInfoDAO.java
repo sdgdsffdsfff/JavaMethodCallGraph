@@ -1,15 +1,11 @@
 package com.se.DAO;
 import com.se.entity.ClassInfo;
-import org.checkerframework.checker.units.qual.C;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClassInfoDAO {
 
@@ -71,7 +67,9 @@ public class ClassInfoDAO {
      * @param classInfoList
      */
     public synchronized static void saveClassInfoList(List<ClassInfo> classInfoList, Connection conn) throws SQLException{
-        String sql = "insert into classinfo (projectName,className,isInterface,filePath) values (?,?,?,?)";
+        String sql = "insert into classinfo (projectName,className,isInterface,filePath, create_time, update_time) values (?,?,?,?,?,?)";
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         if(classInfoList != null && !classInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
             for(ClassInfo classInfo : classInfoList){
@@ -82,6 +80,8 @@ public class ClassInfoDAO {
                 pst.setString(2,classInfo.getClassName());
                 pst.setString(3,classInfo.getInterface().toString());
                 pst.setString(4,classInfo.getFilePath());
+                pst.setDate(5, currentDateInSql);
+                pst.setDate(6, currentDateInSql);
                 pst.addBatch();
             }
             pst.executeBatch();

@@ -7,12 +7,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MethodInvocationInViewDAO {
 
     public static void insertMethodInvocationInView(List<MethodInvocationInView> methodInvocationInViewList, Connection conn) throws SQLException {
-        String sql = "insert into methodinvocationinview (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType,callMethodID,calledMethodID,callClassID,calledClassID) values(?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into methodinvocationinview (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType,callMethodID,calledMethodID,callClassID,calledClassID, create_time, update_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         if(methodInvocationInViewList != null && !methodInvocationInViewList.isEmpty()) {
             PreparedStatement pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
             for(MethodInvocationInView methodInvocationInView : methodInvocationInViewList) {
@@ -28,6 +31,8 @@ public class MethodInvocationInViewDAO {
                 pst.setString(9,methodInvocationInView.getCalledMethodID());
                 pst.setString(10,methodInvocationInView.getCallClassID());
                 pst.setString(11,methodInvocationInView.getCalledClassID());
+                pst.setDate(12, currentDateInSql);
+                pst.setDate(13, currentDateInSql);
                 pst.addBatch();
             }
             pst.executeBatch();
