@@ -18,6 +18,7 @@ public class MethodInfoDAO {
         if(methodInfoList != null && !methodInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
             for(MethodInfo methodInfo : methodInfoList){
+                if(methodInfo.getReturnType().length() > 100)continue;
                 pst.setString(1,methodInfo.getProjectName());
                 pst.setString(2,methodInfo.getClassName());
                 pst.setString(3,methodInfo.getMethodName());
@@ -181,6 +182,20 @@ public class MethodInfoDAO {
         return methodInfoList;
     }
 
+    public Map<Integer,String> getMethodInfoByProjectName(String projectName, Connection connection) throws SQLException {
+        String sql = "select ID,qualifiedName from methodinfo where projectName = ?";
+        Map<Integer,String> id2NameMap = new HashMap<>();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,projectName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            Integer id = resultSet.getInt("ID");
+            String name = resultSet.getString("qualifiedName");
+            id2NameMap.put(id,name);
+        }
+        return id2NameMap;
+    }
+
     public void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
         conn.setAutoCommit(false);
         String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ?,isSameProjectClone = ? WHERE ID = ?";
@@ -199,4 +214,36 @@ public class MethodInfoDAO {
         conn.commit();
         conn.setAutoCommit(true);
     }
+
+    public void updateInvokeCounts(List<List<Integer>> invokeInfoList, Connection conn) throws SQLException {
+        String sql = "UPDATE methodinfo SET invokedCounts = ?,invokeCounts = ? WHERE ID = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        for(List<Integer> list:invokeInfoList){
+            pst.setInt(1,list.get(0));
+            pst.setInt(2,list.get(1));
+            pst.setInt(3,list.get(2));
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        pst.clearBatch();
+    }
+
+    public void updateDefaultInvokeDept(Connection conn) throws SQLException {
+        String sql = "update methodinfo set invokeDept = '0' where invokeDept is null";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.executeUpdate();
+    }
+
+    public void updateInvocationDept(Map<String,Integer> invocationDeptMap, Connection conn) throws SQLException {
+        String sql = "UPDATE methodinfo SET invokeDept = ? WHERE qualifiedName = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        for(String className:invocationDeptMap.keySet()){
+            pst.setInt(1,invocationDeptMap.get(className));
+            pst.setString(2,className);
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        pst.clearBatch();
+    }
+
 }

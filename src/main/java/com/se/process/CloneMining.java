@@ -86,8 +86,7 @@ public class CloneMining {
                 else
                     methodInfo.setAsset(false);
                 methodInfo.setCloneGroupId(count);
-                if(methodInfo.getID()!=null)
-                    GroupMethodList.add(methodInfo);
+                GroupMethodList.add(methodInfo);
             }
             if(projectNameSet.size()>1){
                 for(MethodInfo methodInfo:GroupMethodList){

@@ -67,6 +67,14 @@ public class MethodInvocationInView {
         return callMethodName;
     }
 
+    public String getQualifiedCallMethodName(){
+        return callClassName + "." + callMethodName;
+    }
+
+    public String getQualifiedCalledMethodName(){
+        return calledClassName + "." + calledMethodName;
+    }
+
     public void setCallMethodName(String callMethodName) {
         this.callMethodName = callMethodName;
     }
