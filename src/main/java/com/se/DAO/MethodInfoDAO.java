@@ -6,15 +6,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MethodInfoDAO {
 
     public void saveMethodInfoList(List<MethodInfo> methodInfoList, Connection conn) throws SQLException{
-        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,methodContent,beginLine,endLine) values (?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into methodinfo (projectName,className,methodName,returnType,methodParameters,qualifiedName,methodContent,beginLine,endLine, create_time, update_time) values (?,?,?,?,?,?,?,?,?,?,?)";
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         if(methodInfoList != null && !methodInfoList.isEmpty()){
             PreparedStatement pst = conn.prepareStatement(sql);
             for(MethodInfo methodInfo : methodInfoList){
@@ -28,6 +27,8 @@ public class MethodInfoDAO {
                 pst.setString(7,methodInfo.getMethodContent());
                 pst.setInt(8,methodInfo.getBeginLine());
                 pst.setInt(9,methodInfo.getEndLine());
+                pst.setDate(10, currentDateInSql);
+                pst.setDate(11, currentDateInSql);
                 pst.addBatch();
             }
             pst.executeBatch();

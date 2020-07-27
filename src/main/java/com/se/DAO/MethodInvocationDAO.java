@@ -7,10 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MethodInvocationDAO {
 
@@ -22,8 +19,10 @@ public class MethodInvocationDAO {
         PreparedStatement pst = null;
         MethodCall tempMethodCall = null;
         Method tempMethod = null;
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         try{
-            sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType) values(?,?,?,?,?,?,?)";
+            sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType, create_time, update_time) values(?,?,?,?,?,?,?,?,?)";
             if(methodCalls != null && !methodCalls.isEmpty()) {
                 pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
                 Collection<MethodCall> calls = methodCalls.values();
@@ -45,6 +44,8 @@ public class MethodInvocationDAO {
                             pst.setString(5,calledMethod.getPackageAndClassName());
                             pst.setString(6,call.getCaller().getParamTypeList().toString());
                             pst.setString(7,call.getCaller().getReturnTypeStr());
+                            pst.setDate(8, currentDateInSql);
+                            pst.setDate(9, currentDateInSql);
                             pst.addBatch();
 
                             tempMethodCall = call;
