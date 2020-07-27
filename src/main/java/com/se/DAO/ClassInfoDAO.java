@@ -189,4 +189,51 @@ public class ClassInfoDAO {
         return classInvokeMap;
     }
 
+
+    public static List<Integer> getDiscardClassId(Connection connection) throws SQLException {
+        String sql = "select ID from classinfo where invocationDept = 0 and invokedCounts = 0 and invokeCounts = 0";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<Integer> discardClassIDList = new ArrayList<>();
+        while(resultSet.next()){
+            discardClassIDList.add(resultSet.getInt("ID"));
+        }
+        return discardClassIDList;
+    }
+
+    public static double getAvgInvokeCounts(Connection connection) throws SQLException {
+        String sql = "select AVG(classinfo.invokeCounts) as avgInvokeCounts from classinfo where invokeCounts!=0";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        double avgInvokeCounts = 0;
+        while(resultSet.next()){
+            avgInvokeCounts = resultSet.getDouble("avgInvokeCounts");
+        }
+        return avgInvokeCounts;
+    }
+
+    public static double getAvgInvokedCounts(Connection connection) throws SQLException {
+        String sql = "select AVG(classinfo.invokedCounts) as avgInvokedCounts from classinfo where invokedCounts!=0";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        double avgInvokedCounts = 0;
+        while(resultSet.next()){
+            avgInvokedCounts = resultSet.getDouble("avgInvokedCounts");
+        }
+        return avgInvokedCounts;
+    }
+
+    public static List<Integer> getUniversalClassId(int avgInvokeCounts,int avgInvokedCounts,Connection connection) throws SQLException {
+        String sql = "select ID from classinfo where invokedCounts > ? and invokeCounts > ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1,avgInvokeCounts);
+        preparedStatement.setInt(2,avgInvokedCounts);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<Integer> universalClassIDList = new ArrayList<>();
+        while(resultSet.next()){
+            universalClassIDList.add(resultSet.getInt("ID"));
+        }
+        return universalClassIDList;
+    }
+
 }

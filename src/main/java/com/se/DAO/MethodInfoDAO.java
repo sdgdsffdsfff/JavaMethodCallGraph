@@ -247,4 +247,15 @@ public class MethodInfoDAO {
         pst.clearBatch();
     }
 
+    public List<Integer> getDiscardMethodId(Connection connection) throws SQLException {
+        String sql = "select ID from methodinfo where invokeDept = 0 and invokedCounts = 0 and invokeCounts = 0";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<Integer> discardMethodIDList = new ArrayList<>();
+        while(resultSet.next()){
+            discardMethodIDList.add(resultSet.getInt("ID"));
+        }
+        return discardMethodIDList;
+    }
+
 }

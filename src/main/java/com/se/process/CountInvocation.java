@@ -3,6 +3,7 @@ package com.se.process;
 import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
+import com.se.entity.ClassInfo;
 import com.se.entity.GraphNode;
 import com.se.entity.MethodInvocationInView;
 import java.sql.Connection;
@@ -172,12 +173,23 @@ public class CountInvocation {
         System.out.println("调用深度统计完成");
     }
 
+
+
+    //获取所有万能类的Id
+    public static void getUniversalClass(Connection conn) throws SQLException {
+        int avgInvokeCounts = (int)ClassInfoDAO.getAvgInvokeCounts(conn);
+        int avgInvokedCounts = (int)ClassInfoDAO.getAvgInvokedCounts(conn);
+        List<Integer> universalClassList = ClassInfoDAO.getUniversalClassId(avgInvokeCounts*3,avgInvokedCounts*3,conn);
+        System.out.println(universalClassList.size());
+    }
+
     public static void main(String[] args) throws SQLException {
         BuildConnection buildConnection = new BuildConnection();
         Connection connection = buildConnection.buildConnect();
         List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
         //CountInvocation.countInvokeCounts(projectNameList,connection);
-        CountInvocation.countInvocationDept2(projectNameList,connection);
+        //CountInvocation.countInvocationDept2(projectNameList,connection);
+        CountInvocation.getUniversalClass(connection);
     }
 
 }
