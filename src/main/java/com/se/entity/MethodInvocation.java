@@ -2,6 +2,7 @@ package com.se.entity;
 
 public class MethodInvocation
 {
+    private String ID;
     private String ProjectName;
     private String CallClassName;
     private String CalledClassName;
@@ -9,6 +10,10 @@ public class MethodInvocation
     private String CallMethodName;
     private String CallMethodParameters;
     private String CallMethodReturnType;
+
+    public String getID() { return ID; }
+
+    public void setID(String ID) { this.ID = ID; }
 
     public String getQualifiedCallMethodName(){
         return getCallClassName() + "." + getCallMethodName();

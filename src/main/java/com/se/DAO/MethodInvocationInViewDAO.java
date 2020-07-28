@@ -130,4 +130,34 @@ public class MethodInvocationInViewDAO {
         pst.executeUpdate();
     }
 
+    public static List<String> getMethodInvocationInViewByCallClassID(String projectName, String callClassID, Connection conn) throws SQLException {
+        String sql = "select * from methodinvocationinview where projectName = ? and callClassID = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, projectName);
+        pst.setString(2, callClassID);
+        ResultSet resultSet = pst.executeQuery();
+        List<String> methodInvocationInViewIDList = new ArrayList<>();
+        while(resultSet.next()){
+            methodInvocationInViewIDList.add(resultSet.getString("ID"));
+        }
+        return methodInvocationInViewIDList;
+    }
+
+
+    public static void deleteMethodInvocationInViewRecords(List<String> deleteMethodInvocationInViewIDs, Connection conn) throws SQLException{
+//        conn.setAutoCommit(false);
+        String mInvocInViewSQL = "delete from methodinvocationinview where ID = ?";
+
+        PreparedStatement pst = conn.prepareStatement(mInvocInViewSQL);
+
+        if(deleteMethodInvocationInViewIDs != null){
+            for(String methodInvocationInViewID : deleteMethodInvocationInViewIDs){
+                pst.setString(1, methodInvocationInViewID);
+                pst.addBatch();
+            }
+            pst.executeBatch();
+            pst.clearBatch();
+//            conn.commit();
+        }
+    }
 }

@@ -107,6 +107,23 @@ public class FileHelper {
 		}
 		return measureMap;
 	}
+
+	public static List<String> readFile(String filePath){
+		List<String> arrayList = new ArrayList<>();
+		try{
+			FileReader fr = new FileReader(filePath);
+			BufferedReader bf = new BufferedReader(fr);
+			String str;
+			while((str = bf.readLine()) != null){
+				arrayList.add(str);
+			}
+			bf.close();
+			fr.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return arrayList;
+	}
 }
 
 

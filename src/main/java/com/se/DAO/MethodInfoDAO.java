@@ -258,4 +258,68 @@ public class MethodInfoDAO {
         return discardMethodIDList;
     }
 
+    public static List<String> getMethodIDInClass(String projectName, String className, Connection conn){
+        String sql = "select * from methodinfo where projectName = ? and className = ?";
+//        List<MethodInfo> methodInfoList = new ArrayList<>();
+        List<String> methodIDList = new ArrayList<>();
+        ResultSet resultSet = null;
+        try{
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,projectName);
+            pst.setString(2,className);
+            resultSet = pst.executeQuery();
+            while(resultSet.next()){
+                methodIDList.add(resultSet.getString("ID"));
+            }
+        }catch (Exception e){
+            System.out.println(sql);
+            e.printStackTrace();
+        }
+        return methodIDList;
+    }
+
+    public static void deleteMethodInfoRecords(List<String> deleteMethodIDs, Connection conn) throws SQLException{
+//        conn.setAutoCommit(false);
+        String mInfoSQL = "delete from methodinfo where ID = ?";
+
+        PreparedStatement pst = conn.prepareStatement(mInfoSQL);
+
+        if(deleteMethodIDs != null){
+            for(String methodID : deleteMethodIDs){
+                pst.setString(1, methodID);
+                pst.addBatch();
+            }
+            pst.executeBatch();
+            pst.clearBatch();
+//            conn.commit();
+        }
+    }
+
+    public static MethodInfo getMethodInfoByQualifiedName(String projectName, String qualifiedName, Connection conn){
+        String sql = "select * from methodinfo where projectName = ? and qualifiedName = ?";
+
+        ResultSet resultSet = null;
+        try{
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,projectName);
+            pst.setString(2,qualifiedName);
+            resultSet = pst.executeQuery();
+            while(resultSet.next()){
+                MethodInfo methodInfo = new MethodInfo();
+                methodInfo.setProjectName(projectName);
+                methodInfo.setClassName(resultSet.getString("className"));
+                methodInfo.setMethodName(resultSet.getString("methodName"));
+                methodInfo.setQualifiedName(resultSet.getString("qualifiedName"));
+                methodInfo.setReturnType(resultSet.getString("returnType"));
+                methodInfo.setMethodParameters(resultSet.getString("methodParameters"));
+                methodInfo.setID(resultSet.getString("ID"));
+                return methodInfo;
+            }
+        }catch (Exception e){
+            System.out.println(sql);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

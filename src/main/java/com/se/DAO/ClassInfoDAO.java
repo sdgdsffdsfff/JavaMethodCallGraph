@@ -144,19 +144,20 @@ public class ClassInfoDAO {
         return projectNameList;
     }
 
-    public static List<ClassInfo> getClassInfoByFilePath(String filePath, Connection connection) throws SQLException {
+    public static ClassInfo getClassInfoByFilePath(String projectName, String filePath, Connection connection) throws SQLException {
         List<ClassInfo> classInfoList = new ArrayList<>();
-        String sql = "select ID,className from classinfo where filePath = ?";
+        String sql = "select ID,className from classinfo where projectName = ? and filePath = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,filePath);
+        preparedStatement.setString(1,projectName);
+        preparedStatement.setString(2,filePath);
         ResultSet resultSet = preparedStatement.executeQuery();
+        ClassInfo classInfo = new ClassInfo();
         while(resultSet.next()){
-            ClassInfo classInfo = new ClassInfo();
             classInfo.setID(resultSet.getInt("ID"));
             classInfo.setClassName(resultSet.getString("className"));
             classInfoList.add(classInfo);
         }
-        return classInfoList;
+        return classInfo;
     }
 
     public static ClassInfo getClassInfoByClassName(String className, Connection connection) throws SQLException {
@@ -236,4 +237,34 @@ public class ClassInfoDAO {
         return universalClassIDList;
     }
 
+    public static List<String> getFilePathListByProjectName(String projectName, Connection connection) throws SQLException{
+        String sql = "select distinct filePath from classinfo where projectName = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,projectName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<String> filePathList = new ArrayList<>();
+        while(resultSet.next()){
+            filePathList.add(resultSet.getString("filePath"));
+        }
+        return filePathList;
+
+    }
+
+    public static void deleteClassInfoRecords(List<ClassInfo> deleteClassInfos, Connection conn) throws SQLException{
+//        conn.setAutoCommit(false);
+        String cInfoSQL = "delete from classinfo where ID = ?";
+
+        PreparedStatement pst = conn.prepareStatement(cInfoSQL);
+
+        if(deleteClassInfos != null){
+            for(ClassInfo classInfo : deleteClassInfos){
+                pst.setInt(1, classInfo.getID());
+                pst.addBatch();
+            }
+            pst.executeBatch();
+            pst.clearBatch();
+//            conn.commit();
+        }
+
+    }
 }
