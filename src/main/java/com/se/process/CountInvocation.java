@@ -2,10 +2,15 @@ package com.se.process;
 
 import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
+import com.se.DAO.MethodInvocationDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
+import com.se.config.DataConfig;
 import com.se.entity.ClassInfo;
+import com.se.utils.FileHelper;
 import com.se.entity.GraphNode;
 import com.se.entity.MethodInvocationInView;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -176,20 +181,38 @@ public class CountInvocation {
 
 
     //获取所有万能类的Id
-    public static void getUniversalClass(Connection conn) throws SQLException {
+    public static void getUniversalClass(Connection conn) throws SQLException, IOException {
         int avgInvokeCounts = (int)ClassInfoDAO.getAvgInvokeCounts(conn);
         int avgInvokedCounts = (int)ClassInfoDAO.getAvgInvokedCounts(conn);
-        List<Integer> universalClassList = ClassInfoDAO.getUniversalClassId(avgInvokeCounts*3,avgInvokedCounts*3,conn);
-        System.out.println(universalClassList.size());
+        Map<Integer,String> universalClassMap = ClassInfoDAO.getUniversalClass(avgInvokeCounts*3,avgInvokedCounts*3,conn);
+        System.out.println("挖掘出的上帝类的个数为：" + universalClassMap.size());
+        FileHelper.writeClassPathToFile(universalClassMap,DataConfig.universalClassPath);
     }
 
-    public static void main(String[] args) throws SQLException {
+
+    public static void getDiscardClassPath(Connection connection) throws SQLException, IOException {
+        List<ClassInfo> classInfoList = ClassInfoDAO.getDiscardClassList(connection);
+        System.out.println(classInfoList.size());
+        Set<String> classNameSet = MethodInvocationDAO.getDistinctClassName(connection);
+        System.out.println(classNameSet.size());
+        List<String> filePathList = new ArrayList<>();
+        for(ClassInfo classInfo:classInfoList){
+            if(!classNameSet.contains(classInfo.getClassName())){
+                filePathList.add(classInfo.getFilePath());
+            }
+        }
+        FileHelper.writeClassPathToFile(filePathList,DataConfig.discardClassPath);
+
+    }
+
+    public static void main(String[] args) throws SQLException, IOException {
         BuildConnection buildConnection = new BuildConnection();
         Connection connection = buildConnection.buildConnect();
-        List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
+        //List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
         //CountInvocation.countInvokeCounts(projectNameList,connection);
         //CountInvocation.countInvocationDept2(projectNameList,connection);
         CountInvocation.getUniversalClass(connection);
+        CountInvocation.getDiscardClassPath(connection);
     }
 
 }

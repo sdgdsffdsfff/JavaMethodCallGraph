@@ -108,6 +108,30 @@ public class FileHelper {
 		return measureMap;
 	}
 
+	public static void writeClassPathToFile(List<String> universalClassList,String path) throws IOException {
+		File file = new File(path);
+		FileWriter fileWriter = new FileWriter(file);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		for(String filePath:universalClassList){
+			bufferedWriter.write(filePath);
+			bufferedWriter.newLine();
+		}
+		bufferedWriter.close();
+		fileWriter.close();
+	}
+
+	public static void writeClassPathToFile(Map<Integer,String> universalClassMap,String path) throws IOException {
+		File file = new File(path);
+		FileWriter fileWriter = new FileWriter(file);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		for(String filePath:universalClassMap.values()){
+			bufferedWriter.write(filePath);
+			bufferedWriter.newLine();
+		}
+		bufferedWriter.close();
+		fileWriter.close();
+	}
+
 	public static List<String> readFile(String filePath){
 		List<String> arrayList = new ArrayList<>();
 		try{

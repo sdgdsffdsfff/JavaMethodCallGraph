@@ -32,14 +32,14 @@ public class MethodInfoDAOTest {
 //        methodInvocations.forEach(m -> System.out.println(m.getID()));
     }
 
-    @Test
-    public void getFilePathListTest() throws SQLException{
-        BuildConnection buildConnection = new BuildConnection();
-        Connection connection = buildConnection.buildConnect();
-        String projectName = "ProgramModel";
-        List<String> result = ClassInfoDAO.getFilePathListByProjectName(projectName, connection);
-        result.forEach(System.out::println);
-    }
+//    @Test
+//    public void getFilePathListTest() throws SQLException{
+//        BuildConnection buildConnection = new BuildConnection();
+//        Connection connection = buildConnection.buildConnect();
+//        String projectName = "ProgramModel";
+//        List<String> result = ClassInfoDAO.getFilePathListByProjectName(projectName, connection);
+//        result.forEach(System.out::println);
+//    }
 
     @Test
     public void dateTest(){

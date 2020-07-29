@@ -1,5 +1,6 @@
 package com.se.DAO;
 import com.se.entity.ClassInfo;
+import org.checkerframework.checker.units.qual.C;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -144,6 +145,21 @@ public class ClassInfoDAO {
         return projectNameList;
     }
 
+    public static List<ClassInfo> getClassInfoByFilePath(String filePath, Connection connection) throws SQLException {
+        List<ClassInfo> classInfoList = new ArrayList<>();
+        String sql = "select ID,className from classinfo where filePath = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,filePath);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            ClassInfo classInfo = new ClassInfo();
+            classInfo.setID(resultSet.getInt("ID"));
+            classInfo.setClassName(resultSet.getString("className"));
+            classInfoList.add(classInfo);
+        }
+        return classInfoList;
+    }
+
     public static ClassInfo getClassInfoByFilePath(String projectName, String filePath, Connection connection) throws SQLException {
         List<ClassInfo> classInfoList = new ArrayList<>();
         String sql = "select ID,className from classinfo where projectName = ? and filePath = ?";
@@ -191,15 +207,21 @@ public class ClassInfoDAO {
     }
 
 
-    public static List<Integer> getDiscardClassId(Connection connection) throws SQLException {
-        String sql = "select ID from classinfo where invocationDept = 0 and invokedCounts = 0 and invokeCounts = 0";
+    public static List<ClassInfo> getDiscardClassList(Connection connection) throws SQLException {
+        String sql = "select className,filePath from classinfo where invocationDept = 0 and invokedCounts = 0 and invokeCounts = 0";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<Integer> discardClassIDList = new ArrayList<>();
+        List<ClassInfo> classInfoList = new ArrayList<>();
         while(resultSet.next()){
-            discardClassIDList.add(resultSet.getInt("ID"));
+            ClassInfo classInfo = new ClassInfo();
+            classInfo.setClassName(resultSet.getString("className"));
+            String filePath = resultSet.getString("filePath");
+            if(filePath == null)continue;
+            filePath = filePath.replace("|","\\");
+            classInfo.setFilePath(filePath);
+            classInfoList.add(classInfo);
         }
-        return discardClassIDList;
+        return classInfoList;
     }
 
     public static double getAvgInvokeCounts(Connection connection) throws SQLException {
@@ -224,30 +246,20 @@ public class ClassInfoDAO {
         return avgInvokedCounts;
     }
 
-    public static List<Integer> getUniversalClassId(int avgInvokeCounts,int avgInvokedCounts,Connection connection) throws SQLException {
-        String sql = "select ID from classinfo where invokedCounts > ? and invokeCounts > ?";
+    public static Map<Integer,String> getUniversalClass(int avgInvokeCounts,int avgInvokedCounts,Connection connection) throws SQLException {
+        String sql = "select ID,filePath from classinfo where invokedCounts > ? and invokeCounts > ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1,avgInvokeCounts);
         preparedStatement.setInt(2,avgInvokedCounts);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<Integer> universalClassIDList = new ArrayList<>();
+        Map<Integer,String> universalClassMap = new HashMap<>();
         while(resultSet.next()){
-            universalClassIDList.add(resultSet.getInt("ID"));
+            int ID = resultSet.getInt("ID");
+            String filePath = resultSet.getString("filePath");
+            filePath = filePath.replace("|","\\");
+            universalClassMap.put(ID,filePath);
         }
-        return universalClassIDList;
-    }
-
-    public static List<String> getFilePathListByProjectName(String projectName, Connection connection) throws SQLException{
-        String sql = "select distinct filePath from classinfo where projectName = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,projectName);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        List<String> filePathList = new ArrayList<>();
-        while(resultSet.next()){
-            filePathList.add(resultSet.getString("filePath"));
-        }
-        return filePathList;
-
+        return universalClassMap;
     }
 
     public static void deleteClassInfoRecords(List<ClassInfo> deleteClassInfos, Connection conn) throws SQLException{
@@ -267,4 +279,5 @@ public class ClassInfoDAO {
         }
 
     }
+
 }

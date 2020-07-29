@@ -65,59 +65,6 @@ public class MethodInvocationDAO {
 
     }
 
-    public synchronized static void saveMethodInvocation2(String projectName,Map<String, MethodCall> methodCalls, Connection conn){
-        System.out.println("保存到数据库的项目名为：" + projectName);
-        String sql = null;
-        PreparedStatement pst = null;
-        MethodCall tempMethodCall = null;
-        Method tempMethod = null;
-        Date currentDate = new Date();
-        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
-        try{
-            sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType, create_time, update_time) values(?,?,?,?,?,?,?,?,?)";
-            if(methodCalls != null && !methodCalls.isEmpty()) {
-                pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
-                Collection<MethodCall> calls = methodCalls.values();
-                for(MethodCall call : calls) {
-                    if(call.getCalled() != null && !call.getCalled().isEmpty()){
-                        for(Method calledMethod:call.getCalled()){
-                            String callClassName = call.getCaller().getPackageAndClassName();
-                            String calledClassName = calledMethod.getPackageAndClassName();
-                            if(calledClassName.length()>100||calledClassName.length()<3)continue;
-                            if(calledClassName.contains("{")||calledClassName.contains("}")||calledClassName.contains("(")
-                                    ||calledClassName.contains(")"))continue;
-                            if(calledClassName.startsWith("java")||!calledClassName.contains(".")||!callClassName.substring(0,callClassName.indexOf(".")).equals(calledClassName.substring(0,calledClassName.indexOf(".")))){
-                                continue;
-                            }
-                            pst.setString(1,projectName);
-                            pst.setString(2,call.getCaller().getName());
-                            pst.setString(3,calledMethod.getName());
-                            pst.setString(4,call.getCaller().getPackageAndClassName());
-                            pst.setString(5,calledMethod.getPackageAndClassName());
-                            pst.setString(6,call.getCaller().getParamTypeList().toString());
-                            pst.setString(7,call.getCaller().getReturnTypeStr());
-                            pst.setDate(8, currentDateInSql);
-                            pst.setDate(9, currentDateInSql);
-                            pst.addBatch();
-
-                            tempMethodCall = call;
-                            tempMethod = calledMethod;
-                        }
-                        pst.executeBatch();
-                    }
-                }
-            }
-        } catch (SQLException e){
-            System.out.println(sql);
-            System.out.println(pst.toString());
-            System.out.println(tempMethodCall.getCaller().getPackageAndClassName());
-            System.out.println(tempMethod);
-            e.printStackTrace();
-        }
-
-    }
-
-
     public static List<String> getAllProjectNameFromDB(Connection conn) throws SQLException {
         List<String> projectNameList = new ArrayList<>();
         String sql = "select distinct projectName from methodinvocationinfo";
@@ -151,6 +98,19 @@ public class MethodInvocationDAO {
         return methodInvocationList;
     }
 
+
+    public static Set<String> getDistinctClassName(Connection connection) throws SQLException{
+        Set<String> classNameSet = new HashSet<>();
+        String sql = "select callClassName,calledClassName from methodinvocationinfo";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            classNameSet.add(resultSet.getString("callClassName"));
+            classNameSet.add(resultSet.getString("calledClassName"));
+        }
+        return classNameSet;
+    }
+
     public static List<String> getMethodInvocationIDsByClassName(String projectName, String callClassName, Connection conn) throws SQLException {
         List<String> methodInvocationIDList = new ArrayList<>();
 //        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
@@ -164,6 +124,7 @@ public class MethodInvocationDAO {
         }
         return methodInvocationIDList;
     }
+
 
     public static void deleteMethodInvocationInfoRecords(List<String> deleteMethodInvocationIDs, Connection conn) throws SQLException{
 //        conn.setAutoCommit(false);
@@ -181,5 +142,4 @@ public class MethodInvocationDAO {
 //            conn.commit();
         }
     }
-
 }
