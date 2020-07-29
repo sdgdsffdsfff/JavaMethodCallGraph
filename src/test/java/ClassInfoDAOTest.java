@@ -1,13 +1,10 @@
 import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
 import com.se.entity.ClassInfo;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClassInfoDAOTest {
 
@@ -16,11 +13,11 @@ public class ClassInfoDAOTest {
         BuildConnection buildConnection = new BuildConnection();
         Connection connection = buildConnection.buildConnect();
         String projectName = "D:|java-source7|TakahikoKawasaki|nv-websocket-client|src|main|java|com|neovisionaries|ws|client|Address.java";
-        List<ClassInfo> classInfos = ClassInfoDAO.getClassInfoByFilePath(projectName,connection);
-        if(classInfos.size() == 0){
+        ClassInfo classInfo = ClassInfoDAO.getClassInfoByFilePath("ProgramModel", "/Users/coldilock/Downloads/JavaCodeCorpus/smallsmallproject/ProgramModel/src/test/com/se/Tree.java", connection);
+        if(classInfo == null){
             System.out.println("没有搜到");
         }else {
-            System.out.println(classInfos.size());
+            System.out.println(classInfo.getID());
         }
     }
 }

@@ -79,7 +79,6 @@ public class GetMethodInvocationPlus implements Runnable {
         MethodInfoDAO.deleteMethodInfoRecords(deleteMethodIDs, conn);
         MethodInvocationDAO.deleteMethodInvocationInfoRecords(deleteMethodInvocationIDs, conn);
         MethodInvocationInViewDAO.deleteMethodInvocationInViewRecords(deleteMethodInvocationInViewIDs, conn);
-
     }
 
     /**
@@ -114,9 +113,9 @@ public class GetMethodInvocationPlus implements Runnable {
         //存储当前项目中的所有方法调用
         MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);
 
-
         // 向methodInvocationInView表中插入数据
         Map<String, MethodCall> methodCallMap = MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName);
+        if(methodCallMap == null) return;
         List<MethodInvocationInView> methodInvocationInViews = new ArrayList<>();
         for (Map.Entry<String, MethodCall> entry : methodCallMap.entrySet()) {
             Method callMethod = entry.getValue().getCaller();
@@ -163,6 +162,8 @@ public class GetMethodInvocationPlus implements Runnable {
     public void processModifiedFile(String projectName, List<String> modifiedFilePaths, Connection conn) throws SQLException {
         processDeletedFile(projectName, modifiedFilePaths, conn);
         processAddedFile(projectName, modifiedFilePaths, conn);
+        MethodInvocationInViewDAO.updateCalledClassID(projectName, conn);
+        MethodInvocationInViewDAO.updateCalledMethodID(projectName, conn);
         System.out.println("数据处理完成...");
     }
 

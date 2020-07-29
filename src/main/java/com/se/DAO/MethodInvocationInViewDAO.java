@@ -160,4 +160,28 @@ public class MethodInvocationInViewDAO {
 //            conn.commit();
         }
     }
+
+    public static void updateCalledClassID(String projectName, Connection conn) throws SQLException {
+        String sql = "update methodinvocationinview m inner join classinfo c on m.calledClassName = c.className set m.calledClassID = c.ID, m.update_time = ? where c.update_time = ? and c.projectName = ?";
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setDate(1, currentDateInSql);
+        pst.setDate(2, currentDateInSql);
+        pst.setString(3, projectName);
+        pst.executeUpdate();
+    }
+
+    public static void updateCalledMethodID(String projectName, Connection conn) throws SQLException {
+        String sql = "update methodinvocationinview m1 inner join methodinfo m2 on m1.calledMethodName = m2.methodName and m1.calledClassName = m2.className set m1.calledMethodID = m2.ID, m1.update_time = ? where m2.update_time = ? and m2.projectName = ?";
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setDate(1, currentDateInSql);
+        pst.setDate(2, currentDateInSql);
+        pst.setString(3, projectName);
+        pst.executeUpdate();
+    }
+
+
 }
