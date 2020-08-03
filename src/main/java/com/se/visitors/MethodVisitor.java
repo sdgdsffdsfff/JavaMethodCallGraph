@@ -272,12 +272,8 @@ public class MethodVisitor extends VoidVisitorAdapter {
         String methodVarName = null;
         if(!mexpr.getScope().isPresent()){ //不是"var.method()"的形式，而是"method()"形式
             //Calling method within same class
-            //todo:在同一个类内调用方法，根据方法名查询方法，设置方法参数
+            //在同一个类内调用方法，根据方法名查询方法，设置方法参数
         } else {
-            //todo:判断mexpr.getScope().get()的类型，如果是MethocCallExpr，获取此MethocCallExpr的返回类型
-            //如果是jdk：Method[] ms = class1.getMethods(); 查找名称为xxx的，然后  Class<?> returnType = ms[i].getReturnType();returnType.getName()
-            //如果是自定义的方法：查询数据库
-            //如果是第三方方法：
             methodVarName = mexpr.getScope().get().toString();
         }
         Variable methodVar = null;
@@ -290,7 +286,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
         } else if(fieldMap.containsKey(methodVarName)){
             methodVar = fieldMap.get(methodVarName);
         } else if(mexpr.getScope().isPresent()){
-            //静态方法调用 todo:解决静态调用的包名问题
+            //静态方法调用
             methodVar = new Variable();
             methodVar.setClazz(mexpr.getScope().get().toString());
             methodVar.setStaticVar(true);
@@ -423,7 +419,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
             Expression exp = exprStmt.getExpression();
             this.getMethodCallInExpression(exp, methodParams, callerMethod);
         }
-        //todo:识别foreach trycatch dowhile switch中的方法调用
+
         else if (stmt.isForStmt()){
             ForStmt forStmt = (ForStmt) stmt;
 
@@ -539,7 +535,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
             //ObjectCreationExpr
             //MethodCallExpr
             //CastExpr
-            //todo:分析expr的种类
             List<VariableDeclarator> vds = variableDeclarationExpr.getVariables();
 
             for(VariableDeclarator vd:vds){
@@ -574,7 +569,6 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 this.resolveMethodInvocation(expression,methodParams,callerMethod);
             }
         } else if(exp.isCastExpr())  {
-            //todo: cast expression
             Expression expression = ((CastExpr) exp).getExpression();
             if(expression.isMethodCallExpr()){
                 this.resolveMethodInvocation(expression, methodParams, callerMethod);

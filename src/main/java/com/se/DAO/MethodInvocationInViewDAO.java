@@ -40,7 +40,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static int selectCalledCountsByClassName(String className, Connection conn) throws SQLException {
-        String sql = "select ID from methodinvocationinview where calledClassName = '" + className + "' and callClassName != calledClassName";
+        String sql = "select ID from methodinvocationinview where calledClassName = '" + className + "' and callClassName != calledClassName and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         int count = 0;
@@ -51,7 +51,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static int selectCallCountsByClassName(String className, Connection conn) throws SQLException {
-        String sql = "select ID from methodinvocationinview where callClassName = '" + className + "' and callClassName != calledClassName";
+        String sql = "select ID from methodinvocationinview where callClassName = '" + className + "' and callClassName != calledClassName and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         int count = 0;
@@ -62,7 +62,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static List<String> selectAllProjectName(Connection conn) throws SQLException {
-        String sql = "select distinct projectName from methodinvocationinview";
+        String sql = "select distinct projectName from methodinvocationinview and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         List<String> projectNameList = new ArrayList<>();
@@ -73,7 +73,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static List<MethodInvocationInView> getMethodInvocationInViewByProjectName(String projectName, Connection conn) throws SQLException {
-        String sql = "select * from methodinvocationinview where projectName = '" + projectName + "'";
+        String sql = "select * from methodinvocationinview where projectName = '" + projectName + "and is_delete = 0'";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class MethodInvocationInViewDAO {
 
 
     public static List<MethodInvocationInView> getInfoByProjectName(String projectName, Connection conn) throws SQLException {
-        String sql = "select callClassName,calledClassName from methodinvocationinview where projectName = '" + projectName + "'";
+        String sql = "select callClassName,calledClassName from methodinvocationinview where projectName = '" + projectName + "and is_delete = 0'";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
@@ -106,7 +106,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static List<MethodInvocationInView> getInvokeInfoByProjectName(String projectName, Connection conn) throws SQLException {
-        String sql = "select callClassName,calledClassName,callMethodName,calledMethodName from methodinvocationinview where projectName = '" + projectName + "'";
+        String sql = "select callClassName,calledClassName,callMethodName,calledMethodName from methodinvocationinview where projectName = '" + projectName + "and is_delete = 0'";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
@@ -124,14 +124,14 @@ public class MethodInvocationInViewDAO {
 
 
     public static void updateIsRecursive(String projectName, Connection conn) throws SQLException {
-        String sql = "UPDATE methodinvocationinview SET isRecursive = 1 WHERE callMethodID = calledMethodID AND projectName = ?";
+        String sql = "UPDATE methodinvocationinview SET isRecursive = 1 WHERE callMethodID = calledMethodID AND projectName = ? AND is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1,projectName);
         pst.executeUpdate();
     }
 
     public static List<String> getMethodInvocationInViewByCallClassID(String projectName, String callClassID, Connection conn) throws SQLException {
-        String sql = "select * from methodinvocationinview where projectName = ? and callClassID = ?";
+        String sql = "select * from methodinvocationinview where projectName = ? and callClassID = ? and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, projectName);
         pst.setString(2, callClassID);
@@ -146,7 +146,8 @@ public class MethodInvocationInViewDAO {
 
     public static void deleteMethodInvocationInViewRecords(List<String> deleteMethodInvocationInViewIDs, Connection conn) throws SQLException{
 //        conn.setAutoCommit(false);
-        String mInvocInViewSQL = "delete from methodinvocationinview where ID = ?";
+//        String mInvocInViewSQL = "delete from methodinvocationinview where ID = ?";
+        String mInvocInViewSQL = "update methodinvocationinview set is_delete = 1 where ID = ?";
 
         PreparedStatement pst = conn.prepareStatement(mInvocInViewSQL);
 
@@ -162,7 +163,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static void updateCalledClassID(String projectName, Connection conn) throws SQLException {
-        String sql = "update methodinvocationinview m inner join classinfo c on m.calledClassName = c.className set m.calledClassID = c.ID, m.update_time = ? where c.update_time = ? and c.projectName = ?";
+        String sql = "update methodinvocationinview m inner join classinfo c on m.calledClassName = c.className set m.calledClassID = c.ID, m.update_time = ? where c.update_time = ? and c.projectName = ? and c.is_delete = 0 and m.is_delete = 0";
         Date currentDate = new Date();
         java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -173,7 +174,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static void updateCalledMethodID(String projectName, Connection conn) throws SQLException {
-        String sql = "update methodinvocationinview m1 inner join methodinfo m2 on m1.calledMethodName = m2.methodName and m1.calledClassName = m2.className set m1.calledMethodID = m2.ID, m1.update_time = ? where m2.update_time = ? and m2.projectName = ?";
+        String sql = "update methodinvocationinview m1 inner join methodinfo m2 on m1.calledMethodName = m2.methodName and m1.calledClassName = m2.className set m1.calledMethodID = m2.ID, m1.update_time = ? where m2.update_time = ? and m2.projectName = ? and m1.is_delete = 0 and m2.is_delete = 0";
         Date currentDate = new Date();
         java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         PreparedStatement pst = conn.prepareStatement(sql);

@@ -39,7 +39,7 @@ public class MethodInfoDAO {
     public List<MethodInfo> getMethodInfoByNameAndClass(String projectName,String className,String methodName,Connection conn){
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'";
 
-        String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ?";
+        String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and is_delete = 0";
         List<MethodInfo> methodInfoList = new ArrayList<>();
         ResultSet resultSet = null;
         try{
@@ -67,7 +67,7 @@ public class MethodInfoDAO {
     }
 
     public List<MethodInfo> getMethodIdListByClassName(String className,Connection connection) throws SQLException {
-        String sql = "select ID,beginLine,endLine from methodinfo where className = ?";
+        String sql = "select ID,beginLine,endLine from methodinfo where className = ? and is_delete = 0";
         PreparedStatement pst = connection.prepareStatement(sql);
         pst.setString(1,className);
         List<MethodInfo> methodInfos = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MethodInfoDAO {
 
 
     public List<MethodInfo> getMethodIdListByProjectName(String projectName,Connection connection) throws SQLException {
-        String sql = "select ID,beginLine,endLine,className from methodinfo where projectName = ?";
+        String sql = "select ID,beginLine,endLine,className from methodinfo where projectName = ? and is_delete = 0";
         PreparedStatement pst = connection.prepareStatement(sql);
         pst.setString(1,projectName);
         List<MethodInfo> methodInfos = new ArrayList<>();
@@ -101,7 +101,7 @@ public class MethodInfoDAO {
     }
 
     public void updateCloneId(Map<Integer,Integer> cloneIdMap, Connection connection) throws SQLException {
-        String sql = "UPDATE methodinfo SET cloneId = ? where ID = ?";
+        String sql = "UPDATE methodinfo SET cloneId = ? where ID = ? and is_delete = 0";
         PreparedStatement pst = connection.prepareStatement(sql);
         for(Integer id:cloneIdMap.keySet()){
             pst.setInt(1,cloneIdMap.get(id));
@@ -115,7 +115,7 @@ public class MethodInfoDAO {
     public MethodInfo getMethodInfoByNameClassReturnParameters(String projectName,String className,String methodName,String returnType,String methodParameters,Connection conn) throws SQLException {
 //        String sql = "select * from methodinfo where projectName = '" + projectName +"'and className = '" + className + "'and methodName = '" + methodName + "'and returnType = '" + returnType + "'and methodParameters = '" + methodParameters +"'";
 
-        String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and returnType = ? and methodParameters = ?";
+        String sql = "select * from methodinfo where projectName = ? and className = ? and methodName = ? and returnType = ? and methodParameters = ? and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1,projectName);
         pst.setString(2,className);
@@ -138,7 +138,7 @@ public class MethodInfoDAO {
     }
 
     public MethodInfo getMethodInfoByCloneId(int cloneId, Connection connection) throws SQLException {
-        String sql = "select ID,className,projectName from methodinfo where cloneId = ?";
+        String sql = "select ID,className,projectName from methodinfo where cloneId = ? and is_delete = 0";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1,cloneId);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -152,7 +152,7 @@ public class MethodInfoDAO {
     }
 
     public Map<Integer,MethodInfo> getAllMethodInfo(Connection connection) throws SQLException {
-        String sql = "select ID,className,projectName,cloneId from methodinfo";
+        String sql = "select ID,className,projectName,cloneId from methodinfo where is_delete = 0";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         Map<Integer,MethodInfo> methodInfoMap = new HashMap<>();
@@ -167,7 +167,7 @@ public class MethodInfoDAO {
     }
 
     public List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
-        String sql = "select ID,methodName,className,qualifiedName from methodinfo where projectName = ?";
+        String sql = "select ID,methodName,className,qualifiedName from methodinfo where projectName = ? and is_delete = 0";
         List<MethodInfo> methodInfoList = new ArrayList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,projectName);
@@ -184,7 +184,7 @@ public class MethodInfoDAO {
     }
 
     public Map<Integer,String> getMethodInfoByProjectName(String projectName, Connection connection) throws SQLException {
-        String sql = "select ID,qualifiedName from methodinfo where projectName = ?";
+        String sql = "select ID,qualifiedName from methodinfo where projectName = ? and is_delete = 0";
         Map<Integer,String> id2NameMap = new HashMap<>();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,projectName);
@@ -199,7 +199,7 @@ public class MethodInfoDAO {
 
     public void updateAsset(List<MethodInfo> methodInfoList, Connection conn) throws SQLException {
         conn.setAutoCommit(false);
-        String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ?,isSameProjectClone = ? WHERE ID = ?";
+        String sql = "UPDATE methodinfo SET asset = ?,cloneGroupId = ?,isSameProjectClone = ? WHERE ID = ? AND is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         for(MethodInfo methodInfo:methodInfoList){
             if(methodInfo.isAsset())
@@ -217,7 +217,7 @@ public class MethodInfoDAO {
     }
 
     public void updateInvokeCounts(List<List<Integer>> invokeInfoList, Connection conn) throws SQLException {
-        String sql = "UPDATE methodinfo SET invokedCounts = ?,invokeCounts = ? WHERE ID = ?";
+        String sql = "UPDATE methodinfo SET invokedCounts = ?,invokeCounts = ? WHERE ID = ? AND is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         for(List<Integer> list:invokeInfoList){
             pst.setInt(1,list.get(0));
@@ -230,13 +230,13 @@ public class MethodInfoDAO {
     }
 
     public void updateDefaultInvokeDept(Connection conn) throws SQLException {
-        String sql = "update methodinfo set invokeDept = '0' where invokeDept is null";
+        String sql = "update methodinfo set invokeDept = '0' where invokeDept is null and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.executeUpdate();
     }
 
     public void updateInvocationDept(Map<String,Integer> invocationDeptMap, Connection conn) throws SQLException {
-        String sql = "UPDATE methodinfo SET invokeDept = ? WHERE qualifiedName = ?";
+        String sql = "UPDATE methodinfo SET invokeDept = ? WHERE qualifiedName = ? AND is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         for(String className:invocationDeptMap.keySet()){
             pst.setInt(1,invocationDeptMap.get(className));
@@ -248,7 +248,7 @@ public class MethodInfoDAO {
     }
 
     public List<Integer> getDiscardMethodId(Connection connection) throws SQLException {
-        String sql = "select ID from methodinfo where invokeDept = 0 and invokedCounts = 0 and invokeCounts = 0";
+        String sql = "select ID from methodinfo where invokeDept = 0 and invokedCounts = 0 and invokeCounts = 0 and is_delete = 0";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Integer> discardMethodIDList = new ArrayList<>();
@@ -259,7 +259,7 @@ public class MethodInfoDAO {
     }
 
     public static List<String> getMethodIDInClass(String projectName, String className, Connection conn){
-        String sql = "select * from methodinfo where projectName = ? and className = ?";
+        String sql = "select * from methodinfo where projectName = ? and className = ? and is_delete = 0";
 //        List<MethodInfo> methodInfoList = new ArrayList<>();
         List<String> methodIDList = new ArrayList<>();
         ResultSet resultSet = null;
@@ -280,8 +280,8 @@ public class MethodInfoDAO {
 
     public static void deleteMethodInfoRecords(List<String> deleteMethodIDs, Connection conn) throws SQLException{
 //        conn.setAutoCommit(false);
-        String mInfoSQL = "delete from methodinfo where ID = ?";
-
+//        String mInfoSQL = "delete from methodinfo where ID = ?";
+        String mInfoSQL = "update methodinfo set is_delete = 1 where ID = ?";
         PreparedStatement pst = conn.prepareStatement(mInfoSQL);
 
         if(deleteMethodIDs != null){
@@ -296,7 +296,7 @@ public class MethodInfoDAO {
     }
 
     public static MethodInfo getMethodInfoByQualifiedName(String projectName, String qualifiedName, Connection conn){
-        String sql = "select * from methodinfo where projectName = ? and qualifiedName = ?";
+        String sql = "select * from methodinfo where projectName = ? and qualifiedName = ? and is_delete = 0";
 
         ResultSet resultSet = null;
         try{

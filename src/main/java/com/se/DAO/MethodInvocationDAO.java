@@ -67,7 +67,7 @@ public class MethodInvocationDAO {
 
     public static List<String> getAllProjectNameFromDB(Connection conn) throws SQLException {
         List<String> projectNameList = new ArrayList<>();
-        String sql = "select distinct projectName from methodinvocationinfo";
+        String sql = "select distinct projectName from methodinvocationinfo where is_delete = 0";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()){
@@ -80,7 +80,7 @@ public class MethodInvocationDAO {
         List<MethodInvocation> methodInvocationList = new ArrayList<>();
 //        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
 
-        String sql = "select * from methodinvocationinfo where projectName = ?";
+        String sql = "select * from methodinvocationinfo where projectName = ? and is_delete = 0";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setString(1, projectName);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -101,7 +101,7 @@ public class MethodInvocationDAO {
 
     public static Set<String> getDistinctClassName(Connection connection) throws SQLException{
         Set<String> classNameSet = new HashSet<>();
-        String sql = "select callClassName,calledClassName from methodinvocationinfo";
+        String sql = "select callClassName,calledClassName from methodinvocationinfo and is_delete = 0";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()){
@@ -114,7 +114,7 @@ public class MethodInvocationDAO {
     public static List<String> getMethodInvocationIDsByClassName(String projectName, String callClassName, Connection conn) throws SQLException {
         List<String> methodInvocationIDList = new ArrayList<>();
 //        String sql = "select * from methodinvocationinfo where projectName = '" + projectName + "'";
-        String sql = "select * from methodinvocationinfo where projectName = ? and callClassName = ?";
+        String sql = "select * from methodinvocationinfo where projectName = ? and callClassName = ? and is_delete = 0";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setString(1, projectName);
         preparedStatement.setString(2, callClassName);
@@ -128,7 +128,9 @@ public class MethodInvocationDAO {
 
     public static void deleteMethodInvocationInfoRecords(List<String> deleteMethodInvocationIDs, Connection conn) throws SQLException{
 //        conn.setAutoCommit(false);
-        String mInvocInfoSQL = "delete from methodinvocationinfo where ID = ?";
+//        String mInvocInfoSQL = "delete from methodinvocationinfo where ID = ?";
+        String mInvocInfoSQL = "update methodinvocationinfo set is_delete = 1 where ID = ?";
+
 
         PreparedStatement pst = conn.prepareStatement(mInvocInfoSQL);
 
