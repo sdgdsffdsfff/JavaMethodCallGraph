@@ -10,6 +10,7 @@ public class ClassInfo {
     private int invokedCounts;
     private int invokeCounts;
     private boolean asset;
+    private String layer;
 
     public String getProjectName() {
         return projectName;
@@ -81,5 +82,13 @@ public class ClassInfo {
 
     public void setAsset(boolean asset) {
         this.asset = asset;
+    }
+
+    public String getLayer() {
+        return layer;
+    }
+
+    public void setLayer(String layer) {
+        this.layer = layer;
     }
 }

@@ -208,9 +208,9 @@ public class CountInvocation {
     public static void main(String[] args) throws SQLException, IOException {
         BuildConnection buildConnection = new BuildConnection();
         Connection connection = buildConnection.buildConnect();
-        //List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
-        //CountInvocation.countInvokeCounts(projectNameList,connection);
-        //CountInvocation.countInvocationDept2(projectNameList,connection);
+        List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
+        CountInvocation.countInvokeCounts(projectNameList,connection);
+        CountInvocation.countInvocationDept2(projectNameList,connection);
         CountInvocation.getUniversalClass(connection);
         CountInvocation.getDiscardClassPath(connection);
     }

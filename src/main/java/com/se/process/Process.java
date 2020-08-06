@@ -31,11 +31,8 @@ public class Process {
             FileHandler.getFolders(dir,folders);
             System.out.println("项目数为："+folders.size());
             List<List<String>> folderList = ListUtils.divideList(folders,threadNum);
-
-
             if(DataConfig.isAdditionalProcess)
-                allModifiedFileMap = prepareModifiedFileMap(DataConfig.txtFilePath, folders);
-
+                allModifiedFileMap = prepareModifiedFileMap(DataConfig.modifiedFilePath, folders);
             //分析源项目代码，抽取需要的信息
             for(int i = 0;i<threadNum;i++){
                 Connection conn = buildConnection.buildConnect();
@@ -56,7 +53,7 @@ public class Process {
             folders.add(DataConfig.sourceProjectPath);
             Connection conn = buildConnection.buildConnect();
             if(DataConfig.isAdditionalProcess){
-                allModifiedFileMap = prepareModifiedFileMap(DataConfig.txtFilePath, folders);
+                allModifiedFileMap = prepareModifiedFileMap(DataConfig.modifiedFilePath, folders);
                 cachedThreadPool.execute(new GetMethodInvocationPlus(folders, allModifiedFileMap, conn));
             } else {
                 cachedThreadPool.execute(new GetMethodInvocation(folders,conn));
@@ -64,6 +61,7 @@ public class Process {
             cachedThreadPool.shutdown();
         }
     }
+
 
     public static Map<String, List<String>> prepareModifiedFileMap(String txtFilePath, LinkedList<String> folders){
         //从txt文件中读取修改过的文件列表
@@ -88,12 +86,10 @@ public class Process {
             filteredFilePaths.addAll(entry.getValue());
         }
         modifiedFileList.removeAll(filteredFilePaths);
-
         if(modifiedFileList.size() > 0){
             System.out.println("无法处理以下新增文件，请检查文件路径是否正确：");
             modifiedFileList.forEach(System.out::println);
         }
-
         return modifiedFileMap;
     }
 

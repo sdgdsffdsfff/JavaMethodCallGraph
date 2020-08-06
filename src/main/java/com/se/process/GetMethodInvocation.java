@@ -10,6 +10,7 @@ import com.se.container.MethodInfoContainer;
 import com.se.entity.ClassInfo;
 import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
+import com.se.visitors.LayerVisitor;
 import com.se.visitors.MethodVisitor;
 import java.io.File;
 import java.sql.Connection;
@@ -89,6 +90,9 @@ public class GetMethodInvocation implements Runnable {
         try{
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
+            if(DataConfig.isLayerProcess){
+                visitor.getClassInfo().setLayer(LayerVisitor.splitLayer(cu));
+            }
         }catch (Exception ex){
             //ex.printStackTrace();
         }
