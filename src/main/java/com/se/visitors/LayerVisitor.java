@@ -5,9 +5,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.se.entity.SetEnum;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +35,6 @@ public class LayerVisitor {
             singleAnnotationList.add(singleMemberAnnotationExprs.get(i).getNameAsString());
         }
         help(markerAnnotationList, setEnum);
-        System.out.println(level);
         return level;
     }
 

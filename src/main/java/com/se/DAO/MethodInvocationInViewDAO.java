@@ -108,7 +108,7 @@ public class MethodInvocationInViewDAO {
     }
 
     public static List<MethodInvocationInView> getInvokeInfoByProjectName(String projectName, Connection conn) throws SQLException {
-        String sql = "select callClassName,calledClassName,callMethodName,calledMethodName from methodinvocationinview where projectName = '" + projectName + "and is_delete = 0'";
+        String sql = "select callClassName,calledClassName,callMethodName,calledMethodName from methodinvocationinview where projectName = '" + projectName + "'and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet resultSet = pst.executeQuery();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();

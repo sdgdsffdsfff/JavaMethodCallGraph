@@ -5,7 +5,6 @@ import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInfoDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.entity.MethodInvocationInView;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -70,6 +69,8 @@ public class CountInvocationInMethodGra {
             for(MethodInvocationInView methodInvocationInView:methodInvocationInViewList){
                 String callMethodName = methodInvocationInView.getQualifiedCallMethodName();
                 String calledMethodName = methodInvocationInView.getQualifiedCalledMethodName();
+//                String callClassName = methodInvocationInView.getCallClassName();
+//                String calledClassName = methodInvocationInView.getCalledClassName();
                 if(callMethodName.equals(calledMethodName))continue;
                 callMethodSet.add(callMethodName);
                 calledMethodSet.add(calledMethodName);
@@ -94,7 +95,7 @@ public class CountInvocationInMethodGra {
                 String rootNodeName = rootNodeQueue.poll();
                 int dept = methodNodeMap.getOrDefault(rootNodeName,0);
                 List<String> calledClassList = callTree.get(rootNodeName);
-                if(calledClassList == null||dept>20)continue;
+                if(calledClassList == null||dept>10)continue;
                 for(String name:calledClassList){
                     if(methodNodeMap.getOrDefault(name,0)<dept+1){
                         methodNodeMap.put(name,dept+1);
