@@ -91,12 +91,15 @@ public class GetMethodInvocation implements Runnable {
             CompilationUnit cu = JavaParser.parse(file);
             visitor.visit(cu, null);
             if(DataConfig.isLayerProcess){
-                visitor.getClassInfo().setLayer(LayerVisitor.splitLayer(cu));
+                List<ClassInfo>  classInfoList = visitor.getClassInfoList();
+                for(ClassInfo classInfo : classInfoList){
+                    classInfo.setLayer(LayerVisitor.splitLayer(cu));
+                }
             }
         }catch (Exception ex){
             //ex.printStackTrace();
         }
-        classInfos.add(visitor.getClassInfo());
+        classInfos.addAll(visitor.getClassInfoList());
     }
 
     /**
@@ -138,6 +141,5 @@ public class GetMethodInvocation implements Runnable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 }

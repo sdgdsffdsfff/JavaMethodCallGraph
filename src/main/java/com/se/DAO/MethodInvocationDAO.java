@@ -98,10 +98,33 @@ public class MethodInvocationDAO {
         return methodInvocationList;
     }
 
+    public static List<MethodInvocation> getMethodInvocationByProjectNameAndDate(String projectName,Connection conn) throws SQLException {
+        List<MethodInvocation> methodInvocationList = new ArrayList<>();
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
+        String sql = "select * from methodinvocationinfo where projectName = ? and create_time = ? and is_delete = 0 ";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setString(1, projectName);
+        preparedStatement.setDate(2, currentDateInSql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            MethodInvocation methodInvocation = new MethodInvocation();
+            methodInvocation.setProjectName(projectName);
+            methodInvocation.setCallClassName(resultSet.getString("callClassName"));
+            methodInvocation.setCalledClassName(resultSet.getString("calledClassName"));
+            methodInvocation.setCallMethodName(resultSet.getString("callMethodName"));
+            methodInvocation.setCalledMethodName(resultSet.getString("calledMethodName"));
+            methodInvocation.setCallMethodReturnType(resultSet.getString("callMethodReturnType"));
+            methodInvocation.setCallMethodParameters(resultSet.getString("callMethodParameters"));
+            methodInvocationList.add(methodInvocation);
+        }
+        return methodInvocationList;
+    }
+
 
     public static Set<String> getDistinctClassName(Connection connection) throws SQLException{
         Set<String> classNameSet = new HashSet<>();
-        String sql = "select callClassName,calledClassName from methodinvocationinfo and is_delete = 0";
+        String sql = "select callClassName,calledClassName from methodinvocationinfo where is_delete = 0";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()){
@@ -127,16 +150,16 @@ public class MethodInvocationDAO {
 
 
     public static void deleteMethodInvocationInfoRecords(List<String> deleteMethodInvocationIDs, Connection conn) throws SQLException{
-//        conn.setAutoCommit(false);
-//        String mInvocInfoSQL = "delete from methodinvocationinfo where ID = ?";
-        String mInvocInfoSQL = "update methodinvocationinfo set is_delete = 1 where ID = ?";
-
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
+        String mInvocInfoSQL = "update methodinvocationinfo set is_delete = 1, update_time = ? where ID = ?";
 
         PreparedStatement pst = conn.prepareStatement(mInvocInfoSQL);
 
         if(deleteMethodInvocationIDs != null){
             for(String methodInvocationID : deleteMethodInvocationIDs){
-                pst.setString(1, methodInvocationID);
+                pst.setDate(1, currentDateInSql);
+                pst.setString(2, methodInvocationID);
                 pst.addBatch();
             }
             pst.executeBatch();

@@ -9,7 +9,10 @@ import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.config.DataConfig;
 import com.se.container.MethodCallContainer;
 import com.se.container.MethodInfoContainer;
-import com.se.entity.*;
+import com.se.entity.ClassInfo;
+import com.se.entity.MethodInfo;
+import com.se.entity.MethodInvocation;
+import com.se.entity.MethodInvocationInView;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.MethodVisitor;
 
@@ -27,6 +30,8 @@ public class GetMethodInvocationPlus implements Runnable {
     private Connection connection;
     private List<String> projectFolders;    //用于增量扫描的项目根目录List
     private Map<String, List<String>> modifiedFileMap;  //项目中修改的文件路径
+    private Map<Integer, String> deletedID2ClassNameMap; // key: ClassInfoID value: ClassName
+    private Map<String, Integer> className2IDMap; // key: ClassName value: ClassInfoID
 
     /**
      *
@@ -49,36 +54,70 @@ public class GetMethodInvocationPlus implements Runnable {
      * @param projectName
      * @param deleteFilePaths
      * @param conn
+     * @return  list中存储 被调用方法 来自 被删除类 的 方法调用
      * @throws SQLException
      */
-    public void processDeletedFile(String projectName, List<String> deleteFilePaths, Connection conn) throws SQLException{
+    public List<MethodInvocation> processDeletedFile(String projectName, List<String> deleteFilePaths, Connection conn) throws SQLException{
         //获取要被删除的ClassInfo(ID, className)
-        List<ClassInfo> deleteClassInfos = new ArrayList<>();
-        for(String deleteFile : deleteFilePaths){
-            ClassInfo classInfo = ClassInfoDAO.getClassInfoByFilePath(projectName, deleteFile, conn);
-            deleteClassInfos.add(classInfo);
+        long time0 = System.currentTimeMillis();
+
+        List<Integer> deleteClassInfos = new ArrayList<>();
+        List<String> deleteClassNames = new ArrayList<>();
+//        deletedID2ClassNameMap = new HashMap<>();
+        List<ClassInfo> allClassInfoList = ClassInfoDAO.getClassListByProjectName(projectName, conn);
+        for(ClassInfo classInfo : allClassInfoList){
+            if(deleteFilePaths.contains(classInfo.getFilePath())){
+                deleteClassInfos.add(classInfo.getID());
+                deleteClassNames.add(classInfo.getClassName());
+//                deletedID2ClassNameMap.put(classInfo.getID(), classInfo.getClassName());
+            }
         }
+        allClassInfoList.clear();
 
         //获取要被删除的MethodInfo(ID)、MethodInvocationInfo(ID)和MethodInvocationInfoInView(ID)
         List<String> deleteMethodIDs = new ArrayList<>();
+        List<MethodInfo> allMethodInfoList = MethodInfoDAO.getMethodInfoListByProjectName(projectName, conn);
+        for(MethodInfo methodInfo : allMethodInfoList){
+            if(deleteClassNames.contains(methodInfo.getClassName())){
+                deleteMethodIDs.add(methodInfo.getID());
+            }
+        }
+        allMethodInfoList.clear();
+
+
         List<String> deleteMethodInvocationIDs = new ArrayList<>();
-        List<String> deleteMethodInvocationInViewIDs = new ArrayList<>();
-        for(ClassInfo classInfo : deleteClassInfos){
-            List<String> methodIDs = MethodInfoDAO.getMethodIDInClass(projectName, classInfo.getClassName(), conn);
-            deleteMethodIDs.addAll(methodIDs);
+        List<MethodInvocation> methodInvocationWithDeletedClass = new ArrayList<>(); // list中存储 被调用方法 来自 被删除类 的 方法调用
+        List<MethodInvocation> allMethodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn);
+        for(MethodInvocation methodInvocation : allMethodInvocationList){
+            if(deleteClassNames.contains(methodInvocation.getCallClassName())){
+                deleteMethodInvocationIDs.add(methodInvocation.getID());
+            } else if (deleteClassNames.contains(methodInvocation.getCalledClassName())){
+                methodInvocationWithDeletedClass.add(methodInvocation);
+            }
+        }
+        allMethodInvocationList.clear();
 
-            List<String> methodInvocationIDs = MethodInvocationDAO.getMethodInvocationIDsByClassName(projectName, classInfo.getClassName(), conn);
-            deleteMethodInvocationIDs.addAll(methodInvocationIDs);
 
-            List<String> methodInvocationInViewIDs = MethodInvocationInViewDAO.getMethodInvocationInViewByCallClassID(projectName, String.valueOf(classInfo.getID()), conn);
-            deleteMethodInvocationInViewIDs.addAll(methodInvocationInViewIDs);
+        List<Integer> deleteMethodInvocationInViewIDs = new ArrayList<>();
+        List<MethodInvocationInView> allMethodInvocationInViewList = MethodInvocationInViewDAO.getMethodInvocationInViewByProjectName(projectName,conn);
+
+        for(MethodInvocationInView methodInvocationInView : allMethodInvocationInViewList){
+            // 作为调用类或者被调用类都要删除
+            if(deleteClassNames.contains(methodInvocationInView.getCallClassName()) || deleteClassNames.contains(methodInvocationInView.getCalledClassName())){
+                deleteMethodInvocationInViewIDs.add(methodInvocationInView.getID());
+            }
         }
 
         //根据list中的ID进行删除
         ClassInfoDAO.deleteClassInfoRecords(deleteClassInfos, conn);
+
         MethodInfoDAO.deleteMethodInfoRecords(deleteMethodIDs, conn);
+
         MethodInvocationDAO.deleteMethodInvocationInfoRecords(deleteMethodInvocationIDs, conn);
+
         MethodInvocationInViewDAO.deleteMethodInvocationInViewRecords(deleteMethodInvocationInViewIDs, conn);
+
+        return methodInvocationWithDeletedClass;
     }
 
     /**
@@ -106,51 +145,13 @@ public class GetMethodInvocationPlus implements Runnable {
             if(file.exists())
                 processMethodCallTree(file, classInfoList);
         }
-
         //存储当前项目中的所有方法
         MethodInfoDAO methodInfoDAO = new MethodInfoDAO();
         methodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoListByProjectName(projectName), conn);
         //存储当前项目中的所有方法调用
         MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);
-
-        // 向methodInvocationInView表中插入数据
-        Map<String, MethodCall> methodCallMap = MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName);
-        if(methodCallMap == null) return;
-        List<MethodInvocationInView> methodInvocationInViews = new ArrayList<>();
-        for (Map.Entry<String, MethodCall> entry : methodCallMap.entrySet()) {
-            Method callMethod = entry.getValue().getCaller();
-            List<Method> calledMethods = entry.getValue().getCalled();
-            for(Method calledMethod : calledMethods){
-
-                MethodInfo callMethodInfo = MethodInfoDAO.getMethodInfoByQualifiedName(projectName, callMethod.getQualifiedName(), conn);
-                MethodInfo calledMethodInfo = MethodInfoDAO.getMethodInfoByQualifiedName(projectName, calledMethod.getQualifiedName(), conn);
-                if(callMethodInfo == null || calledMethodInfo == null) continue;
-
-                String callClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName, callMethodInfo.getClassName(), conn);
-                String calledClassID = ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName, calledMethodInfo.getClassName(), conn);
-                if(callClassID == null || calledClassID == null) continue;
-
-                MethodInvocationInView m = new MethodInvocationInView();
-                m.setProjectName(projectName);
-                m.setCallClassName(callMethod.getPackageAndClassName());
-                m.setCallMethodName(callMethod.getName());
-                m.setCallMethodID(callMethodInfo.getID());
-                m.setCallMethodParameters(callMethod.getParamTypeList().toString());
-                m.setCallMethodReturnType(callMethod.getReturnTypeStr());
-                m.setCalledClassName(calledMethodInfo.getClassName());
-                m.setCalledMethodName(calledMethodInfo.getMethodName());
-                m.setCalledMethodID(calledMethodInfo.getID());
-                m.setCallClassID(callClassID);
-                m.setCalledClassID(calledClassID);
-                methodInvocationInViews.add(m);
-            }
-        }
-        MethodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViews,conn);
-        MethodInvocationInViewDAO.updateIsRecursive(projectName,conn);
-
-        MethodInfoContainer.getContainer().clearMethodInfoListByProjectName(projectName);
-        MethodCallContainer.getContainer().clearMethodCallByProjectName(projectName);
     }
+
 
     /**
      * 处理修改的文件
@@ -160,11 +161,13 @@ public class GetMethodInvocationPlus implements Runnable {
      * @throws SQLException
      */
     public void processModifiedFile(String projectName, List<String> modifiedFilePaths, Connection conn) throws SQLException {
-        processDeletedFile(projectName, modifiedFilePaths, conn);
+
+        List<MethodInvocation> methodInvocationWithDeletedClass = processDeletedFile(projectName, modifiedFilePaths, conn);
+
         processAddedFile(projectName, modifiedFilePaths, conn);
-        MethodInvocationInViewDAO.updateCalledClassID(projectName, conn);
-        MethodInvocationInViewDAO.updateCalledMethodID(projectName, conn);
-        System.out.println("数据处理完成...");
+
+        // 通过重新插入的方式更新methodinvocationinview表里的calledClassID和calledMethodID
+        FilterMethodInvocation.doFilterPlus(projectName, methodInvocationWithDeletedClass, conn);
     }
 
     /**
@@ -179,7 +182,7 @@ public class GetMethodInvocationPlus implements Runnable {
         }catch (Exception ex){
             //ex.printStackTrace();
         }
-        classInfos.add(visitor.getClassInfo());
+        classInfos.addAll(visitor.getClassInfoList());
     }
 
     /**
@@ -213,6 +216,13 @@ public class GetMethodInvocationPlus implements Runnable {
             List<String> projectNames = projectFolders.stream()
                     .map(GetMethodInvocationPlus::getProjectNameFromProjectPath)
                     .collect(Collectors.toList());
+
+            //匹配方法调用关系
+//            FilterMethodInvocation.doFilterX(this.connection, projectNames, true);
+            for(String currentProjectName : projectNames){
+                List<MethodInvocation> methodInvocationList = MethodInvocationDAO.getMethodInvocationByProjectNameAndDate(projectName, this.connection);
+                FilterMethodInvocation.doFilterPlus(currentProjectName, methodInvocationList, this.connection);
+            }
 
             //根据配置信息决定是否需要统计调用次数和调用深度
             if(DataConfig.analyseInvocationCounts){

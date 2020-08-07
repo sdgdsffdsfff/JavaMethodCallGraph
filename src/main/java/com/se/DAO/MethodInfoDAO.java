@@ -166,7 +166,7 @@ public class MethodInfoDAO {
         return methodInfoMap;
     }
 
-    public List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
+    public static List<MethodInfo> getMethodInfoListByProjectName(String projectName, Connection connection) throws SQLException {
         String sql = "select ID,methodName,className,qualifiedName from methodinfo where projectName = ? and is_delete = 0";
         List<MethodInfo> methodInfoList = new ArrayList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -279,14 +279,16 @@ public class MethodInfoDAO {
     }
 
     public static void deleteMethodInfoRecords(List<String> deleteMethodIDs, Connection conn) throws SQLException{
-//        conn.setAutoCommit(false);
-//        String mInfoSQL = "delete from methodinfo where ID = ?";
-        String mInfoSQL = "update methodinfo set is_delete = 1 where ID = ?";
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
+
+        String mInfoSQL = "update methodinfo set is_delete = 1, update_time = ? where ID = ?";
         PreparedStatement pst = conn.prepareStatement(mInfoSQL);
 
         if(deleteMethodIDs != null){
             for(String methodID : deleteMethodIDs){
-                pst.setString(1, methodID);
+                pst.setDate(1, currentDateInSql);
+                pst.setString(2, methodID);
                 pst.addBatch();
             }
             pst.executeBatch();
@@ -321,5 +323,4 @@ public class MethodInfoDAO {
         }
         return null;
     }
-
 }

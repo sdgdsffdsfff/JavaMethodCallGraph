@@ -5,17 +5,21 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.se.entity.ClassInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClassVisitor extends VoidVisitorAdapter {
 
     private String projectName;
     private String filePath;
     private String pkg; //包名
     private String clazz;   //类名
-    private ClassInfo classInfo;
+    private List<ClassInfo> classInfoList;
 
     public ClassVisitor(String projectName, String filePath){
         this.projectName = projectName;
         this.filePath = filePath;
+        this.classInfoList = new ArrayList<>();
     }
 
     /**
@@ -48,15 +52,15 @@ public class ClassVisitor extends VoidVisitorAdapter {
         classInfo.setProjectName(this.projectName);
         this.filePath = this.filePath.replace("\\","|");
         classInfo.setFilePath(this.filePath);
-        this.classInfo = classInfo;
+        this.classInfoList.add(classInfo);
         super.visit(n, arg);
     }
 
-    public ClassInfo getClassInfo() {
-        return classInfo;
+    public List<ClassInfo> getClassInfoList() {
+        return this.classInfoList;
     }
 
-    public void setClassInfo(ClassInfo classInfo) {
-        this.classInfo = classInfo;
+    public void setClassInfoList(List<ClassInfo> classInfoList) {
+        this.classInfoList = classInfoList;
     }
 }

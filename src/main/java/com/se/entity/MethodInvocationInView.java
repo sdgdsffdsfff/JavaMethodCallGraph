@@ -2,6 +2,7 @@ package com.se.entity;
 
 public class MethodInvocationInView {
 
+    private int ID;
     private String projectName;
     private String callClassName;
     private String calledClassName;
@@ -14,6 +15,13 @@ public class MethodInvocationInView {
     private String callClassID;
     private String calledClassID;
 
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public String getCallMethodID() {
         return callMethodID;

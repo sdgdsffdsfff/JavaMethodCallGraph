@@ -73,12 +73,14 @@ public class MethodInvocationInViewDAO {
     }
 
     public static List<MethodInvocationInView> getMethodInvocationInViewByProjectName(String projectName, Connection conn) throws SQLException {
-        String sql = "select * from methodinvocationinview where projectName = '" + projectName + "and is_delete = 0'";
+        String sql = "select * from methodinvocationinview where projectName = ? and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, projectName);
         ResultSet resultSet = pst.executeQuery();
         List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
         while(resultSet.next()){
             MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
+            methodInvocationInView.setID(resultSet.getInt("ID"));
             methodInvocationInView.setCallClassName(resultSet.getString("callClassName"));
             methodInvocationInView.setCalledClassName(resultSet.getString("calledClassName"));
             methodInvocationInView.setCallMethodName(resultSet.getString("callMethodName"));
@@ -130,35 +132,35 @@ public class MethodInvocationInViewDAO {
         pst.executeUpdate();
     }
 
-    public static List<String> getMethodInvocationInViewByCallClassID(String projectName, String callClassID, Connection conn) throws SQLException {
+    public static List<Integer> getMethodInvocationInViewByCallClassID(String projectName, String callClassID, Connection conn) throws SQLException {
         String sql = "select * from methodinvocationinview where projectName = ? and callClassID = ? and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, projectName);
         pst.setString(2, callClassID);
         ResultSet resultSet = pst.executeQuery();
-        List<String> methodInvocationInViewIDList = new ArrayList<>();
+        List<Integer> methodInvocationInViewIDList = new ArrayList<>();
         while(resultSet.next()){
-            methodInvocationInViewIDList.add(resultSet.getString("ID"));
+            methodInvocationInViewIDList.add(resultSet.getInt("ID"));
         }
         return methodInvocationInViewIDList;
     }
 
 
-    public static void deleteMethodInvocationInViewRecords(List<String> deleteMethodInvocationInViewIDs, Connection conn) throws SQLException{
-//        conn.setAutoCommit(false);
-//        String mInvocInViewSQL = "delete from methodinvocationinview where ID = ?";
-        String mInvocInViewSQL = "update methodinvocationinview set is_delete = 1 where ID = ?";
+    public static void deleteMethodInvocationInViewRecords(List<Integer> deleteMethodInvocationInViewIDs, Connection conn) throws SQLException{
+        Date currentDate = new Date();
+        java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
+        String mInvocInViewSQL = "update methodinvocationinview set is_delete = 1, update_time = ? where ID = ?";
 
         PreparedStatement pst = conn.prepareStatement(mInvocInViewSQL);
 
         if(deleteMethodInvocationInViewIDs != null){
-            for(String methodInvocationInViewID : deleteMethodInvocationInViewIDs){
-                pst.setString(1, methodInvocationInViewID);
+            for(Integer methodInvocationInViewID : deleteMethodInvocationInViewIDs){
+                pst.setDate(1, currentDateInSql);
+                pst.setInt(2, methodInvocationInViewID);
                 pst.addBatch();
             }
             pst.executeBatch();
             pst.clearBatch();
-//            conn.commit();
         }
     }
 

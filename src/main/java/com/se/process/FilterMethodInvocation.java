@@ -116,4 +116,58 @@ public class FilterMethodInvocation{
         }
     }
 
+    /**
+     *
+     * @param projectName
+     * @param methodInvocationList 如果是全量运行，methodInvocationList是MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn)
+     *                             如果是增量更新，则是MethodInvocationDAO.getMethodInvocationByProjectName(projectName,conn)
+     * @param conn
+     * @throws SQLException
+     */
+    public static void doFilterPlus(String projectName, List<MethodInvocation> methodInvocationList, Connection conn) throws SQLException {
+        StopWatch stopWatch = new StopWatch();
+        List<MethodInvocationInView> methodInvocationInViewList = new ArrayList<>();
+        stopWatch.start();
+//        System.out.println("正在进行方法调用匹配的项目为:" + projectName);
+
+        List<MethodInfo> methodInfoList = MethodInfoDAO.getMethodInfoListByProjectName(projectName,conn);
+        HashMap<String,MethodInfo> methodInfoHashMap = new HashMap<>();
+        for(MethodInfo methodInfo:methodInfoList){
+            methodInfoHashMap.put(methodInfo.getQualifiedName(),methodInfo);
+        }
+        Map<String,Integer> classMap = ClassInfoDAO.getClassInfoMapByProjectName(projectName,conn);
+        for(MethodInvocation methodInvocation:methodInvocationList){
+            MethodInfo callMethodInfo = null,calledMethodInfo = null;
+            if(methodInfoHashMap.containsKey(methodInvocation.getQualifiedCallMethodName())){
+                callMethodInfo = methodInfoHashMap.get(methodInvocation.getQualifiedCallMethodName());
+            }
+            if(methodInfoHashMap.containsKey(methodInvocation.getQualifiedCalledMethodName())){
+                calledMethodInfo = methodInfoHashMap.get(methodInvocation.getQualifiedCalledMethodName());
+            }
+            if(callMethodInfo == null||calledMethodInfo == null)continue;
+            String callClassID = String.valueOf(classMap.get(callMethodInfo.getClassName()));
+            String calledClassID = String.valueOf(classMap.get(calledMethodInfo.getClassName()));
+            if(callClassID != null && calledClassID != null){
+                MethodInvocationInView methodInvocationInView = new MethodInvocationInView();
+                methodInvocationInView.setProjectName(projectName);
+                methodInvocationInView.setCallClassName(callMethodInfo.getClassName());
+                methodInvocationInView.setCallMethodName(callMethodInfo.getMethodName());
+                methodInvocationInView.setCallMethodID(callMethodInfo.getID());
+                methodInvocationInView.setCallMethodParameters(callMethodInfo.getMethodParameters());
+                methodInvocationInView.setCallMethodReturnType(callMethodInfo.getReturnType());
+                methodInvocationInView.setCalledClassName(calledMethodInfo.getClassName());
+                methodInvocationInView.setCalledMethodName(calledMethodInfo.getMethodName());
+                methodInvocationInView.setCalledMethodID(calledMethodInfo.getID());
+                methodInvocationInView.setCallClassID(callClassID);
+                methodInvocationInView.setCalledClassID(calledClassID);
+                methodInvocationInViewList.add(methodInvocationInView);
+            }
+        }
+        MethodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViewList,conn);
+        MethodInvocationInViewDAO.updateIsRecursive(projectName,conn);
+        stopWatch.stop();
+//        System.out.println("处理时间为：" + stopWatch.getTime() + "ms");
+        stopWatch.reset();
+    }
+
 }
