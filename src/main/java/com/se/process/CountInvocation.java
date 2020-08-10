@@ -1,15 +1,21 @@
 package com.se.process;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.se.DAO.BuildConnection;
 import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
 import com.se.config.DataConfig;
 import com.se.entity.ClassInfo;
-import com.se.utils.FileHelper;
 import com.se.entity.GraphNode;
 import com.se.entity.MethodInvocationInView;
+import com.se.utils.FileHandler;
+import com.se.utils.FileHelper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -189,15 +195,45 @@ public class CountInvocation {
         FileHelper.writeClassPathToFile(universalClassMap,DataConfig.universalClassPath);
     }
 
+    /**
+     * 获取类中的import语句
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static Set<String> getImportSet() throws FileNotFoundException {
+        Set<String> importNames = new HashSet<>();
+
+        LinkedList<String> folders = new LinkedList<>();
+        File dir = new File(DataConfig.sourceProjectParentPath);
+        FileHandler.getFolders(dir,folders);
+        for(String f:folders) {
+            for (String filePath : FileHelper.getSubFile(f, "java")) {
+                if (filePath.contains("\\test")) {
+                    continue;
+                }
+                File file = new File(filePath);
+
+                CompilationUnit cu = JavaParser.parse(file);
+                for(ImportDeclaration importDeclaration : cu.getImports()) {
+                    importNames.add(importDeclaration.getNameAsString());
+                }
+            }
+        }
+        return importNames;
+    }
+
 
     public static void getDiscardClassPath(Connection connection) throws SQLException, IOException {
         List<ClassInfo> classInfoList = ClassInfoDAO.getDiscardClassList(connection);
         System.out.println(classInfoList.size());
         Set<String> classNameSet = MethodInvocationDAO.getDistinctClassName(connection);
         System.out.println(classNameSet.size());
+
+        Set<String> importClassSet = getImportSet();
+
         List<String> filePathList = new ArrayList<>();
-        for(ClassInfo classInfo:classInfoList){
-            if(!classNameSet.contains(classInfo.getClassName())){
+        for(ClassInfo classInfo : classInfoList){
+            if(!classNameSet.contains(classInfo.getClassName()) && !importClassSet.contains(classInfo.getClassName())){
                 filePathList.add(classInfo.getFilePath());
             }
         }
