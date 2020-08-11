@@ -23,7 +23,7 @@ public class DataConfig {
     //是否对单个项目进行分析，为true则分析单个项目，为false则对父目录中所有的项目进行分析
     public static final boolean analyseSingleProject = false;
     //是否需要对于方法调用链的调用深度和每个类的被调用次数进行统计
-    public static final boolean analyseInvocationCounts = true;
+    public static final boolean analyseInvocationCounts = false;
     //方法粒度的measureIndex文件路径
     public static final String measureIndexFilePath = "JavaMethodCallGraph\\src\\main\\resources\\clone_result\\MeasureIndex.csv";
     //克隆检测的克隆组检测结果文件路径

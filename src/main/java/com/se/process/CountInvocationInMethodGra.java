@@ -69,9 +69,9 @@ public class CountInvocationInMethodGra {
             for(MethodInvocationInView methodInvocationInView:methodInvocationInViewList){
                 String callMethodName = methodInvocationInView.getQualifiedCallMethodName();
                 String calledMethodName = methodInvocationInView.getQualifiedCalledMethodName();
-//                String callClassName = methodInvocationInView.getCallClassName();
-//                String calledClassName = methodInvocationInView.getCalledClassName();
-                if(callMethodName.equals(calledMethodName))continue;
+                String callClassName = methodInvocationInView.getCallClassName();
+                String calledClassName = methodInvocationInView.getCalledClassName();
+                if(callMethodName.equals(calledMethodName)||callClassName.equals(calledClassName))continue;
                 callMethodSet.add(callMethodName);
                 calledMethodSet.add(calledMethodName);
                 if(callTree.containsKey(callMethodName)){

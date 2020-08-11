@@ -5,6 +5,7 @@ import com.se.config.DataConfig;
 import com.se.utils.FileHandler;
 import com.se.utils.FileHelper;
 import com.se.utils.ListUtils;
+import com.se.utils.TimeUtil;
 
 import java.io.File;
 import java.sql.Connection;
@@ -19,9 +20,7 @@ public class Process {
     private static int threadNum = 1;
 
     public static void main(String[] args){
-
         Map<String, List<String>> allModifiedFileMap = new HashMap<>();
-
         //建立数据库连接
         BuildConnection buildConnection = new BuildConnection();
         ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
