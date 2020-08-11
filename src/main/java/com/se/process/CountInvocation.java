@@ -1,6 +1,7 @@
 package com.se.process;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.se.DAO.BuildConnection;
@@ -200,7 +201,7 @@ public class CountInvocation {
      * @return
      * @throws FileNotFoundException
      */
-    public static Set<String> getImportSet() throws FileNotFoundException {
+    public static Set<String> getImportSet()  {
         Set<String> importNames = new HashSet<>();
 
         LinkedList<String> folders = new LinkedList<>();
@@ -211,12 +212,21 @@ public class CountInvocation {
                 if (filePath.contains("\\test")) {
                     continue;
                 }
-                File file = new File(filePath);
+                try {
+                    File file = new File(filePath);
 
-                CompilationUnit cu = JavaParser.parse(file);
-                for(ImportDeclaration importDeclaration : cu.getImports()) {
-                    importNames.add(importDeclaration.getNameAsString());
+                    if(!file.exists())
+                        continue;
+
+                    CompilationUnit cu = JavaParser.parse(file);
+
+                    for(ImportDeclaration importDeclaration : cu.getImports()) {
+                        importNames.add(importDeclaration.getNameAsString());
+                    }
+                } catch (ParseProblemException | FileNotFoundException p){
+//                    p.printStackTrace();
                 }
+
             }
         }
         return importNames;
@@ -230,6 +240,7 @@ public class CountInvocation {
         System.out.println(classNameSet.size());
 
         Set<String> importClassSet = getImportSet();
+        System.out.println(importClassSet.size());
 
         List<String> filePathList = new ArrayList<>();
         for(ClassInfo classInfo : classInfoList){
