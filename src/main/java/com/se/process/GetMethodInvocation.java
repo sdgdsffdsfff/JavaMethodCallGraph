@@ -1,5 +1,6 @@
 package com.se.process;
-import com.github.javaparser.JavaParser;
+
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInfoDAO;
@@ -12,6 +13,7 @@ import com.se.utils.FileHelper;
 import com.se.visitors.ClassVisitor;
 import com.se.visitors.LayerVisitor;
 import com.se.visitors.MethodVisitor;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -88,7 +90,7 @@ public class GetMethodInvocation implements Runnable {
     private void processClassInfo(File file,List<ClassInfo> classInfos){
         ClassVisitor visitor = new ClassVisitor(projectName,file.getPath());
         try{
-            CompilationUnit cu = JavaParser.parse(file);
+            CompilationUnit cu = StaticJavaParser.parse(file);
             visitor.visit(cu, null);
             if(DataConfig.isLayerProcess){
                 List<ClassInfo>  classInfoList = visitor.getClassInfoList();
@@ -109,7 +111,7 @@ public class GetMethodInvocation implements Runnable {
     private void processMethodCallTree(File file, List<String> classInfoList){
         MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
         try{
-            CompilationUnit cu = JavaParser.parse(file);
+            CompilationUnit cu = StaticJavaParser.parse(file);
             visitor.visit(cu, null);
         }catch (Exception ex){
             //ex.printStackTrace();

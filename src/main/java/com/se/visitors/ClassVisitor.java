@@ -2,6 +2,7 @@ package com.se.visitors;
 
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.se.entity.ClassInfo;
 
@@ -45,7 +46,7 @@ public class ClassVisitor extends VoidVisitorAdapter {
      */
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-        this.clazz = n.getName().asString().trim();
+        this.clazz = dollaryName(n);
         ClassInfo classInfo = new ClassInfo();
         classInfo.setClassName(this.pkg +"."+ this.clazz);
         classInfo.setInterface(n.isInterface());
@@ -56,6 +57,12 @@ public class ClassVisitor extends VoidVisitorAdapter {
         super.visit(n, arg);
     }
 
+    private static String dollaryName(TypeDeclaration<?> n) {
+        if (n.isNestedType()) {
+            return dollaryName((TypeDeclaration<?>) n.getParentNode().get()) + "$" + n.getNameAsString();
+        }
+        return n.getNameAsString();
+    }
     public List<ClassInfo> getClassInfoList() {
         return this.classInfoList;
     }

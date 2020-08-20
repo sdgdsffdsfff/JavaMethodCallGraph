@@ -1,7 +1,7 @@
 package com.se.process;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.se.DAO.BuildConnection;
@@ -218,7 +218,7 @@ public class CountInvocation {
                     if(!file.exists())
                         continue;
 
-                    CompilationUnit cu = JavaParser.parse(file);
+                    CompilationUnit cu = StaticJavaParser.parse(file);
 
                     for(ImportDeclaration importDeclaration : cu.getImports()) {
                         importNames.add(importDeclaration.getNameAsString());
