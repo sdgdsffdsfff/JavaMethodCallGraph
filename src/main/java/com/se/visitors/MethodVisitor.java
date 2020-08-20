@@ -77,11 +77,18 @@ public class MethodVisitor extends VoidVisitorAdapter {
      */
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-        this.clazz = n.getName().asString().trim();
+        this.clazz = this.dollaryName(n);
 
         this.importsWithoutAsterisk.put(this.clazz, this.pkg.concat(".").concat(this.clazz));
 
         super.visit(n, arg);
+    }
+
+    private String dollaryName(TypeDeclaration<?> n) {
+        if (n.isNestedType()) {
+            return dollaryName((TypeDeclaration<?>) n.getParentNode().get()) + "$" + n.getNameAsString();
+        }
+        return n.getNameAsString();
     }
 
 

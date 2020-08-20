@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-symbol-solver-core</artifactId>
-            <version>3.12.0</version>
+            <version>3.13.10</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

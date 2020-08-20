@@ -46,7 +46,7 @@ public class ClassVisitor extends VoidVisitorAdapter {
      */
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-        this.clazz = dollaryName(n);
+        this.clazz = this.dollaryName(n);
         ClassInfo classInfo = new ClassInfo();
         classInfo.setClassName(this.pkg +"."+ this.clazz);
         classInfo.setInterface(n.isInterface());
@@ -57,7 +57,7 @@ public class ClassVisitor extends VoidVisitorAdapter {
         super.visit(n, arg);
     }
 
-    private static String dollaryName(TypeDeclaration<?> n) {
+    private String dollaryName(TypeDeclaration<?> n) {
         if (n.isNestedType()) {
             return dollaryName((TypeDeclaration<?>) n.getParentNode().get()) + "$" + n.getNameAsString();
         }
