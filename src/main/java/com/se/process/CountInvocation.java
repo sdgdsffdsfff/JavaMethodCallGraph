@@ -186,16 +186,6 @@ public class CountInvocation {
     }
 
 
-
-    //获取所有万能类的Id
-    public static void getUniversalClass(Connection conn) throws SQLException, IOException {
-        int avgInvokeCounts = (int)ClassInfoDAO.getAvgInvokeCounts(conn);
-        int avgInvokedCounts = (int)ClassInfoDAO.getAvgInvokedCounts(conn);
-        Map<Integer,String> universalClassMap = ClassInfoDAO.getUniversalClass(avgInvokeCounts*3,avgInvokedCounts*3,conn);
-        System.out.println("挖掘出的上帝类的个数为：" + universalClassMap.size());
-        FileHelper.writeClassPathToFile(universalClassMap,DataConfig.universalClassPath);
-    }
-
     /**
      * 获取类中的import语句
      * @return
@@ -249,7 +239,6 @@ public class CountInvocation {
             }
         }
         FileHelper.writeClassPathToFile(filePathList,DataConfig.discardClassPath);
-
     }
 
     public static void main(String[] args) throws SQLException, IOException {
@@ -258,7 +247,6 @@ public class CountInvocation {
         List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
         //CountInvocation.countInvokeCounts(projectNameList,connection);
         CountInvocation.countInvocationDept2(projectNameList,connection);
-        CountInvocation.getUniversalClass(connection);
         CountInvocation.getDiscardClassPath(connection);
     }
 
