@@ -259,20 +259,16 @@ public class ClassInfoDAO {
         return avgInvokedCounts;
     }
 
-    public static Map<Integer,String> getUniversalClass(int avgInvokeCounts,int avgInvokedCounts,Connection connection) throws SQLException {
-        String sql = "select ID,filePath from classinfo where invokedCounts > ? and invokeCounts > ? and is_delete = 0";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1,avgInvokeCounts);
-        preparedStatement.setInt(2,avgInvokedCounts);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        Map<Integer,String> universalClassMap = new HashMap<>();
-        while(resultSet.next()){
-            int ID = resultSet.getInt("ID");
-            String filePath = resultSet.getString("filePath");
-            filePath = filePath.replace("|","\\");
-            universalClassMap.put(ID,filePath);
+    public static void updateDiscardClass(List<String> classPathList,Connection connection) throws SQLException{
+        String sql = "update classinfo set isDiscardClass = 1 where filePath = ? and is_delete = 0";
+        PreparedStatement pst = connection.prepareStatement(sql);
+        for(String filePath:classPathList){
+            filePath = filePath.replace("\\","|");
+            pst.setString(1,filePath);
+            pst.addBatch();
         }
-        return universalClassMap;
+        pst.executeBatch();
+        pst.clearBatch();
     }
 
     public static void deleteClassInfoRecords(List<Integer> deleteClassIDs, Connection conn) throws SQLException{

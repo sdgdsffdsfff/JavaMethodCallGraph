@@ -224,22 +224,31 @@ public class CountInvocation {
         return importNames;
     }
 
+    private static boolean containsKeyWords(String str){
+        String[] FilterWord = {"Main","main","Config","config","Configuration","configuration"};
+        for(String keyWord:FilterWord){
+            if(str.contains(keyWord))return true;
+        }
+        return false;
+    }
+
 
     public static void getDiscardClassPath(Connection connection) throws SQLException, IOException {
         List<ClassInfo> classInfoList = ClassInfoDAO.getDiscardClassList(connection);
         System.out.println(classInfoList.size());
         Set<String> classNameSet = MethodInvocationDAO.getDistinctClassName(connection);
         System.out.println(classNameSet.size());
-
         Set<String> importClassSet = getImportSet();
         System.out.println(importClassSet.size());
-
         List<String> filePathList = new ArrayList<>();
+        //过滤main类和配置类
+
         for(ClassInfo classInfo : classInfoList){
-            if(!classNameSet.contains(classInfo.getClassName()) && !importClassSet.contains(classInfo.getClassName())){
+            if(!classNameSet.contains(classInfo.getClassName()) && !importClassSet.contains(classInfo.getClassName()) && !containsKeyWords(classInfo.getClassName())){
                 filePathList.add(classInfo.getFilePath());
             }
         }
+        ClassInfoDAO.updateDiscardClass(filePathList,connection);
         FileHelper.writeClassPathToFile(filePathList,DataConfig.discardClassPath);
     }
 
@@ -247,7 +256,6 @@ public class CountInvocation {
         BuildConnection buildConnection = new BuildConnection();
         Connection connection = buildConnection.buildConnect();
         List<String> projectNameList = ClassInfoDAO.getAllProjectNameFromDB(connection);
-        //CountInvocation.countInvokeCounts(projectNameList,connection);
         CountInvocation.countInvocationDept2(projectNameList,connection);
         CountInvocation.getDiscardClassPath(connection);
     }

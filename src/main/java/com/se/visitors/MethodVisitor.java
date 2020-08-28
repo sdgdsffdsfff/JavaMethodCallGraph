@@ -187,7 +187,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
         super.visit(n, arg);
         //过滤长度小于四行的方法
         int lineCount =  n.getRange().get().getLineCount();
-        if(lineCount<4){
+        if(lineCount<=4){
             return;
         }
         //create caller method info
