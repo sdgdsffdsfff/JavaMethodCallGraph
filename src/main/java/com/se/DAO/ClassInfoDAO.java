@@ -80,7 +80,7 @@ public class ClassInfoDAO {
      * @param classInfoList
      */
     public synchronized static void saveClassInfoList(List<ClassInfo> classInfoList, Connection conn) throws SQLException{
-        String sql = "insert into classinfo (projectName,className,isInterface,filePath, create_time, update_time) values (?,?,?,?,?,?)";
+        String sql = "insert into classinfo (projectName,className,isInterface,filePath, create_time, update_time,layer) values (?,?,?,?,?,?,?)";
         Date currentDate = new Date();
         java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         if(classInfoList != null && !classInfoList.isEmpty()){
@@ -95,6 +95,7 @@ public class ClassInfoDAO {
                 pst.setString(4,classInfo.getFilePath());
                 pst.setDate(5, currentDateInSql);
                 pst.setDate(6, currentDateInSql);
+                pst.setString(7,classInfo.getLayer());
                 pst.addBatch();
             }
             pst.executeBatch();

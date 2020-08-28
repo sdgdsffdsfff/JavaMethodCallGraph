@@ -1,6 +1,7 @@
 package com.se.visitors;
 
 import com.github.javaparser.Range;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.*;
@@ -184,6 +185,11 @@ public class MethodVisitor extends VoidVisitorAdapter {
     @Override
     public void visit(MethodDeclaration n, Object arg) {
         super.visit(n, arg);
+        //过滤长度小于四行的方法
+        int lineCount =  n.getRange().get().getLineCount();
+        if(lineCount<4){
+            return;
+        }
         //create caller method info
         Method callerMethod = new Method();
         callerMethod.setName(n.getName().asString());
@@ -580,6 +586,12 @@ public class MethodVisitor extends VoidVisitorAdapter {
             if(expression.isMethodCallExpr()){
                 this.resolveMethodInvocation(expression, methodParams, callerMethod);
             }
+        }else if(exp.isLambdaExpr()){
+            //增加对于lambda表达式的解析
+            Statement statement = ((LambdaExpr)exp).getBody();
+            visitStmt(statement,methodParams,callerMethod);
         }
     }
+
+
 }
