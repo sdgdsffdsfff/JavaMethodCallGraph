@@ -25,6 +25,8 @@ public class Method {
 
     private String methodContent;
 
+    private String filePath;
+
     public String getName() {
         return name;
     }
@@ -160,5 +162,13 @@ public class Method {
 
     public void setMethodContent(String methodContent) {
         this.methodContent = methodContent;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

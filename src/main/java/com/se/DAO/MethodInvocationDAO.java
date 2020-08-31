@@ -22,7 +22,7 @@ public class MethodInvocationDAO {
         Date currentDate = new Date();
         java.sql.Date currentDateInSql = new java.sql.Date(currentDate.getTime());
         try{
-            sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType, create_time, update_time) values(?,?,?,?,?,?,?,?,?)";
+            sql = "insert into methodinvocationinfo (projectName,callMethodName,calledMethodName,callClassName,calledClassName,callMethodParameters,callMethodReturnType, callClassFilePath, create_time, update_time) values(?,?,?,?,?,?,?,?,?,?)";
             if(methodCalls != null && !methodCalls.isEmpty()) {
                 pst = conn.prepareStatement(sql);//用来执行SQL语句查询，对sql语句进行预编译处理
                 Collection<MethodCall> calls = methodCalls.values();
@@ -44,8 +44,9 @@ public class MethodInvocationDAO {
                             pst.setString(5,calledMethod.getPackageAndClassName());
                             pst.setString(6,call.getCaller().getParamTypeList().toString());
                             pst.setString(7,call.getCaller().getReturnTypeStr());
-                            pst.setDate(8, currentDateInSql);
+                            pst.setString(8,call.getCaller().getFilePath());
                             pst.setDate(9, currentDateInSql);
+                            pst.setDate(10, currentDateInSql);
                             pst.addBatch();
 
                             tempMethodCall = call;
@@ -166,5 +167,13 @@ public class MethodInvocationDAO {
             pst.clearBatch();
 //            conn.commit();
         }
+    }
+
+    public static void updateCalledClassFilePath(String projectName, Connection conn) throws SQLException{
+        String sql = "update methodinvocationinfo m, classinfo c set m.calledClassFilePath = c.filePath where m.calledClassName = c.className and m.projectName = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, projectName);
+        pst.executeUpdate();
+
     }
 }

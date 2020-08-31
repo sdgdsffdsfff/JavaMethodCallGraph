@@ -76,6 +76,8 @@ public class GetMethodInvocation implements Runnable {
             methodInfoDAO.saveMethodInfoList(MethodInfoContainer.getContainer().getMethodInfoListByProjectName(projectName), conn);
             //存储当前项目中的所有方法调用
             MethodInvocationDAO.saveMethodInvocation(projectName, MethodCallContainer.getContainer().getMethodCallsByProjectName(projectName),conn);
+            // 更新calledClassFilePath
+            MethodInvocationDAO.updateCalledClassFilePath(projectName, conn);
             MethodInfoContainer.getContainer().clearMethodInfoListByProjectName(projectName);
             MethodCallContainer.getContainer().clearMethodCallByProjectName(projectName);
             System.out.println("项目中的文件数为：" + fileSize);
@@ -109,7 +111,8 @@ public class GetMethodInvocation implements Runnable {
      * @param file
      */
     private void processMethodCallTree(File file, List<String> classInfoList){
-        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
+//        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
+        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList, file.getAbsolutePath());
         try{
             CompilationUnit cu = StaticJavaParser.parse(file);
             visitor.visit(cu, null);

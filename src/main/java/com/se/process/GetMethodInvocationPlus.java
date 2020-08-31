@@ -115,6 +115,9 @@ public class GetMethodInvocationPlus implements Runnable {
 
         MethodInvocationDAO.deleteMethodInvocationInfoRecords(deleteMethodInvocationIDs, conn);
 
+        // 更新calledClassFilePath
+        MethodInvocationDAO.updateCalledClassFilePath(projectName, conn);
+
         MethodInvocationInViewDAO.deleteMethodInvocationInViewRecords(deleteMethodInvocationInViewIDs, conn);
 
         return methodInvocationWithDeletedClass;
@@ -190,7 +193,8 @@ public class GetMethodInvocationPlus implements Runnable {
      * @param file
      */
     private void processMethodCallTree(File file, List<String> classInfoList){
-        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
+//        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
+        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList, file.getAbsolutePath());
         try{
             CompilationUnit cu = StaticJavaParser.parse(file);
             visitor.visit(cu, null);

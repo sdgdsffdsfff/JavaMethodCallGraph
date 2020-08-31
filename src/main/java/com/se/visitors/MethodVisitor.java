@@ -1,7 +1,6 @@
 package com.se.visitors;
 
 import com.github.javaparser.Range;
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.*;
@@ -14,6 +13,7 @@ import com.se.entity.Method;
 import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
+
 import java.util.*;
 
 public class MethodVisitor extends VoidVisitorAdapter {
@@ -21,6 +21,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
     private String projectName;
     private String pkg; //包名
     private String clazz;   //类名
+    private String filePath;
     private List<String> classInfoList;
     private Map<String, String> importsWithoutAsterisk = new HashMap<>();
     private Map<String, String> importsWithAsterisk = new HashMap<>();
@@ -32,6 +33,12 @@ public class MethodVisitor extends VoidVisitorAdapter {
     public MethodVisitor(String projectName,List<String> classInfoList){
         this.projectName = projectName;
         this.classInfoList = classInfoList;
+    }
+
+    public MethodVisitor(String projectName, List<String> classInfoList, String filePath){
+        this.projectName = projectName;
+        this.classInfoList = classInfoList;
+        this.filePath = filePath;
     }
 
     /**
@@ -196,6 +203,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
         callerMethod.setClazz(clazz);
         callerMethod.setPkg(pkg);
         callerMethod.setMethodContent(n.toString());
+        callerMethod.setFilePath(this.filePath);
         Optional<BlockStmt> body = n.getBody();
         if(body.isPresent()){
             Optional<Range> range = n.getRange();
