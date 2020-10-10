@@ -9,7 +9,6 @@ import java.util.*;
 
 public class ClassInfoDAO {
 
-
     public static Map<Integer,String> getClassInfoByProjectName(String projectName, Connection conn) throws SQLException {
         String sql = "select ID,className from classinfo where projectName = ? and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -73,6 +72,24 @@ public class ClassInfoDAO {
             classInfoList.add(resultSet.getString("className"));
         }
         return classInfoList;
+    }
+
+    public static void updateSuperClass(String superClassName, String className, String projectName, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET super_class = ? WHERE className = ? and projectName = ? and is_delete = 0";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1,superClassName);
+        pst.setString(2,className);
+        pst.setString(3,projectName);
+        pst.executeUpdate();
+    }
+
+    public static void updateImplInterfaces(List<String> implInterfaces, String className, String projectName, Connection conn) throws SQLException {
+        String sql = "UPDATE classinfo SET interfaces = ? WHERE className = ? and projectName = ? and is_delete = 0";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, implInterfaces.toString());
+        pst.setString(2,className);
+        pst.setString(3,projectName);
+        pst.executeUpdate();
     }
 
     /**
