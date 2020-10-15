@@ -194,7 +194,7 @@ public class GetMethodInvocationPlus implements Runnable {
      */
     private void processMethodCallTree(File file, List<String> classInfoList){
 //        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList);
-        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList, file.getAbsolutePath());
+        MethodVisitor visitor = new MethodVisitor(projectName, classInfoList, file.getAbsolutePath(), this.connection);
         try{
             CompilationUnit cu = StaticJavaParser.parse(file);
             visitor.visit(cu, null);

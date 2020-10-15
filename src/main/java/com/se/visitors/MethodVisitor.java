@@ -5,8 +5,10 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.se.DAO.ClassInfoDAO;
 import com.se.container.MethodCallContainer;
 import com.se.container.MethodInfoContainer;
 import com.se.entity.Method;
@@ -14,7 +16,10 @@ import com.se.entity.MethodInfo;
 import com.se.entity.Variable;
 import com.se.utils.MethodUtils;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MethodVisitor extends VoidVisitorAdapter {
 
@@ -29,16 +34,22 @@ public class MethodVisitor extends VoidVisitorAdapter {
     private Map<String, Variable> methodVariableMap = new HashMap<>();    //调用者方法里面定义的变量
     private Map<String, Variable> calledMethodParamMap = new HashMap<>();   //被调用方法的参数
 
+    private Connection conn;
+
+
+    private String superClassWithPackageName;
+    private List<String> impInterfaceWithPackageNames = new ArrayList<>();
 
     public MethodVisitor(String projectName,List<String> classInfoList){
         this.projectName = projectName;
         this.classInfoList = classInfoList;
     }
 
-    public MethodVisitor(String projectName, List<String> classInfoList, String filePath){
+    public MethodVisitor(String projectName, List<String> classInfoList, String filePath, Connection conn){
         this.projectName = projectName;
         this.classInfoList = classInfoList;
         this.filePath = filePath;
+        this.conn = conn;
     }
 
     /**
@@ -88,6 +99,70 @@ public class MethodVisitor extends VoidVisitorAdapter {
         this.clazz = this.dollaryName(n);
 
         this.importsWithoutAsterisk.put(this.clazz, this.pkg.concat(".").concat(this.clazz));
+
+        List<String> superClass = n.getExtendedTypes().stream()
+                .map(NodeWithSimpleName::getNameAsString)
+                .collect(Collectors.toList());
+
+        if(superClass.size() > 0){
+            String packageNameOfSuperClass = importsWithoutAsterisk.get(superClass.get(0));
+            if(packageNameOfSuperClass == null){
+
+                for (Map.Entry<String, String> entry : importsWithAsterisk.entrySet()) {
+                    String importStmt = entry.getValue();
+                    String _superClassPackageName = importStmt.concat(".").concat(superClass.get(0));
+
+                    if(classInfoList != null && classInfoList.contains(_superClassPackageName)){
+                        this.superClassWithPackageName = _superClassPackageName;
+                        break;
+                    }
+                }
+            } else {
+                this.superClassWithPackageName = packageNameOfSuperClass;
+            }
+        }
+
+
+        List<String> implementedInterfaces = n.getImplementedTypes().stream()
+                .map(NodeWithSimpleName::getNameAsString)
+                .collect(Collectors.toList());
+
+        for(String implInterface : implementedInterfaces){
+            String interfacePackageName = importsWithoutAsterisk.get(implInterface);
+            if(interfacePackageName == null){
+                for (Map.Entry<String, String> entry : importsWithAsterisk.entrySet()) {
+                    String importStmt = entry.getValue();
+                    String _interfacePackageName = importStmt.concat(".").concat(implInterface);
+
+                    if(classInfoList != null && classInfoList.contains(_interfacePackageName)){
+                        impInterfaceWithPackageNames.add(_interfacePackageName);
+                        break;
+                    }
+                }
+            } else {
+                impInterfaceWithPackageNames.add(interfacePackageName);
+            }
+
+        }
+
+        String fullClassName = this.pkg.concat(".").concat(this.clazz);
+
+        if(this.superClassWithPackageName != null){
+            try {
+                ClassInfoDAO.updateSuperClass(this.superClassWithPackageName, fullClassName,this.projectName, conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(this.impInterfaceWithPackageNames.size() > 0){
+            try {
+                ClassInfoDAO.updateImplInterfaces(this.impInterfaceWithPackageNames, fullClassName, this.projectName, conn);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
 
         super.visit(n, arg);
     }
