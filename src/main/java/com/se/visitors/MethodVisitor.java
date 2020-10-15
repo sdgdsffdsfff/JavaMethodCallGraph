@@ -211,6 +211,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
                 Range r = range.get();
                 callerMethod.setBeginLine(r.begin.line);
                 callerMethod.setEndLine(r.end.line);
+                System.out.println(r.end.line);
             }
         }
 

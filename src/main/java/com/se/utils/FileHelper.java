@@ -148,6 +148,45 @@ public class FileHelper {
 		}
 		return arrayList;
 	}
+
+
+	public static void getFolders(File file, LinkedList<String> files) {
+		File[] fs = file.listFiles();
+		for(File f: fs) {
+			if(f.isDirectory()&&f.listFiles()!=null)
+			{
+				files.addLast(f.getPath());
+			}
+		}
+	}
+
+
+	public static void writeFile(String filePath, Map<String, List<String>> resultMap){
+
+		try{
+			File writename = new File(filePath);
+			writename.createNewFile(); // 创建新文件
+
+			BufferedWriter bw = new BufferedWriter(new FileWriter(writename));
+
+			for (Map.Entry<String, List<String>> entry : resultMap.entrySet()) {
+				//System.out.println(entry.getKey() + ":" + entry.getValue());
+				String projectName = entry.getKey();
+				List<String> godClassList = entry.getValue();
+				bw.write(projectName +  "\n");
+				for(String godClassPath : godClassList){
+					bw.write(godClassPath + "\n");
+				}
+				bw.write("\n\n\n\n");
+			}
+
+			bw.flush();
+			bw.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
 
 

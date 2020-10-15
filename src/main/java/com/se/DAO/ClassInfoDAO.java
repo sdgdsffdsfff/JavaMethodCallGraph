@@ -294,4 +294,20 @@ public class ClassInfoDAO {
 
     }
 
+
+    public static void updateGodClass(List<String> classPathList, Connection connection) throws SQLException {
+        String sql = "update classinfo set isGodClass = 1 where filePath = ? and is_delete = 0";
+        PreparedStatement pst = connection.prepareStatement(sql);
+        for(String filePath:classPathList){
+            filePath = filePath.replace("\\","|");
+            pst.setString(1,filePath);
+            pst.addBatch();
+        }
+        pst.executeBatch();
+        pst.clearBatch();
+    }
+
+
+
+
 }
