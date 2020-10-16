@@ -98,6 +98,9 @@ public class MethodVisitor extends VoidVisitorAdapter {
     public void visit(ClassOrInterfaceDeclaration n, Object arg) {
         this.clazz = this.dollaryName(n);
 
+        if(this.clazz.equals("GraphService"))
+            System.out.println("catch you!");
+
         this.importsWithoutAsterisk.put(this.clazz, this.pkg.concat(".").concat(this.clazz));
 
         List<String> superClass = n.getExtendedTypes().stream()
@@ -269,7 +272,7 @@ public class MethodVisitor extends VoidVisitorAdapter {
         super.visit(n, arg);
         //过滤长度小于四行的方法
         int lineCount =  n.getRange().get().getLineCount();
-        if(lineCount<=4){
+        if(n.getBody().isPresent() && lineCount<=4){
             return;
         }
         //create caller method info

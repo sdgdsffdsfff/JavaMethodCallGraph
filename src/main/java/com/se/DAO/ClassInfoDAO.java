@@ -1,4 +1,6 @@
 package com.se.DAO;
+
+import com.alibaba.fastjson.JSON;
 import com.se.entity.ClassInfo;
 
 import java.sql.Connection;
@@ -83,10 +85,29 @@ public class ClassInfoDAO {
         pst.executeUpdate();
     }
 
+    public static List<ClassInfo> getSubClassList(String projectName, Connection conn)throws SQLException{
+        String sql = "select * from classinfo where projectName = ? and is_delete = 0 and (super_class is not null or interfaces is not null)";
+        PreparedStatement pst =  conn.prepareStatement(sql);
+        pst.setString(1, projectName);
+        ResultSet resultSet = pst.executeQuery();
+
+        List<ClassInfo> classInfoList = new ArrayList<>();
+        while(resultSet.next()){
+            ClassInfo classInfo = new ClassInfo();
+            classInfo.setID(resultSet.getInt("ID"));
+            classInfo.setClassName(resultSet.getString("className"));
+            classInfo.setSuperClass(resultSet.getString("super_class"));
+            classInfo.setInterfaces(resultSet.getString("interfaces"));
+            classInfoList.add(classInfo);
+        }
+        return classInfoList;
+
+    }
+
     public static void updateImplInterfaces(List<String> implInterfaces, String className, String projectName, Connection conn) throws SQLException {
         String sql = "UPDATE classinfo SET interfaces = ? WHERE className = ? and projectName = ? and is_delete = 0";
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, implInterfaces.toString());
+        pst.setString(1, JSON.toJSONString(implInterfaces));
         pst.setString(2,className);
         pst.setString(3,projectName);
         pst.executeUpdate();

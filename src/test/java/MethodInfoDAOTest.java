@@ -1,6 +1,6 @@
 import com.se.DAO.BuildConnection;
-import com.se.DAO.ClassInfoDAO;
 import com.se.DAO.MethodInfoDAO;
+import com.se.DAO.MethodInvocationDAO;
 import com.se.entity.MethodInfo;
 import org.junit.Test;
 
@@ -61,6 +61,15 @@ public class MethodInfoDAOTest {
 
 
 
+    }
+
+    @Test
+    public void test() throws SQLException {
+        BuildConnection buildConnection = new BuildConnection();
+        Connection connection = buildConnection.buildConnect();
+
+        String projectName = "struts-2.2.1";
+        MethodInvocationDAO.updateCalledClassFilePath(projectName, connection);
     }
 
 }

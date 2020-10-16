@@ -323,4 +323,31 @@ public class MethodInfoDAO {
         }
         return null;
     }
+
+    public static List<MethodInfo> getMethodInfoByClassName(String projectName, String className, Connection conn){
+        String sql = "select * from methodinfo where projectName = ? and className = ? and is_delete = 0";
+
+        List<MethodInfo> methodInfoList = new ArrayList<>();
+        ResultSet resultSet = null;
+        try{
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,projectName);
+            pst.setString(2,className);
+            resultSet = pst.executeQuery();
+            while(resultSet.next()){
+                MethodInfo methodInfo = new MethodInfo();
+                methodInfo.setID(resultSet.getString("ID"));
+                methodInfo.setMethodName(resultSet.getString("methodName"));
+                methodInfo.setClassName(resultSet.getString("className"));
+                methodInfo.setReturnType(resultSet.getString("returnType"));
+                methodInfo.setMethodParameters(resultSet.getString("methodParameters"));
+                methodInfoList.add(methodInfo);
+            }
+        }catch (Exception e){
+            System.out.println(sql);
+            e.printStackTrace();
+        }
+        return methodInfoList;
+    }
+
 }

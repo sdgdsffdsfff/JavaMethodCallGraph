@@ -11,6 +11,8 @@ public class ClassInfo {
     private int invokeCounts;
     private boolean asset;
     private String layer;
+    private String superClass;
+    private String interfaces;
 
     public String getProjectName() {
         return projectName;
@@ -90,5 +92,22 @@ public class ClassInfo {
 
     public void setLayer(String layer) {
         this.layer = layer;
+    }
+
+
+    public String getSuperClass() {
+        return superClass;
+    }
+
+    public void setSuperClass(String superClass) {
+        this.superClass = superClass;
+    }
+
+    public String getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(String interfaces) {
+        this.interfaces = interfaces;
     }
 }
