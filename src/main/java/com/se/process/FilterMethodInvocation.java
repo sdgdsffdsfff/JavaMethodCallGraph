@@ -1,12 +1,16 @@
 package com.se.process;
-import com.se.DAO.MethodInfoDAO;
+
+import com.alibaba.fastjson.JSONArray;
 import com.se.DAO.ClassInfoDAO;
+import com.se.DAO.MethodInfoDAO;
 import com.se.DAO.MethodInvocationDAO;
 import com.se.DAO.MethodInvocationInViewDAO;
+import com.se.entity.ClassInfo;
 import com.se.entity.MethodInfo;
 import com.se.entity.MethodInvocation;
 import com.se.entity.MethodInvocationInView;
 import org.apache.commons.lang.time.StopWatch;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -110,6 +114,9 @@ public class FilterMethodInvocation{
             }
             MethodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViewList,conn);
             MethodInvocationInViewDAO.updateIsRecursive(projectName,conn);
+
+            FilterMethodInvocation.linkMethodsOfSubclassAndSuperClass(projectName, conn);
+
             stopWatch.stop();
             System.out.println("处理时间为：" + stopWatch.getTime() + "ms");
             stopWatch.reset();
@@ -165,9 +172,92 @@ public class FilterMethodInvocation{
         }
         MethodInvocationInViewDAO.insertMethodInvocationInView(methodInvocationInViewList,conn);
         MethodInvocationInViewDAO.updateIsRecursive(projectName,conn);
+
+        FilterMethodInvocation.linkMethodsOfSubclassAndSuperClass(projectName, conn);
+
         stopWatch.stop();
 //        System.out.println("处理时间为：" + stopWatch.getTime() + "ms");
         stopWatch.reset();
+    }
+
+    /**
+     * 将 父类/接口 的方法与 子类/实现类 的方法进行连接
+     * @param projectName
+     * @param connection
+     * @throws SQLException
+     */
+    public static void linkMethodsOfSubclassAndSuperClass(String projectName, Connection connection) throws SQLException {
+
+        Map<String, List<MethodInfo>> className2MethodMap = new HashMap<>();
+
+        List<List<String>> subSuperTuples = new ArrayList<>();
+
+        List<ClassInfo> subClassInfoList = ClassInfoDAO.getSubClassList(projectName, connection);
+
+        for(ClassInfo subClassInfo : subClassInfoList){
+            List<MethodInfo> subMethodInfoList = MethodInfoDAO.getMethodInfoByClassName(projectName, subClassInfo.getClassName(), connection);
+
+            className2MethodMap.put(subClassInfo.getClassName(), subMethodInfoList);
+
+            List<String> superClassList = new ArrayList();
+            if(subClassInfo.getSuperClass() != null){
+                superClassList.add(subClassInfo.getSuperClass());
+            }
+
+            if(subClassInfo.getInterfaces() != null){
+                superClassList.addAll(JSONArray.parseArray(subClassInfo.getInterfaces(), String.class));
+            }
+
+
+            for(String superClassName : superClassList){
+                List<MethodInfo> superMethodInfoList = MethodInfoDAO.getMethodInfoByClassName(projectName, subClassInfo.getClassName(), connection);
+                className2MethodMap.put(superClassName, superMethodInfoList);
+
+
+                subSuperTuples.add(new ArrayList<String>(){{
+                    add(superClassName);
+                    add(subClassInfo.getClassName());
+                }});
+            }
+
+        }
+
+        List<MethodInvocationInView> OverrideMethodList = new ArrayList<>();
+
+        for(List<String> subSuperTuple : subSuperTuples){
+            String superClassName = subSuperTuple.get(0);
+            List<MethodInfo> superMethodList = className2MethodMap.get(superClassName);
+
+            String subClassName = subSuperTuple.get(1);
+            List<MethodInfo> subMethodList = className2MethodMap.get(subClassName);
+
+            for(MethodInfo superMethodInfo : superMethodList){
+                for(MethodInfo subMethodInfo : subMethodList){
+                    if(superMethodInfo.getMethodName().equals(subMethodInfo.getMethodName()) &&
+                            superMethodInfo.getReturnType().equals(subMethodInfo.getReturnType()) &&
+                            superMethodInfo.getMethodParameters().equals(subMethodInfo.getMethodParameters())){
+
+                        MethodInvocationInView overrideMethod = new MethodInvocationInView();
+                        overrideMethod.setProjectName(projectName);
+                        overrideMethod.setCallMethodName(superMethodInfo.getMethodName());
+                        overrideMethod.setCalledMethodName(subMethodInfo.getMethodName());
+                        overrideMethod.setCallClassName(superClassName);
+                        overrideMethod.setCalledClassName(subClassName);
+                        overrideMethod.setCallMethodParameters(superMethodInfo.getMethodParameters());
+                        overrideMethod.setCallMethodReturnType(subMethodInfo.getMethodParameters());
+                        overrideMethod.setCallMethodID(superMethodInfo.getID());
+                        overrideMethod.setCalledMethodID(subMethodInfo.getID());
+                        overrideMethod.setCallClassID(ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName, superClassName, connection));
+                        overrideMethod.setCalledClassID(ClassInfoDAO.getClassIDByProjectNameAndClassName(projectName, subClassName, connection));
+
+                        OverrideMethodList.add(overrideMethod);
+
+                    }
+                }
+            }
+        }
+
+        MethodInvocationInViewDAO.insertMethodInvocationInView(OverrideMethodList, connection);
     }
 
 }
