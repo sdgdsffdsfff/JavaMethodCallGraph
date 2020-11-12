@@ -11,7 +11,7 @@ public class DataConfig {
     //连接数据库的用户名
     public static final String user = "root";
     //连接数据库的密码
-    public static final String password = "15927029790";
+    public static final String password = "root";
     //所有待分析项目的父目录
     public static final String sourceProjectParentPath = "D:\\java-source";
 
