@@ -1,9 +1,7 @@
 package com.se.visitors;
 
 import com.github.javaparser.ast.PackageDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.se.entity.ClassInfo;
 
@@ -19,13 +17,30 @@ public class ClassVisitor extends VoidVisitorAdapter {
     private String pkg; //包名
     private String clazz;   //类名
     private List<ClassInfo> classInfoList;
+
     private Map<String,String> fieldAndType;
+    private Map<String,List<Parameter>> methodAndParameter;
+    private Map<String,String> methodAndType;
+
+    public String getClazz() {
+        return clazz;
+    }
+
+    public Map<String, List<Parameter>> getMethodAndParameter() {
+        return methodAndParameter;
+    }
+
+    public Map<String, String> getMethodAndType() {
+        return methodAndType;
+    }
 
     public ClassVisitor(String projectName, String filePath){
         this.projectName = projectName;
         this.filePath = filePath;
         this.classInfoList = new ArrayList<>();
         this.fieldAndType=new HashMap<>();
+        this.methodAndParameter = new HashMap<>();
+        this.methodAndType = new HashMap<>();
     }
 
     /**
@@ -65,6 +80,20 @@ public class ClassVisitor extends VoidVisitorAdapter {
     @Override
     public void visit(FieldDeclaration n, Object arg) {
         this.fieldAndType.put(n.getVariable(0).toString(),n.getVariable(0).getTypeAsString());
+        super.visit(n, arg);
+    }
+
+    @Override
+    public void visit(MethodDeclaration n, Object arg) {
+        if (n.getNameAsString()!=this.clazz){
+            this.methodAndType.put(n.getNameAsString(),n.getTypeAsString());
+            if (n.getParameters().size()==0){
+                this.methodAndParameter.put(n.getNameAsString(),new ArrayList<>());
+            }else {
+                this.methodAndParameter.put(n.getNameAsString(),n.getParameters());
+            }
+        }
+
         super.visit(n, arg);
     }
 

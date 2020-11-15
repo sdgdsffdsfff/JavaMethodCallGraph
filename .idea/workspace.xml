@@ -5,34 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3b12f71-cf19-4c51-a24d-1613d72e6b4a" name="Default Changelist" comment="违背MVC设计架构的检测">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/se/process/StructureDetect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/se/utils/FileUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ClassVisitorTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/se/process/SimilarityEntityDetect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JavaMethodCallGraph.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/se/config/DataConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/se/config/DataConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/se/process/StructureDetect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/se/process/StructureDetect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/se/visitors/ClassVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/se/visitors/ClassVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/DAO/BuildConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/DAO/BuildConnection.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/DAO/ClassInfoDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/DAO/ClassInfoDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/DAO/MethodInfoDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/DAO/MethodInfoDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/DAO/MethodInvocationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/DAO/MethodInvocationDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/DAO/MethodInvocationInViewDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/DAO/MethodInvocationInViewDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/config/DataConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/config/DataConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/container/MethodCallContainer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/container/MethodCallContainer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/entity/ClassInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/entity/ClassInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/entity/Method.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/entity/Method.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/entity/MethodCall.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/entity/MethodCall.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/process/CountInvocation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/process/CountInvocation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/process/Process.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/process/Process.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/utils/FileHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/utils/FileHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/utils/FileHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/utils/FileHelper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/utils/MethodUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/utils/MethodUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ClassVisitorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ClassVisitorTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/se/visitors/ClassVisitor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/visitors/ClassVisitor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/se/visitors/MethodVisitor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/se/visitors/MethodVisitor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/FileProcessTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/FileProcessTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,9 +79,9 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
-  <component name="RunManager" selected="Application.StructureDetect">
+  <component name="RunManager" selected="Application.SimilarityEntityDetect">
     <configuration name="ClassVisitorTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ClassVisitorTest" />
       <module name="JavaMethodCallGraph" />
@@ -136,6 +115,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SimilarityEntityDetect" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.se.process.SimilarityEntityDetect" />
+      <module name="JavaMethodCallGraph" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.se.process.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StructureDetect" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.se.process.StructureDetect" />
       <module name="JavaMethodCallGraph" />
@@ -162,9 +154,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SimilarityEntityDetect" />
+        <item itemvalue="Application.ClassVisitorTest" />
         <item itemvalue="Application.StructureDetect" />
         <item itemvalue="Application.FileUtils" />
-        <item itemvalue="Application.ClassVisitorTest" />
         <item itemvalue="Application.MethodCallGenerator" />
       </list>
     </recent_temporary>
@@ -212,12 +205,35 @@
       <workItem from="1605143377698" duration="3834000" />
       <workItem from="1605148001114" duration="83000" />
       <workItem from="1605148100167" duration="142000" />
-      <workItem from="1605148306539" duration="1606000" />
+      <workItem from="1605148306539" duration="2547000" />
+      <workItem from="1605158778652" duration="371000" />
+      <workItem from="1605244641891" duration="339000" />
+      <workItem from="1605245216793" duration="235000" />
+      <workItem from="1605245458721" duration="9651000" />
+      <workItem from="1605335292915" duration="5744000" />
+      <workItem from="1605341705037" duration="147000" />
+      <workItem from="1605341888276" duration="3786000" />
+      <workItem from="1605366875570" duration="5319000" />
+      <workItem from="1605405989277" duration="6828000" />
+      <workItem from="1605424560511" duration="4000" />
+      <workItem from="1605424596728" duration="998000" />
     </task>
+    <task id="LOCAL-00001" summary="违背MVC设计架构的检测">
+      <created>1605150009548</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1605150009548</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="违背MVC设计架构的检测" />
+    <option name="LAST_COMMIT_MESSAGE" value="违背MVC设计架构的检测" />
   </component>
   <component name="WindowStateProjectService">
     <state x="303" y="-655" key="#BuildArtifactsBeforeRunChooser" timestamp="1604826510138">
@@ -233,55 +249,86 @@
     </state>
     <state x="172" y="-958" width="1071" height="958" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605074439605" />
     <state x="-20" y="-934" width="1071" height="934" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/-444.-1080.1920.1080@-444.-1080.1920.1080" timestamp="1604826609166" />
-    <state x="521" y="-827" key="#com.intellij.ide.util.MemberChooser" timestamp="1605080358462">
+    <state x="521" y="-827" key="#com.intellij.ide.util.MemberChooser" timestamp="1605248207749">
       <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
-    <state x="521" y="-827" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605080358462" />
-    <state x="294" y="-952" key="CommitChangelistDialog2" timestamp="1605149797231">
+    <state x="521" y="-827" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605248207749" />
+    <state x="294" y="-952" key="CommitChangelistDialog2" timestamp="1605150221271">
       <screen x="-252" y="-1057" width="1920" height="1057" />
     </state>
-    <state x="294" y="-952" key="CommitChangelistDialog2/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605149797231" />
-    <state width="1878" height="746" key="GridCell.Tab.0.bottom" timestamp="1605148390809">
-      <screen x="-252" y="-1057" width="1920" height="1057" />
+    <state x="294" y="-952" key="CommitChangelistDialog2/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605150221271" />
+    <state width="1878" height="253" key="GridCell.Tab.0.bottom" timestamp="1605425564119">
+      <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
     <state width="1878" height="293" key="GridCell.Tab.0.bottom/-669.-1417.2560.1417/0.23.1440.830@-669.-1417.2560.1417" timestamp="1605112379615" />
-    <state width="2518" height="311" key="GridCell.Tab.0.bottom/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605108697947" />
-    <state width="1878" height="222" key="GridCell.Tab.0.bottom/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605095300891" />
+    <state width="2518" height="314" key="GridCell.Tab.0.bottom/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605412935402" />
+    <state width="2518" height="445" key="GridCell.Tab.0.bottom/-669.-1440.2560.1440/0.23.1440.877@-669.-1440.2560.1440" timestamp="1605367084433" />
+    <state width="1878" height="253" key="GridCell.Tab.0.bottom/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605425564119" />
+    <state width="1398" height="637" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1605164935610" />
     <state width="1878" height="746" key="GridCell.Tab.0.bottom/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605148390809" />
     <state width="1876" height="222" key="GridCell.Tab.0.bottom/0.23.1440.877/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605083856223" />
-    <state width="1878" height="746" key="GridCell.Tab.0.center" timestamp="1605148390809">
-      <screen x="-252" y="-1057" width="1920" height="1057" />
+    <state width="1878" height="253" key="GridCell.Tab.0.center" timestamp="1605425564117">
+      <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
     <state width="1878" height="293" key="GridCell.Tab.0.center/-669.-1417.2560.1417/0.23.1440.830@-669.-1417.2560.1417" timestamp="1605112379613" />
-    <state width="2518" height="311" key="GridCell.Tab.0.center/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605108697945" />
-    <state width="1878" height="222" key="GridCell.Tab.0.center/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605095300889" />
+    <state width="2518" height="314" key="GridCell.Tab.0.center/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605412935396" />
+    <state width="2518" height="445" key="GridCell.Tab.0.center/-669.-1440.2560.1440/0.23.1440.877@-669.-1440.2560.1440" timestamp="1605367084431" />
+    <state width="1878" height="253" key="GridCell.Tab.0.center/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605425564117" />
+    <state width="1398" height="637" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1605164935609" />
     <state width="1878" height="746" key="GridCell.Tab.0.center/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605148390809" />
     <state width="1876" height="222" key="GridCell.Tab.0.center/0.23.1440.877/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605083856221" />
-    <state width="1878" height="746" key="GridCell.Tab.0.left" timestamp="1605148390808">
-      <screen x="-252" y="-1057" width="1920" height="1057" />
+    <state width="1878" height="253" key="GridCell.Tab.0.left" timestamp="1605425564116">
+      <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
     <state width="1878" height="293" key="GridCell.Tab.0.left/-669.-1417.2560.1417/0.23.1440.830@-669.-1417.2560.1417" timestamp="1605112379612" />
-    <state width="2518" height="311" key="GridCell.Tab.0.left/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605108697944" />
-    <state width="1878" height="222" key="GridCell.Tab.0.left/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605095300889" />
+    <state width="2518" height="314" key="GridCell.Tab.0.left/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605412935395" />
+    <state width="2518" height="445" key="GridCell.Tab.0.left/-669.-1440.2560.1440/0.23.1440.877@-669.-1440.2560.1440" timestamp="1605367084430" />
+    <state width="1878" height="253" key="GridCell.Tab.0.left/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605425564116" />
+    <state width="1398" height="637" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1605164935608" />
     <state width="1878" height="746" key="GridCell.Tab.0.left/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605148390808" />
     <state width="1876" height="222" key="GridCell.Tab.0.left/0.23.1440.877/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605083856221" />
-    <state width="1878" height="746" key="GridCell.Tab.0.right" timestamp="1605148390809">
-      <screen x="-252" y="-1057" width="1920" height="1057" />
+    <state width="1878" height="253" key="GridCell.Tab.0.right" timestamp="1605425564118">
+      <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
     <state width="1878" height="293" key="GridCell.Tab.0.right/-669.-1417.2560.1417/0.23.1440.830@-669.-1417.2560.1417" timestamp="1605112379615" />
-    <state width="2518" height="311" key="GridCell.Tab.0.right/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605108697945" />
-    <state width="1878" height="222" key="GridCell.Tab.0.right/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605095300890" />
+    <state width="2518" height="314" key="GridCell.Tab.0.right/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605412935397" />
+    <state width="2518" height="445" key="GridCell.Tab.0.right/-669.-1440.2560.1440/0.23.1440.877@-669.-1440.2560.1440" timestamp="1605367084432" />
+    <state width="1878" height="253" key="GridCell.Tab.0.right/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605425564118" />
+    <state width="1398" height="637" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1605164935610" />
     <state width="1878" height="746" key="GridCell.Tab.0.right/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605148390809" />
     <state width="1876" height="222" key="GridCell.Tab.0.right/0.23.1440.877/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605083856222" />
-    <state x="-276" y="-1297" key="SettingsEditor" timestamp="1605106627506">
-      <screen x="-669" y="-1440" width="2560" height="1440" />
+    <state x="43" y="-973" key="SettingsEditor" timestamp="1605245434082">
+      <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
     <state x="-276" y="-1297" key="SettingsEditor/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605106627506" />
     <state x="43" y="-973" key="SettingsEditor/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605095561317" />
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1604997099548" />
-    <state x="513" y="-619" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1605074446034">
+    <state x="43" y="-973" key="SettingsEditor/0.23.1440.830/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605245434082" />
+    <state x="308" y="-787" key="Vcs.Push.Dialog.v2" timestamp="1605150232676">
+      <screen x="-252" y="-1057" width="1920" height="1057" />
+    </state>
+    <state x="308" y="-787" key="Vcs.Push.Dialog.v2/0.23.1440.830/-252.-1057.1920.1057@-252.-1057.1920.1057" timestamp="1605150232676" />
+    <state x="513" y="-619" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1605156296281">
       <screen x="-252" y="-1080" width="1920" height="1080" />
     </state>
-    <state x="513" y="-619" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605074446034" />
+    <state x="513" y="-619" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605156296281" />
+    <state x="116" y="-976" width="989" height="620" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1605368309296">
+      <screen x="-669" y="-1440" width="2560" height="1440" />
+    </state>
+    <state x="116" y="-976" width="989" height="620" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/-669.-1440.2560.1440/0.0.1440.900@-669.-1440.2560.1440" timestamp="1605368309296" />
+    <state x="373" y="-839" key="search.everywhere.popup" timestamp="1605247576215">
+      <screen x="-252" y="-1080" width="1920" height="1080" />
+    </state>
+    <state x="373" y="-839" key="search.everywhere.popup/0.0.1440.900/-252.-1080.1920.1080@-252.-1080.1920.1080" timestamp="1605247576215" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="5" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
