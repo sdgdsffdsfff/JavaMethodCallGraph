@@ -132,8 +132,6 @@ public class CountInvocation {
         System.out.println("调用深度统计完成");
     }
 
-
-
     public static void countInvocationDept2(List<String> projectNameList,Connection conn) throws SQLException {
         System.out.println("正在统计调用深度");
         for(String projectName:projectNameList){
@@ -231,7 +229,6 @@ public class CountInvocation {
         }
         return false;
     }
-
 
     public static void getDiscardClassPath(Connection connection) throws SQLException, IOException {
         List<ClassInfo> classInfoList = ClassInfoDAO.getDiscardClassList(connection);

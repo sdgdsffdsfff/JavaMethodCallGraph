@@ -59,4 +59,5 @@ public class DataConfig {
 
     public static String SimilarityEntityDetectResult = "src/main/resources/DetectResult/similarityEntityDetectResult.txt";
 
+    public static double threshold = 0.6;
 }

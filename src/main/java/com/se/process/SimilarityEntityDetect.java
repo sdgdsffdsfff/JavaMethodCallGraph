@@ -50,26 +50,26 @@ public class SimilarityEntityDetect {
      */
     public static void judge(ClassVisitor visitor,ClassVisitor visitor1){
         List<Integer> fieldList = findSimilarityOfField(visitor.getFieldMap(), visitor1.getFieldMap());
-        double thread = 0.6;
+        double threshold = DataConfig.threshold;
         if (fieldList.get(0)!=0&&fieldList.get(1)!=0){
-            if ((double)fieldList.get(2)/fieldList.get(0)>=thread&&(double)fieldList.get(2)/fieldList.get(1)>=thread){
+            if ((double)fieldList.get(2)/fieldList.get(0)>=threshold&&(double)fieldList.get(2)/fieldList.get(1)>=threshold){
                 List<Integer> methodList = findSimilarityOfMethod(visitor.getMethodAndType(),visitor.getMethodAndParameter(), visitor1.getMethodAndType(),visitor1.getMethodAndParameter());
-                judge1(methodList,fieldList,thread,visitor,visitor1);
+                judge1(methodList,fieldList,threshold,visitor,visitor1);
             }else {
                 //System.out.println("两个类不重复");
             }
         }else if (fieldList.get(0)==0&&fieldList.get(1)==0){
             List<Integer> methodList = findSimilarityOfMethod(visitor.getMethodAndType(),visitor.getMethodAndParameter(), visitor1.getMethodAndType(),visitor1.getMethodAndParameter());
-            judge1(methodList,fieldList,thread,visitor,visitor1);
+            judge1(methodList,fieldList,threshold,visitor,visitor1);
         }else {
             //System.out.println("一个类中有字段，一个类中无字段，两个类不重复");
         }
     }
 
-    public static void judge1(List<Integer> list,List<Integer> fieldList,double thread,ClassVisitor visitor,ClassVisitor visitor1){
+    public static void judge1(List<Integer> list,List<Integer> fieldList,double threshold,ClassVisitor visitor,ClassVisitor visitor1){
         List<String> list1 = new ArrayList<>();
         if (list.get(0)!=0&&list.get(1)!=0){
-            if ((double)list.get(2)/list.get(0)>=thread&&(double)list.get(2)/list.get(1)>=thread){
+            if ((double)list.get(2)/list.get(0)>=threshold&&(double)list.get(2)/list.get(1)>=threshold){
                 String out1 = "类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复";
                 String out2 = visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+list.get(0)+"个方法";
                 String out3 = visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法";
@@ -80,11 +80,11 @@ public class SimilarityEntityDetect {
                 list1.add(out3);
                 list1.add(out4);
                 list1.add(out5);
-                System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复");
-                System.out.println(visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+list.get(0)+"个方法");
-                System.out.println(visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法");
-                System.out.println("他俩一共有"+fieldList.get(2)+"个类型相同的字段"+"和"+list.get(2)+"个相似方法");
-                System.out.println("");
+//                System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复");
+//                System.out.println(visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+list.get(0)+"个方法");
+//                System.out.println(visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法");
+//                System.out.println("他俩一共有"+fieldList.get(2)+"个类型相同的字段"+"和"+list.get(2)+"个相似方法");
+//                System.out.println("");
             }
         }else if (list.get(0)==0&&list.get(1)==0){
             String out1 = "类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复";
@@ -97,18 +97,18 @@ public class SimilarityEntityDetect {
             list1.add(out3);
             list1.add(out4);
             list1.add(out5);
-            System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复");
-            System.out.println(visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+"没有方法");
-            System.out.println(visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法");
-            System.out.println("他俩一共有"+fieldList.get(2)+"个类型相同的字段");
-            System.out.println("");
+//            System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复");
+//            System.out.println(visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+"没有方法");
+//            System.out.println(visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法");
+//            System.out.println("他俩一共有"+fieldList.get(2)+"个类型相同的字段");
+//            System.out.println("");
         }else {
             String out1 = "类"+visitor.getClazz()+"和"+visitor1.getClazz()+"中，一个类中无方法，所以两个类不重复";
             String out2 = "\n";
             list1.add(out1);
             list1.add(out2);
-            System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"中，一个类中无方法，所以两个类不重复");
-            System.out.println("");
+//            System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"中，一个类中无方法，所以两个类不重复");
+//            System.out.println("");
         }
         FileUtils.write(DataConfig.SimilarityEntityDetectResult,list1);
     }
