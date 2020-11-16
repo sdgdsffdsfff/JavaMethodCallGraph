@@ -3,6 +3,7 @@ package com.se.process;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.Parameter;
+import com.se.config.DataConfig;
 import com.se.utils.FileUtils;
 import com.se.visitors.ClassVisitor;
 
@@ -17,19 +18,13 @@ import java.util.Map;
  * Created by zhangyue on 2020/11/13
  */
 public class SimilarityEntityDetect {
-    public static String projectName = "ssm2";
-
-    public static String projectPath = "/Users/zhangyue/Downloads/ssm2";
-
-    public static String layer_dao = "dao";
-    public static String layer_vo = "pojo";
 
     public static Map<String,String> javaPathOfDao = new HashMap<>();
     public static Map<String,String> javaPathOfVo = null;
 
-
-
     public static void main(String[] args) throws FileNotFoundException {
+        FileUtils.clearInfoForFile(DataConfig.SimilarityEntityDetectResult);
+
         init();
         List<ClassVisitor> visitorListOfDao = getAllVisitor(javaPathOfDao);
         int lenOfDao = visitorListOfDao.size();
@@ -72,8 +67,19 @@ public class SimilarityEntityDetect {
     }
 
     public static void judge1(List<Integer> list,List<Integer> fieldList,double thread,ClassVisitor visitor,ClassVisitor visitor1){
+        List<String> list1 = new ArrayList<>();
         if (list.get(0)!=0&&list.get(1)!=0){
             if ((double)list.get(2)/list.get(0)>=thread&&(double)list.get(2)/list.get(1)>=thread){
+                String out1 = "类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复";
+                String out2 = visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+list.get(0)+"个方法";
+                String out3 = visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法";
+                String out4 = "他俩一共有"+fieldList.get(2)+"个类型相同的字段"+"和"+list.get(2)+"个相似方法";
+                String out5 = "\n";
+                list1.add(out1);
+                list1.add(out2);
+                list1.add(out3);
+                list1.add(out4);
+                list1.add(out5);
                 System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复");
                 System.out.println(visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+list.get(0)+"个方法");
                 System.out.println(visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法");
@@ -81,15 +87,30 @@ public class SimilarityEntityDetect {
                 System.out.println("");
             }
         }else if (list.get(0)==0&&list.get(1)==0){
+            String out1 = "类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复";
+            String out2 = visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+"没有方法";
+            String out3 = visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法";
+            String out4 = "他俩一共有"+fieldList.get(2)+"个类型相同的字段";
+            String out5 = "\n";
+            list1.add(out1);
+            list1.add(out2);
+            list1.add(out3);
+            list1.add(out4);
+            list1.add(out5);
             System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"两个类可能重复");
             System.out.println(visitor.getClazz()+"中有"+fieldList.get(0)+"个字段"+","+"没有方法");
             System.out.println(visitor1.getClazz()+"中有"+fieldList.get(1)+"个字段"+","+list.get(1)+"个方法");
             System.out.println("他俩一共有"+fieldList.get(2)+"个类型相同的字段");
             System.out.println("");
         }else {
+            String out1 = "类"+visitor.getClazz()+"和"+visitor1.getClazz()+"中，一个类中无方法，所以两个类不重复";
+            String out2 = "\n";
+            list1.add(out1);
+            list1.add(out2);
             System.out.println("类"+visitor.getClazz()+"和"+visitor1.getClazz()+"中，一个类中无方法，所以两个类不重复");
             System.out.println("");
         }
+        FileUtils.write(DataConfig.SimilarityEntityDetectResult,list1);
     }
 
 
@@ -103,7 +124,7 @@ public class SimilarityEntityDetect {
         if (javaPath!=null){
             ClassVisitor visitor;
             for (Map.Entry entry : javaPath.entrySet()){
-                visitor = new ClassVisitor(projectName,entry.getKey().toString());
+                visitor = new ClassVisitor(DataConfig.projectName,entry.getKey().toString());
                 File file = new File(entry.getKey().toString());
                 CompilationUnit cu = StaticJavaParser.parse(file);
                 visitor.visit(cu,null);
@@ -247,7 +268,7 @@ public class SimilarityEntityDetect {
 
     public static void init(){
         //这里项目路径后面加src是因为target等包中也有dao等文件夹，这样先遍历到target就会返回错误结果
-        javaPathOfDao= FileUtils.getJavaFilePath(projectPath+"/src",layer_dao);
-        javaPathOfVo= FileUtils.getJavaFilePath(projectPath+"/src",layer_vo);
+        javaPathOfDao= FileUtils.getJavaFilePath(DataConfig.projectPath +"/src",DataConfig.layer_dao);
+        javaPathOfVo= FileUtils.getJavaFilePath(DataConfig.projectPath+"/src",DataConfig.layer_vo);
     }
 }

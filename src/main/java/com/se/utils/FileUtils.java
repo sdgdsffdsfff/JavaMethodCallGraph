@@ -1,7 +1,8 @@
 package com.se.utils;
 
-import java.io.File;
+import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,9 +68,38 @@ public class FileUtils {
         return stringMap;
     }
 
-    public static void main(String[] args) {
-        String projectPath = "/Users/zhangyue/Downloads/ssm2";
-        System.out.println(getJavaFilePath(projectPath,"dao").size());
+    public static void write(String path, List<String> text) {
+        try {
+            File file = new File(path);
+            FileOutputStream fos = null;
+            if (!file.exists()) {//判断文件是否存在，如果不存在就新建文件
+                file.createNewFile();
+                fos = new FileOutputStream(file);
+            } else {
+                fos = new FileOutputStream(file, true);//如果文件已经存在，就直接在文件末尾添加新的信息
+            }
+            OutputStreamWriter osw = new OutputStreamWriter(fos);
+            for (String s : text) {
+                osw.write(s + "\n");
+            }
+            osw.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
+    public static void clearInfoForFile(String fileName) {
+        File file =new File(fileName);
+        try {
+            if(!file.exists()) {
+                return;
+            }
+            FileWriter fileWriter =new FileWriter(file);
+            fileWriter.write("");
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

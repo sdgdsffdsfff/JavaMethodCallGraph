@@ -41,5 +41,22 @@ public class DataConfig {
     //是否进行层次处理分析
     public static boolean isLayerProcess = true;
 
+    public static String projectName = "ssm2";
+
+    public static String projectPath = "/Users/zhangyue/Downloads/ssm2";
+
+    public static String layer_dao = "dao";
+
+    public static String layer_serviceImpl = "impl";
+
+    public static String layer_controller = "controller";
+
+    public static String layer_service = "service";
+
+    public static String layer_vo = "pojo";
+
+    public static String structDetectResult = "src/main/resources/DetectResult/structureDetectResult.txt";
+
+    public static String SimilarityEntityDetectResult = "src/main/resources/DetectResult/similarityEntityDetectResult.txt";
 
 }
