@@ -31,6 +31,6 @@
     layer_vo        vo包名，eg：pojo、vo等
     threshold       比对的阈值
 ####  注意：目前只设置了一次检测两个包，layer_dao和layer_vo包
-#### 2.进入StructDetect类中运行主方法
+#### 2.进入SimilarityEntityDetectResult类中运行主方法
 #### 3.结果将在com/se/config/DataConfig.java中的SimilarityEntityDetectResult对应的路径（需要的话可修改），目前配置为src/main/resources/DetectResult/similarityEntityDetectResult.txt
 ####  注意：每次运行时都会清理上一次写入的结果
